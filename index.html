@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Order Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .item input[type="number"] {
+      width: 60px;
+    }
+    .total {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .actions {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    button, a.whatsapp {
+      padding: 10px;
+      text-align: center;
+      text-decoration: none;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    a.whatsapp {
+      background-color: #25D366;
+    }
+  </style>
+</head>
+<body>
+  <h2>Order Calculator</h2>
+
+  <div class="item">
+    <label>Paneer Roll (₹80)</label>
+    <input type="number" min="0" value="0" data-name="Paneer Roll" data-price="80">
+  </div>
+  <div class="item">
+    <label>Chicken Biryani (₹150)</label>
+    <input type="number" min="0" value="0" data-name="Chicken Biryani" data-price="150">
+  </div>
+  <div class="item">
+    <label>Veg Burger (₹60)</label>
+    <input type="number" min="0" value="0" data-name="Veg Burger" data-price="60">
+  </div>
+  <div class="item">
+    <label>Cold Coffee (₹50)</label>
+    <input type="number" min="0" value="0" data-name="Cold Coffee" data-price="50">
+  </div>
+  <div class="item">
+    <label>French Fries (₹40)</label>
+    <input type="number" min="0" value="0" data-name="French Fries" data-price="40">
+  </div>
+
+  <div class="total">Total: ₹<span id="totalAmount">0</span></div>
+
+  <div class="actions">
+    <button onclick="calculateTotal()">Calculate</button>
+    <a id="whatsappLink" class="whatsapp" href="#" target="_blank">Place Order via WhatsApp</a>
+    <a id="formLink" class="whatsapp" href="#" target="_blank">Fill Google Form</a>
+  </div>
+
+  <script>
+    function calculateTotal() {
+      const inputs = document.querySelectorAll('input[type="number"]');
+      let total = 0;
+      let orderDetails = [];
+
+      inputs.forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        const name = input.dataset.name;
+        const price = parseFloat(input.dataset.price);
+        if (qty > 0) {
+          total += qty * price;
+          orderDetails.push(`${qty} x ${name}`);
+        }
+      });
+
+      document.getElementById('totalAmount').innerText = total;
+
+      const orderText = encodeURIComponent(`Hello! I'd like to order:\n${orderDetails.join('\n')}\nTotal: ₹${total}`);
+      const whatsappURL = `https://wa.me/917431059519?text=${orderText}`;
+      document.getElementById('whatsappLink').href = whatsappURL;
+
+      const formURL = `https://forms.gle/your-google-form-link`; // Replace with actual form link
+      document.getElementById('formLink').href = formURL;
+    }
+  </script>
+</body>
+</html>
