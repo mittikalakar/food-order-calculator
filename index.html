@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple Order Calculator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -27,6 +27,7 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       transition: background-color 0.3s, color 0.3s;
+      position: relative;
     }
     h2 {
       text-align: center;
@@ -106,6 +107,7 @@
       border-radius: 4px;
       margin: 5px;
       display: inline-block;
+      cursor: pointer;
     }
 
     a.whatsapp { background-color: #25D366; }
@@ -119,89 +121,115 @@
       padding: 5px;
       margin-top: 10px;
     }
+
+    /* Modal styles */
+    #customerModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    #customerModal .modal-content {
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 20px 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    #customerModal input {
+      width: 100%;
+      padding: 8px 10px;
+      margin: 8px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    #editCustomerBtn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="dark-mode-toggle">
     <label><input type="checkbox" id="darkMode"> Dark Mode</label>
   </div>
+
   <h2>Calculate Your Order</h2>
-<div class="customer-info">
-  <h3>Customer Info</h3>
-  <input type="text" id="customerName" placeholder="Customer Name">
-  <input type="text" id="customerAddress" placeholder="Customer Address">
-  <input type="text" id="gstNumber" placeholder="GST Number (Optional)">
-</div>
 
   <div class="grid">
     <!-- Product Template -->
     <div class="product">
-      <img src="https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg" class="product-img" alt="Biryani">
+      <img src="https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg" class="product-img" alt="Biryani" />
       <div class="product-info">
         <div>Biryani – ₹150</div>
         <div class="quantity">
           <button onclick="changeQty('biryani', -1)">−</button>
-          <input type="number" id="biryani" min="0" value="0" data-name="Biryani" data-price="150">
+          <input type="number" id="biryani" min="0" value="0" data-name="Biryani" data-price="150" />
           <button onclick="changeQty('biryani', 1)">+</button>
         </div>
       </div>
     </div>
 
     <div class="product">
-      <img src="https://orders.popskitchen.in/storage/2024/09/image-299.png" class="product-img" alt="Egg Roll">
+      <img src="https://orders.popskitchen.in/storage/2024/09/image-299.png" class="product-img" alt="Egg Roll" />
       <div class="product-info">
         <div>Egg Roll – ₹80</div>
         <div class="quantity">
           <button onclick="changeQty('egg_roll', -1)">−</button>
-          <input type="number" id="egg_roll" min="0" value="0" data-name="Egg Roll" data-price="80">
+          <input type="number" id="egg_roll" min="0" value="0" data-name="Egg Roll" data-price="80" />
           <button onclick="changeQty('egg_roll', 1)">+</button>
         </div>
       </div>
     </div>
 
-<div class="product">
-      <img src="https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg" class="product-img" alt="Chicken Momo">
-      <div class="product-info">
-        <div>Moglai – ₹50</div>
-        <div class="quantity">
-          <button onclick="changeQty('Moglai', -1)">−</button>
-          <input type="number" id="Moglai" min="0" value="0" data-name="Moglai" data-price="50">
-          <button onclick="changeQty('Moglai', 1)">+</button>
-        </div>
-      </div>
-    </div>
-    
     <div class="product">
-      <img src="https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1" class="product-img" alt="Chicken Pakora">
+      <img src="https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1" class="product-img" alt="Chicken Pakora" />
       <div class="product-info">
         <div>Chicken Pakora – ₹60</div>
         <div class="quantity">
           <button onclick="changeQty('chicken_pakora', -1)">−</button>
-          <input type="number" id="chicken_pakora" min="0" value="0" data-name="Chicken Pakora" data-price="60">
+          <input type="number" id="chicken_pakora" min="0" value="0" data-name="Chicken Pakora" data-price="60" />
           <button onclick="changeQty('chicken_pakora', 1)">+</button>
         </div>
       </div>
     </div>
 
     <div class="product">
-      <img src="https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY" class="product-img" alt="Chicken Momo">
+      <img src="https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY" class="product-img" alt="Chicken Momo" />
       <div class="product-info">
         <div>Chicken Momo – ₹50</div>
         <div class="quantity">
           <button onclick="changeQty('chicken_momo', -1)">−</button>
-          <input type="number" id="chicken_momo" min="0" value="0" data-name="Chicken Momo" data-price="50">
+          <input type="number" id="chicken_momo" min="0" value="0" data-name="Chicken Momo" data-price="50" />
           <button onclick="changeQty('chicken_momo', 1)">+</button>
         </div>
       </div>
     </div>
 
     <div class="product">
-      <img src="https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg" class="product-img" alt="Chowmein">
+      <img src="https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg" class="product-img" alt="Chowmein" />
       <div class="product-info">
         <div>Chowmein – ₹40</div>
         <div class="quantity">
           <button onclick="changeQty('chowmein', -1)">−</button>
-          <input type="number" id="chowmein" min="0" value="0" data-name="Chowmein" data-price="40">
+          <input type="number" id="chowmein" min="0" value="0" data-name="Chowmein" data-price="40" />
           <button onclick="changeQty('chowmein', 1)">+</button>
         </div>
       </div>
@@ -209,7 +237,7 @@
   </div>
 
   <div class="total">
-    Total: ₹<span id="totalAmount">0</span><br>
+    Total: ₹<span id="totalAmount">0</span><br />
     <label for="deliveryTime">Delivery Time:</label>
     <select id="deliveryTime">
       <option value="ASAP">As soon as possible</option>
@@ -220,17 +248,31 @@
   </div>
 
   <div class="actions">
-    <a id="whatsappLink" class="whatsapp" href="#" target="_blank">Place Order via WhatsApp</a>
+    <a id="whatsappLink" class="whatsapp" href="#" target="_blank" rel="noopener noreferrer">Place Order via WhatsApp</a>
     <button onclick="downloadPDF()">Download Bill (PDF)</button>
+    <button id="editCustomerBtn" title="Edit your saved details">Edit Customer Info</button>
+  </div>
+
+  <!-- Customer Info Modal -->
+  <div id="customerModal">
+    <div class="modal-content">
+      <h3>Please enter your details</h3>
+      <input id="modalName" placeholder="Your Name" type="text" autocomplete="name" />
+      <input id="modalPhone" placeholder="Phone Number" type="tel" autocomplete="tel" />
+      <input id="modalAddress" placeholder="Address (optional)" type="text" autocomplete="street-address" />
+      <button onclick="saveCustomerData()">Save</button>
+    </div>
   </div>
 
   <script>
+    // Quantity buttons
     function changeQty(id, diff) {
       const input = document.getElementById(id);
       input.value = Math.max(0, parseInt(input.value || 0) + diff);
       calculateTotal();
     }
 
+    // Calculate total and update WhatsApp link
     function calculateTotal() {
       const inputs = document.querySelectorAll('input[type="number"]');
       let total = 0;
@@ -247,84 +289,121 @@
       });
 
       document.getElementById('totalAmount').innerText = total;
+
       const time = document.getElementById('deliveryTime').value;
+
+      // Get customer data from localStorage
+      const name = localStorage.getItem('customerName') || "N/A";
+      const phone = localStorage.getItem('customerPhone') || "N/A";
+      const address = localStorage.getItem('customerAddress') || "N/A";
+
       const orderText = encodeURIComponent(
-        `Hello! I'd like to order:\n${orderDetails.join('\n')}\nTotal: ₹${total}\nPreferred Delivery: ${time}\n\nThank you!`
+        `Hello! My name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nI'd like to order:\n${orderDetails.join(
+          '\n'
+        )}\nTotal: ₹${total}\nPreferred Delivery: ${time}\n\nThank you!`
       );
 
       const whatsappURL = `https://wa.me/917431059519?text=${orderText}`;
       document.getElementById('whatsappLink').href = whatsappURL;
     }
 
-   async function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+    // Save customer data from modal to localStorage
+    function saveCustomerData() {
+      const name = document.getElementById('modalName').value.trim();
+      const phone = document.getElementById('modalPhone').value.trim();
+      const address = document.getElementById('modalAddress').value.trim();
 
-  // Optional: Add logo if available
-  const logo = new Image();
-  logo.src = 'images/logo.png'; // Replace with your actual path
+      if (!name || !phone) {
+        alert('Please enter at least your name and phone number.');
+        return;
+      }
 
-  try {
-    await new Promise((resolve) => {
-      logo.onload = resolve;
-    });
-    doc.addImage(logo, 'PNG', 10, 10, 40, 20); // x, y, width, height
-  } catch (e) {
-    console.log("Logo not loaded, skipping...");
-  }
+      localStorage.setItem('customerName', name);
+      localStorage.setItem('customerPhone', phone);
+      localStorage.setItem('customerAddress', address);
 
-  doc.setFontSize(12);
-  doc.text("Invoice / Bill", 150, 15, { align: "right" });
-
-  // Customer details
-  const customerName = document.getElementById("customerName").value || "N/A";
-  const customerAddress = document.getElementById("customerAddress").value || "N/A";
-  const gstNumber = document.getElementById("gstNumber").value || "N/A";
-  doc.setFontSize(10);
-  doc.text(`Customer Name: ${customerName}`, 10, 40);
-  doc.text(`Address: ${customerAddress}`, 10, 47);
-  doc.text(`GST No: ${gstNumber}`, 10, 54);
-
-  // Item header
-  doc.setFontSize(12);
-  doc.text("Order Details:", 10, 70);
-  doc.setFontSize(10);
-  let y = 78;
-  let total = 0;
-
-  document.querySelectorAll('input[type="number"]').forEach(input => {
-    const qty = parseInt(input.value);
-    const name = input.dataset.name;
-    const price = parseFloat(input.dataset.price);
-    if (qty > 0) {
-      const line = `${qty} x ${name} = ₹${qty * price}`;
-      doc.text(line, 10, y);
-      y += 7;
-      total += qty * price;
+      document.getElementById('customerModal').style.display = 'none';
+      alert('Thank you! Your details are saved.');
+      calculateTotal();
     }
-  });
 
-  doc.text("--------------------------", 10, y);
-  y += 7;
-  doc.setFontSize(11);
-  doc.text(`Total: ₹${total}`, 10, y);
-  y += 7;
+    // Download PDF function using jsPDF
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-  const deliveryTime = document.getElementById("deliveryTime").value;
-  doc.text(`Preferred Delivery: ${deliveryTime}`, 10, y + 5);
+      doc.setFontSize(12);
+      doc.text('Invoice / Bill', 150, 15, { align: 'right' });
 
-  doc.save("Order_Receipt.pdf");
-}
+      // Customer details from localStorage
+      const customerName = localStorage.getItem('customerName') || 'N/A';
+      const customerPhone = localStorage.getItem('customerPhone') || 'N/A';
+      const customerAddress = localStorage.getItem('customerAddress') || 'N/A';
 
+      doc.setFontSize(10);
+      doc.text(`Customer Name: ${customerName}`, 10, 40);
+      doc.text(`Phone: ${customerPhone}`, 10, 47);
+      doc.text(`Address: ${customerAddress}`, 10, 54);
 
+      // Order details
+      doc.setFontSize(12);
+      doc.text('Order Details:', 10, 70);
+      doc.setFontSize(10);
+      let y = 78;
+      let total = 0;
+
+      document.querySelectorAll('input[type="number"]').forEach(input => {
+        const qty = parseInt(input.value);
+        const name = input.dataset.name;
+        const price = parseFloat(input.dataset.price);
+        if (qty > 0) {
+          const line = `${qty} x ${name} = ₹${qty * price}`;
+          doc.text(line, 10, y);
+          y += 7;
+          total += qty * price;
+        }
+      });
+
+      doc.text('--------------------------', 10, y);
+      y += 7;
+      doc.setFontSize(11);
+      doc.text(`Total: ₹${total}`, 10, y);
+      y += 7;
+
+      const deliveryTime = document.getElementById('deliveryTime').value;
+      doc.text(`Preferred Delivery: ${deliveryTime}`, 10, y + 5);
+
+      doc.save('Order_Receipt.pdf');
+    }
+
+    // Event listeners
     document.querySelectorAll('input[type="number"]').forEach(input => {
       input.addEventListener('input', calculateTotal);
     });
 
     document.getElementById('deliveryTime').addEventListener('change', calculateTotal);
-    document.getElementById('darkMode').addEventListener('change', function() {
+    document.getElementById('darkMode').addEventListener('change', function () {
       document.body.classList.toggle('dark', this.checked);
     });
+
+    // Edit customer button to reopen modal and edit details
+    document.getElementById('editCustomerBtn').addEventListener('click', () => {
+      // Pre-fill modal fields with stored data
+      document.getElementById('modalName').value = localStorage.getItem('customerName') || '';
+      document.getElementById('modalPhone').value = localStorage.getItem('customerPhone') || '';
+      document.getElementById('modalAddress').value = localStorage.getItem('customerAddress') || '';
+
+      document.getElementById('customerModal').style.display = 'flex';
+    });
+
+    // Show modal on first load if data missing
+    window.onload = function () {
+      if (!localStorage.getItem('customerName') || !localStorage.getItem('customerPhone')) {
+        document.getElementById('customerModal').style.display = 'flex';
+      } else {
+        calculateTotal();
+      }
+    };
   </script>
 </body>
 </html>
