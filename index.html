@@ -100,7 +100,10 @@
 
       document.getElementById('totalAmount').innerText = total;
 
-      const orderText = encodeURIComponent(`Hello! I'd like to order:\n${orderDetails.join('\n')}\nTotal: ₹${total}`);
+      const orderText = encodeURIComponent(
+  `Hello! I'd like to order:\n${orderDetails.join('\n')}\nTotal: ₹${total}\n\nThank you! We’ll confirm shortly via WhatsApp.`
+);
+
       const whatsappURL = `https://wa.me/917431059519?text=${orderText}`;
       document.getElementById('whatsappLink').href = whatsappURL;
 
