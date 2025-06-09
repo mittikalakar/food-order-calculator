@@ -3,149 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Food Order Calculator</title>
+  <title>Simple Order Calculator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 800px;
+      max-width: 900px;
       margin: 20px auto;
       padding: 20px;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      background-color: #fff;
-      color: #000;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       transition: background-color 0.3s, color 0.3s;
-    }
-    .dark-mode {
-      background-color: #1e1e1e;
-      color: #fff;
     }
     h2 {
       text-align: center;
     }
-    .menu {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
     .product {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      background: var(--card-bg);
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     .product-img {
       width: 100%;
-      height: 150px;
+      height: 160px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 10px;
     }
     .product-info {
       margin-top: 10px;
       text-align: center;
     }
-    .quantity {
+    .controls {
       display: flex;
-      align-items: center;
       justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 5px;
+      margin-top: 5px;
     }
-    .quantity button {
-      width: 30px;
-      height: 30px;
+    .controls button {
+      padding: 4px 10px;
+      font-size: 16px;
     }
-    .total {
-      font-weight: bold;
+    .total, .actions {
       margin-top: 20px;
       text-align: center;
     }
-    .actions {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-    button, a.whatsapp {
-      padding: 10px 20px;
-      text-align: center;
+    .actions a, .actions button {
+      padding: 10px;
       text-decoration: none;
       background-color: #28a745;
       color: white;
       border: none;
       border-radius: 4px;
-      cursor: pointer;
+      margin: 5px;
+      display: inline-block;
     }
-    a.whatsapp {
-      background-color: #25D366;
-    }
-    .dark-toggle {
+    a.whatsapp { background-color: #25D366; }
+    .dark-mode-toggle {
       text-align: right;
       margin-bottom: 10px;
+    }
+    select {
+      padding: 5px;
+      margin-top: 10px;
+    }
+    :root {
+      --bg-color: #fff;
+      --text-color: #000;
+      --card-bg: #f9f9f9;
+    }
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #fff;
+      --card-bg: #1e1e1e;
     }
   </style>
 </head>
 <body>
-  <div class="dark-toggle">
-    <label>
-      <input type="checkbox" id="toggleDark"> Dark Mode
-    </label>
+  <div class="dark-mode-toggle">
+    <label><input type="checkbox" id="darkMode"> Dark Mode</label>
   </div>
   <h2>Calculate Your Order</h2>
 
-  <div class="menu">
+  <div class="grid">
     <div class="product">
-      <img src="https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg" alt="Biryani" class="product-img">
+      <img src="https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg" class="product-img" alt="Biryani">
       <div class="product-info">
-        <strong>Biryani – ₹100</strong>
-        <div class="quantity">
-          <button onclick="changeQty('biryani', -1)">−</button>
+        <div>Biryani – ₹150</div>
+        <div class="controls">
+          <button onclick="changeQty('biryani', -1)">-</button>
           <input type="number" id="biryani" min="0" value="0" data-name="Biryani" data-price="150">
           <button onclick="changeQty('biryani', 1)">+</button>
         </div>
       </div>
     </div>
+
     <div class="product">
-      <img src="https://orders.popskitchen.in/storage/2024/09/image-299.png" alt="Egg Roll" class="product-img">
+      <img src="https://orders.popskitchen.in/storage/2024/09/image-299.png" class="product-img" alt="Egg Roll">
       <div class="product-info">
-        <strong>Egg Roll – ₹80</strong>
-        <div class="quantity">
-          <button onclick="changeQty('egg_roll', -1)">−</button>
+        <div>Egg Roll – ₹80</div>
+        <div class="controls">
+          <button onclick="changeQty('egg_roll', -1)">-</button>
           <input type="number" id="egg_roll" min="0" value="0" data-name="Egg Roll" data-price="80">
           <button onclick="changeQty('egg_roll', 1)">+</button>
         </div>
       </div>
     </div>
+
     <div class="product">
-      <img src="https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1" alt="Chicken Pakora" class="product-img">
+      <img src="https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1" class="product-img" alt="Chicken Pakora">
       <div class="product-info">
-        <strong>Chicken Pakora – ₹60</strong>
-        <div class="quantity">
-          <button onclick="changeQty('chicken_pakora', -1)">−</button>
+        <div>Chicken Pakora – ₹60</div>
+        <div class="controls">
+          <button onclick="changeQty('chicken_pakora', -1)">-</button>
           <input type="number" id="chicken_pakora" min="0" value="0" data-name="Chicken Pakora" data-price="60">
           <button onclick="changeQty('chicken_pakora', 1)">+</button>
         </div>
       </div>
     </div>
+
     <div class="product">
-      <img src="https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY" alt="Chicken Momo" class="product-img">
+      <img src="https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY" class="product-img" alt="Chicken Momo">
       <div class="product-info">
-        <strong>Chicken Momo – ₹50</strong>
-        <div class="quantity">
-          <button onclick="changeQty('chicken_momo', -1)">−</button>
+        <div>Chicken Momo – ₹50</div>
+        <div class="controls">
+          <button onclick="changeQty('chicken_momo', -1)">-</button>
           <input type="number" id="chicken_momo" min="0" value="0" data-name="Chicken Momo" data-price="50">
           <button onclick="changeQty('chicken_momo', 1)">+</button>
         </div>
       </div>
     </div>
+
     <div class="product">
-      <img src="https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg" alt="Chowmein" class="product-img">
+      <img src="https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg" class="product-img" alt="Chowmein">
       <div class="product-info">
-        <strong>Chowmein – ₹40</strong>
-        <div class="quantity">
-          <button onclick="changeQty('chowmein', -1)">−</button>
+        <div>Chowmein – ₹40</div>
+        <div class="controls">
+          <button onclick="changeQty('chowmein', -1)">-</button>
           <input type="number" id="chowmein" min="0" value="0" data-name="Chowmein" data-price="40">
           <button onclick="changeQty('chowmein', 1)">+</button>
         </div>
@@ -153,17 +157,26 @@
     </div>
   </div>
 
-  <div class="total">Total: ₹<span id="totalAmount">0</span></div>
+  <div class="total">
+    Total: ₹<span id="totalAmount">0</span><br>
+    <label for="deliveryTime">Delivery Time:</label>
+    <select id="deliveryTime">
+      <option value="ASAP">As soon as possible</option>
+      <option>10:00 AM – 11:00 AM</option>
+      <option>12:00 PM – 1:00 PM</option>
+      <option>6:00 PM – 7:00 PM</option>
+    </select>
+  </div>
 
   <div class="actions">
     <a id="whatsappLink" class="whatsapp" href="#" target="_blank">Place Order via WhatsApp</a>
-    <a id="formLink" class="whatsapp" href="#" target="_blank">Fill Google Form</a>
+    <button onclick="downloadPDF()">Download Bill (PDF)</button>
   </div>
 
   <script>
-    function changeQty(id, delta) {
+    function changeQty(id, diff) {
       const input = document.getElementById(id);
-      input.value = Math.max(0, parseInt(input.value || '0') + delta);
+      input.value = Math.max(0, parseInt(input.value || 0) + diff);
       calculateTotal();
     }
 
@@ -183,23 +196,40 @@
       });
 
       document.getElementById('totalAmount').innerText = total;
-
+      const time = document.getElementById('deliveryTime').value;
       const orderText = encodeURIComponent(
-        `Hello! I'd like to order:\n${orderDetails.join('\n')}\nTotal: ₹${total}\n\nThank you! We’ll confirm shortly via WhatsApp.`
+        `Hello! I'd like to order:\n${orderDetails.join('\n')}\nTotal: ₹${total}\nPreferred Delivery: ${time}\n\nThank you!`
       );
+
       const whatsappURL = `https://wa.me/917431059519?text=${orderText}`;
       document.getElementById('whatsappLink').href = whatsappURL;
+    }
 
-      const formURL = `https://docs.google.com/forms/d/1miylKI3R8qdeUOD5Xz3CxALHDNeT-e1NL5_RNtgR6ts/edit`;
-      document.getElementById('formLink').href = formURL;
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let text = 'Your Order Summary\n\n';
+      document.querySelectorAll('input[type="number"]').forEach(input => {
+        const qty = parseInt(input.value);
+        const name = input.dataset.name;
+        const price = parseFloat(input.dataset.price);
+        if (qty > 0) text += `${qty} x ${name} = ₹${qty * price}\n`;
+      });
+      const total = document.getElementById('totalAmount').innerText;
+      text += `\nTotal: ₹${total}`;
+      text += `\nPreferred Delivery: ${document.getElementById('deliveryTime').value}`;
+      doc.text(text, 10, 10);
+      doc.save("Order_Receipt.pdf");
     }
 
     document.querySelectorAll('input[type="number"]').forEach(input => {
       input.addEventListener('input', calculateTotal);
     });
 
-    document.getElementById('toggleDark').addEventListener('change', (e) => {
-      document.body.classList.toggle('dark-mode', e.target.checked);
+    document.getElementById('deliveryTime').addEventListener('change', calculateTotal);
+
+    document.getElementById('darkMode').addEventListener('change', function() {
+      document.body.classList.toggle('dark', this.checked);
     });
   </script>
 </body>
