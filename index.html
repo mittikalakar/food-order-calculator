@@ -6,6 +6,40 @@
   <title>Simple Order Calculator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
+    .quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f1f1f1;
+  border-radius: 30px;
+  padding: 5px 10px;
+  max-width: 150px;
+}
+
+.quantity button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 20px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.quantity button:hover {
+  background-color: #0056b3;
+}
+
+.quantity input {
+  text-align: center;
+  width: 50px;
+  font-size: 16px;
+  border: none;
+  background: transparent;
+}
+
     body {
       font-family: Arial, sans-serif;
       max-width: 900px;
@@ -102,7 +136,11 @@
         <div>Biryani – ₹150</div>
         <div class="controls">
           <button onclick="changeQty('biryani', -1)">-</button>
-          <input type="number" id="biryani" min="0" value="0" data-name="Biryani" data-price="150">
+          <div class="quantity">
+  <button class="decrease">−</button>
+  <input type="number" id="biryani" min="0" value="0" data-name="Biryani" data-price="150">
+  <button class="increase">+</button>
+</div>
           <button onclick="changeQty('biryani', 1)">+</button>
         </div>
       </div>
@@ -114,7 +152,11 @@
         <div>Egg Roll – ₹80</div>
         <div class="controls">
           <button onclick="changeQty('egg_roll', -1)">-</button>
-          <input type="number" id="egg_roll" min="0" value="0" data-name="Egg Roll" data-price="80">
+          <div class="quantity">
+  <button class="decrease">−</button>
+  <input type="number" id="egg_roll" min="0" value="0" data-name="Egg roll" data-price="150">
+  <button class="increase">+</button>
+</div>
           <button onclick="changeQty('egg_roll', 1)">+</button>
         </div>
       </div>
@@ -126,7 +168,11 @@
         <div>Chicken Pakora – ₹60</div>
         <div class="controls">
           <button onclick="changeQty('chicken_pakora', -1)">-</button>
-          <input type="number" id="chicken_pakora" min="0" value="0" data-name="Chicken Pakora" data-price="60">
+          <div class="quantity">
+  <button class="decrease">−</button>
+  <input type="number" id="chicken_pakora" min="0" value="0" data-name="chicken pakora" data-price="150">
+  <button class="increase">+</button>
+</div>
           <button onclick="changeQty('chicken_pakora', 1)">+</button>
         </div>
       </div>
@@ -138,7 +184,11 @@
         <div>Chicken Momo – ₹50</div>
         <div class="controls">
           <button onclick="changeQty('chicken_momo', -1)">-</button>
-          <input type="number" id="chicken_momo" min="0" value="0" data-name="Chicken Momo" data-price="50">
+          <div class="quantity">
+  <button class="decrease">−</button>
+  <input type="number" id="chicken_momo" min="0" value="0" data-name="chicken momo" data-price="150">
+  <button class="increase">+</button>
+</div>
           <button onclick="changeQty('chicken_momo', 1)">+</button>
         </div>
       </div>
@@ -150,7 +200,11 @@
         <div>Chowmein – ₹40</div>
         <div class="controls">
           <button onclick="changeQty('chowmein', -1)">-</button>
-          <input type="number" id="chowmein" min="0" value="0" data-name="Chowmein" data-price="40">
+          <div class="quantity">
+  <button class="decrease">−</button>
+  <input type="number" id="chowmein" min="0" value="0" data-name="chowmein" data-price="150">
+  <button class="increase">+</button>
+</div>
           <button onclick="changeQty('chowmein', 1)">+</button>
         </div>
       </div>
