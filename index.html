@@ -77,7 +77,6 @@
   <div class="total">Total: ₹<span id="totalAmount">0</span></div>
 
   <div class="actions">
-    <button onclick="calculateTotal()">Calculate</button>
     <a id="whatsappLink" class="whatsapp" href="#" target="_blank">Place Order via WhatsApp</a>
     <a id="formLink" class="whatsapp" href="#" target="_blank">Fill Google Form</a>
   </div>
@@ -110,6 +109,11 @@
       const formURL = `https://forms.gle/your-google-form-link`; // Replace with actual form link
       document.getElementById('formLink').href = formURL;
     }
+    // Automatically calculate when customer types quantity
+document.querySelectorAll('input[type="number"]').forEach(input => {
+  input.addEventListener('input', calculateTotal);
+});
+
   </script>
 </body>
 </html>
