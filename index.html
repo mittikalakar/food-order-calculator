@@ -8,29 +8,6 @@
       <h1 class="title">Hello World! </h1>
       <p id="currentTime"></p>
       <script src="script.js">
-// Handle WhatsApp button click
-document.getElementById('whatsappBtn').addEventListener('click', function () {
-  const phoneNumber = "917431059519";
-  const deliveryTime = document.getElementById("deliveryTime").value;
-
-  const name = localStorage.getItem("customerName") || "N/A";
-  const phone = localStorage.getItem("customerPhone") || "N/A";
-  const address = localStorage.getItem("customerAddress") || "N/A";
-
-  const inputs = document.querySelectorAll('input[type="number"]');
-  let orderDetails = [];
-  let total = 0;
-
-  inputs.forEach(input => {
-    const qty = parseInt(input.value) || 0;
-    const productName = input.dataset.name;
-    const price = parseFloat(input.dataset.price);
-    if (qty > 0) {
-      const itemTotal = qty * price;
-      orderDetails.push(`${qty} x ${productName} = ₹${itemTotal}`);
-      total += itemTotal;
-    }
-  });
 
   if (orderDetails.length === 0) {
     alert("Please select at least one item.");
