@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Hello, World!</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-      <h1 class="title">Hello World! </h1>
-      <p id="currentTime"></p>
-      <script src="script.js">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Order Calculator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
 
   if (orderDetails.length === 0) {
     alert("Please select at least one item.");
@@ -28,18 +25,25 @@ Address: ${address}
 
 Thank you!`;
 
-  const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  window.open(whatsappURL, "_blank");
+  // Save to Google Sheets
+  fetch("https://script.google.com/macros/s/AKfycbx7PkoIgZmalDmXuCvcb8bDUvsko3T2WGsuoi25rANoXuDNXcGYBp3CTmXAZ6RjD49R/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      phone,
+      address,
+      deliveryTime,
+      order: orderDetails,
+      total
+    })
+  }).then(() => {
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+  });
 });
 
 </script>
-  </body><!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Simple Order Calculator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg-color: #fff;
@@ -295,7 +299,7 @@ Thank you!`;
   </div>
 
   <div class="actions">
-<button id="whatsappBtn" class="whatsapp">Place Order via WhatsApp</button>
+    <a id="whatsappLink" class="whatsapp" href="#" target="_blank" rel="noopener noreferrer">Place Order via WhatsApp</a>
     <button onclick="downloadPDF()">Download Bill (PDF)</button>
     <button id="editCustomerBtn" title="Edit your saved details">Edit Customer Info</button>
   </div>
@@ -451,53 +455,6 @@ Thank you!`;
         calculateTotal();
       }
     };
-    // Handle WhatsApp button click
-document.getElementById('whatsappBtn').addEventListener('click', function () {
-  const phoneNumber = "917431059519"; // Your WhatsApp number with country code
-  const deliveryTime = document.getElementById("deliveryTime").value;
-
-  const name = localStorage.getItem("customerName") || "N/A";
-  const phone = localStorage.getItem("customerPhone") || "N/A";
-  const address = localStorage.getItem("customerAddress") || "N/A";
-
-  const inputs = document.querySelectorAll('input[type="number"]');
-  let orderDetails = [];
-  let total = 0;
-
-  inputs.forEach(input => {
-    const qty = parseInt(input.value) || 0;
-    const productName = input.dataset.name;
-    const price = parseFloat(input.dataset.price);
-    if (qty > 0) {
-      const itemTotal = qty * price;
-      orderDetails.push(`${qty} x ${productName} = ₹${itemTotal}`);
-      total += itemTotal;
-    }
-  });
-
-  if (orderDetails.length === 0) {
-    alert("Please select at least one item.");
-    return;
-  }
-
-  const message = `
-Hello! I'd like to place an order:
-${orderDetails.join('\n')}
---------------------------
-Total: ₹${total}
-Delivery Time: ${deliveryTime}
-
-Customer Name: ${name}
-Phone: ${phone}
-Address: ${address}
-
-Thank you!`;
-
-  const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  window.open(whatsappURL, "_blank");
-});
-
   </script>
 </body>
-</html>
 </html>
