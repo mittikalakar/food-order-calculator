@@ -4,28 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple Order Calculator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
-
-  if (orderDetails.length === 0) {
-    alert("Please select at least one item.");
-    return;
-  }
-
-  const message = `
-Hello! I'd like to place an order:
-${orderDetails.join('
-')}
---------------------------
-Total: ₹${total}
-Delivery Time: ${deliveryTime}
-
-Customer Name: ${name}
-Phone: ${phone}
-Address: ${address}
-
-Thank you!`;
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --bg-color: #fff;
@@ -431,7 +410,6 @@ async function sendOrderToGoogleSheet(orderData) {
       let y = 78;
       let total = 0;
 let orderDetails = [];
-let total = 0;
 
 document.querySelectorAll('input[type="number"]').forEach(input => {
   const qty = parseInt(input.value);
