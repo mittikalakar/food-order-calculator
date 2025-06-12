@@ -403,7 +403,20 @@ async function sendOrderToGoogleSheet(orderData) {
       doc.setFontSize(10);
       let y = 78;
       let total = 0;
+let orderDetails = [];
+let total = 0;
 
+document.querySelectorAll('input[type="number"]').forEach(input => {
+  const qty = parseInt(input.value);
+  const name = input.dataset.name;
+  const price = parseFloat(input.dataset.price);
+  if (qty > 0) {
+    orderDetails.push(`${qty} x ${name}`);
+    total += qty * price;
+  }
+});
+
+      
 const orderData = {
   name: localStorage.getItem("customerName") || "N/A",
   phone: localStorage.getItem("customerPhone") || "N/A",
