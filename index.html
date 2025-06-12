@@ -4,7 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple Order Calculator</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+
+  if (orderDetails.length === 0) {
+    alert("Please select at least one item.");
+    return;
+  }
+
+  const message = `
+Hello! I'd like to place an order:
+${orderDetails.join('
+')}
+--------------------------
+Total: ₹${total}
+Delivery Time: ${deliveryTime}
+
+Customer Name: ${name}
+Phone: ${phone}
+Address: ${address}
+
+Thank you!`;
+
+</script>
   <style>
     :root {
       --bg-color: #fff;
@@ -164,31 +185,6 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    #customerModal {
-  display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
-#customerModal.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
-}
-
   </style>
 </head>
 <body>
@@ -291,14 +287,13 @@
   </div>
 
   <!-- Customer Info Modal -->
-  <div id="customerModal" class="hidden">
+  <div id="customerModal">
     <div class="modal-content">
       <h3>Please enter your details</h3>
       <input id="modalName" placeholder="Your Name" type="text" autocomplete="name" />
       <input id="modalPhone" placeholder="Phone Number" type="tel" autocomplete="tel" />
       <input id="modalAddress" placeholder="Address (optional)" type="text" autocomplete="street-address" />
-      <button id="saveBtn" onclick="saveCustomerData()">Save</button>
-
+      <button onclick="saveCustomerData()">Save</button>
     </div>
   </div>
 
@@ -360,8 +355,7 @@
       localStorage.setItem('customerPhone', phone);
       localStorage.setItem('customerAddress', address);
 
-      document.getElementById('customerModal').classList.add('hidden');
-
+      document.getElementById('customerModal').style.display = 'none';
       alert('Thank you! Your details are saved.');
       calculateTotal();
     }
@@ -409,19 +403,7 @@ async function sendOrderToGoogleSheet(orderData) {
       doc.setFontSize(10);
       let y = 78;
       let total = 0;
-let orderDetails = [];
 
-document.querySelectorAll('input[type="number"]').forEach(input => {
-  const qty = parseInt(input.value);
-  const name = input.dataset.name;
-  const price = parseFloat(input.dataset.price);
-  if (qty > 0) {
-    orderDetails.push(`${qty} x ${name}`);
-    total += qty * price;
-  }
-});
-
-      
 const orderData = {
   name: localStorage.getItem("customerName") || "N/A",
   phone: localStorage.getItem("customerPhone") || "N/A",
