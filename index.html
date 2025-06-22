@@ -14,15 +14,94 @@
 
   <style>
     :root {
-      --bg-color: #ffffff;
-      --text-color: #000000;
-      --card-bg: #f9f9f9;
-    }
-    body.dark {
-      --bg-color: #121212;
-      --text-color: #ffffff;
-      --card-bg: #1e1e1e;
-    }
+  --bg-color: #fff8f0;
+  --text-color: #5a2e0c;
+  --card-bg: #ffe6cc;
+}
+body.dark {
+  --bg-color: #3e1f00;
+  --text-color: #ffd6a5;
+  --card-bg: #7a3e00;
+}
+.order-summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.summary-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 1.1em;
+  color: var(--text-color);
+  width: 200px; /* optional fixed width */
+  margin: 0 auto;
+}
+
+.summary-info .delivery-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.summary-info .delivery-time label {
+  margin: 0;
+  font-weight: 500;
+}
+
+.summary-info select {
+  padding: 4px 8px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Optional: make the order button stand out and vertically centered */
+.actions a.whatsapp {
+  background: linear-gradient(135deg, #25D366, #1ebe57);
+  color: white;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1em;
+  padding: 12px 28px;
+  border-radius: 30px;
+  box-shadow: 0 6px 15px rgba(37, 211, 102, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.actions a.whatsapp i {
+  font-size: 22px;
+  color: white;
+}
+
+.actions a.whatsapp:hover,
+.actions a.whatsapp:focus {
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.8);
+  transform: scale(1.05);
+  outline: none;
+}
 
     /* Global typography */
     body {
@@ -61,10 +140,10 @@
       font-weight: 500;
     }
     .tab.active, .tab:hover {
-      background-color: #007bff;
+      background-color: #e85d04;
       color: #fff;
-      border-color: #007bff;
-    }
+      border-color: #e85d04;
+}
 
     /* Product grid */
     .grid {
@@ -73,19 +152,34 @@
       gap: 20px;
     }
     .product {
-      background: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* stronger shadow for depth */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.product:hover {
+  transform: translateY(-8px) scale(1.03); /* subtle lift and scale */
+  box-shadow: 0 12px 24px rgba(232, 93, 4, 0.3); /* warm orange shadow on hover */
+}
+
+/* Smooth transition on product image for zoom effect */
+.product:hover .product-img {
+  transform: scale(1.05);
+}
     .product-img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
+  width: 100%;
+  height: auto;      /* allow height to adjust */
+  object-fit: contain; /* keep full image visible */
+  max-height: 160px;  /* optional max height to keep layout */
+  background-color: #f0f0f0; /* optional, for better look on transparent images */
+  transition: transform 0.3s ease;
+}
     .product-info {
       text-align: center;
       padding: 10px;
@@ -103,7 +197,7 @@
       margin-top: 10px;
     }
     .quantity button {
-      background-color: #007bff;
+      background-color: #e85d04;
       color: #fff;
       border: none;
       border-radius: 50%;
@@ -113,7 +207,7 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    .quantity button:hover { background-color: #0056b3; }
+    .quantity button:hover { background-color: #b74200; }
     .quantity input {
       border: none;
       background: transparent;
@@ -127,6 +221,33 @@
       text-align: center;
       margin-top: 25px;
     }
+    .total {
+  font-size: 1.25em; /* slightly smaller */
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #d25632, #a43b0e); /* darker warm gradient */
+  padding: 8px 24px; /* reduced padding */
+  border-radius: 30px;
+  box-shadow:
+    0 4px 12px rgba(162, 59, 14, 0.7),
+    0 0 18px rgba(162, 59, 14, 0.5);
+  width: fit-content;
+  margin: 0 auto 14px;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.03em;
+  user-select: none;
+  transition: box-shadow 0.4s ease, transform 0.3s ease;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+}
+
+.total:hover {
+  box-shadow:
+    0 6px 20px rgba(162, 59, 14, 0.9),
+    0 0 28px rgba(162, 59, 14, 0.7);
+  transform: scale(1.05);
+}
+
     .actions a, .actions button {
       padding: 10px 20px;
       border: none;
@@ -146,7 +267,7 @@
     font-weight: 700; /* Optional: make font bold */
     text-decoration: none;
   }
-    }
+    
     a.whatsapp i { font-size: 20px; color: white;}
 
     /* Dark‑mode toggle */
@@ -210,6 +331,10 @@ body.dark .tab:hover {
     <button class="tab" onclick="showCategory('snacks', this)">Snacks</button>
     <button class="tab" onclick="showCategory('dairy', this)">Dairy</button>
     <button class="tab" onclick="showCategory('cold_drinks', this)">Cold Drinks</button>
+    <button class="tab" onclick="showCategory('Puja_Items', this)">Puja Items</button>
+    <button class="tab" onclick="showCategory('Sweets_&_Desserts', this)">Sweets & Desserts </button>
+    <button class="tab" onclick="showCategory('Dairy', this)">Dairy</button>
+    <button class="tab" onclick="showCategory('Grocery', this)">Grocery</button>
   </div>
 
   <!-- Featured products (Home) -->
@@ -293,8 +418,44 @@ body.dark .tab:hover {
 
   <!-- Category sections -->
   <div id="categoryContent">
-    <!-- Snacks -->
+    <!-- Snacks1 -->
     <div class="grid category-section" id="snacks" style="display:none;">
+      <div class="product">
+  <img src="https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75" class="product-img" alt="Chips" />
+  <div class="product-info">
+    <div>Lay's India's Magic Masala Potato Chips – ₹30</div>
+    <div class="quantity">
+      <button onclick="changeQty('chips', -1)">−</button>
+      <input type="number" id="chips" min="0" value="0" data-name="Chips" data-price="30" />
+      <button onclick="changeQty('chips', 1)">+</button>
+    </div>
+  </div>
+</div>
+<!-- Bingo -->
+<div class="product">
+  <img src="https://m.media-amazon.com/images/I/71e9pUGU4tL.jpg" class="product-img" alt="Bingo" />
+  <div class="product-info">
+    <div>Bingo! Tedhe Medhe Masala Tadka - Sticks with Indian Masala Flavour – ₹30</div>
+    <div class="quantity">
+      <button onclick="changeQty('bingo', -1)">−</button>
+      <input type="number" id="bingo" min="0" value="0" data-name="Bingo" data-price="30" />
+      <button onclick="changeQty('bingo', 1)">+</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lay's American Style Cream & Onion Potato Chips -->
+<div class="product">
+  <img src="https://cdn.grofers.com/da/cms-assets/cms/product/16a3f07a-9294-46aa-bff8-2e111c8911a5.jpg?ts=1741236557" class="product-img" alt="Lay's American Style Cream & Onion Potato Chips" />
+  <div class="product-info">
+    <div>Lay's American Style Cream & Onion Potato Chips – ₹30</div>
+    <div class="quantity">
+      <button onclick="changeQty('lays_chips', -1)">−</button>
+      <input type="number" id="lays_chips" min="0" value="0" data-name="Lay's American Style Cream & Onion Potato Chips" data-price="30" />
+      <button onclick="changeQty('lays_chips', 1)">+</button>
+    </div>
+  </div>
+</div>
       <!-- … (existing snack products) … -->
     </div>
 
@@ -310,25 +471,31 @@ body.dark .tab:hover {
   </div>
 
   <!-- Total & delivery‑time selector -->
-  <div class="total">
-    Total: ₹<span id="totalAmount">0</span><br />
+  <!-- Total & delivery‑time selector and actions -->
+<div class="summary-info">
+  <div class="total" style="text-align:center; margin-bottom: 8px;">
+    Total: ₹<span id="totalAmount">0</span>
+  </div>
+  <div class="delivery-time" style="margin: 0 auto;">
     <label for="deliveryTime">Delivery Time:</label>
     <select id="deliveryTime">
       <option value="ASAP">As soon as possible</option>
-      <option>10:00 AM – 11:00 AM</option>
-      <option>12:00 PM – 1:00 PM</option>
-      <option>6:00 PM – 7:00 PM</option>
+      <option>10:00 AM – 11:00 AM</option>
+      <option>12:00 PM – 1:00 PM</option>
+      <option>6:00 PM – 7:00 PM</option>
     </select>
   </div>
+</div>
 
-  <!-- Actions -->
-  <div class="actions">
-<a id="whatsappLink" class="whatsapp" href="#" target="_blank" rel="noopener noreferrer">
-  
-    <i class="fab fa-whatsapp"></i>Order  
-  </a>    <button onclick="downloadPDF()">Download Bill (PDF)</button>
-    <button id="editCustomerBtn" title="Edit your saved details">Edit Customer Info</button>
-  </div>
+  <div class="actions" style="display: flex; align-items: center; gap: 12px; justify-content: center;">
+  <button onclick="downloadPDF()">Download Bill (PDF)</button>
+
+  <a id="whatsappLink" class="whatsapp" href="#" target="_blank" rel="noopener noreferrer" style="margin: 0 15px;">
+    <i class="fab fa-whatsapp"></i> Order
+  </a>
+
+  <button id="editCustomerBtn" title="Edit your saved details">Edit Customer Info</button>
+</div>
 
   <!-- Customer‑info Modal -->
   <div id="customerModal">
