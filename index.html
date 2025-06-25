@@ -324,7 +324,23 @@ body.dark .tab:hover {
   </div>
 
   <h2>Calculate Your Order</h2>
-
+  <div style="text-align:center; margin-bottom: 20px;">
+  <input
+    type="search"
+    id="productSearch"
+    placeholder="Search products..."
+    aria-label="Search products"
+    style="
+      width: 280px;
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 30px;
+      border: 1.5px solid #e85d04;
+      outline-offset: 2px;
+      transition: border-color 0.3s ease;
+    "
+  />
+</div>
   <!-- Navigation tabs -->
   <div class="tabs" id="categoryTabs">
     <button class="tab active" id="homeTab" onclick="showHome()">Home</button>
@@ -340,13 +356,13 @@ body.dark .tab:hover {
   <div class="grid" id="featuredProducts">
     <!-- Product Template -->
     <div class="product">
-      <img src="https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg" class="product-img" alt="Biryani" />
+      <img src="https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg" class="product-img" alt="Biriyani" />
       <div class="product-info">
-        <div>Biryani – ₹150</div>
+        <div>Biriyani – ₹150</div>
         <div class="quantity">
-          <button onclick="changeQty('biryani', -1)">−</button>
-          <input type="number" id="biryani" min="0" value="0" data-name="Biryani" data-price="150" />
-          <button onclick="changeQty('biryani', 1)">+</button>
+          <button onclick="changeQty('biriyani', -1)">−</button>
+          <input type="number" id="Biriyani" min="0" value="0" data-name="Biriyani" data-price="150" />
+          <button onclick="changeQty('biriyani', 1)">+</button>
         </div>
       </div>
     </div>
@@ -709,6 +725,42 @@ body.dark .tab:hover {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.getElementById('homeTab').classList.add('active');
     }
+   document.getElementById('productSearch').addEventListener('input', function () {
+  const query = this.value.toLowerCase().trim();
+  const featured = document.getElementById('featuredProducts');
+  const sections = document.querySelectorAll('.category-section');
+  const tabs = document.querySelectorAll('.tab');
+
+  if (query === '') {
+    // Empty search: show only active tab's section
+    const activeTab = document.querySelector('.tab.active');
+    if (activeTab.id === 'homeTab') {
+      featured.style.display = 'grid';
+      sections.forEach(sec => sec.style.display = 'none');
+    } else {
+      featured.style.display = 'none';
+      sections.forEach(sec => {
+        sec.style.display = (sec.id === activeTab.textContent.toLowerCase().replace(/[\s&_]/g, '')) ? 'grid' : 'none';
+      });
+    }
+
+    // Show all products in active section
+    const visibleProducts = document.querySelectorAll('.product');
+    visibleProducts.forEach(p => p.style.display = 'flex');
+
+  } else {
+    // Search active: show all sections
+    featured.style.display = 'grid';
+    sections.forEach(sec => (sec.style.display = 'grid'));
+
+    // Filter products in all visible sections
+    const products = document.querySelectorAll('#featuredProducts .product, #categoryContent .product');
+    products.forEach(product => {
+      const name = product.querySelector('.product-info > div:first-child').textContent.toLowerCase();
+      product.style.display = name.includes(query) ? 'flex' : 'none';
+    });
+  }
+});
   </script>
 </body>
 </html>
