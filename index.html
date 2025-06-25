@@ -19,9 +19,118 @@
   --card-bg: #ffe6cc;
 }
 body.dark {
-  --bg-color: #3e1f00;
-  --text-color: #ffd6a5;
-  --card-bg: #7a3e00;
+  --bg-color: #121212;          /* Darker background */
+  --text-color: #e0e0e0;        /* Light gray text for readability */
+  --card-bg: #1e1e1e;           /* Dark card background */
+  --border-color: #333;         /* Border for cards and inputs */
+  --accent-color: #ff8c00;      /* Warm accent/orange color */
+  --shadow-color: rgba(255, 140, 0, 0.3); /* Accent shadow */
+}
+
+/* Update body background & text */
+body.dark {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Card styling in dark mode */
+body.dark .product {
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+  border: 1px solid var(--border-color);
+}
+
+/* Tab styling */
+body.dark .tab {
+  background-color: #2c2c2c;
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+body.dark .tab.active,
+body.dark .tab:hover {
+  background-color: var(--accent-color);
+  color: #fff;
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+/* Quantity buttons */
+body.dark .quantity {
+  background-color: #2a2a2a;
+}
+
+body.dark .quantity button {
+  background-color: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+body.dark .quantity button:hover {
+  background-color: #cc7000;
+}
+
+/* Inputs inside quantity */
+body.dark .quantity input {
+  color: var(--text-color);
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+/* Total box */
+body.dark .total {
+  background: linear-gradient(135deg, #ff8c00, #cc7000);
+  color: #fff;
+  border: 1.5px solid rgba(255, 140, 0, 0.6);
+  box-shadow:
+    0 4px 12px rgba(204, 112, 0, 0.7),
+    0 0 18px rgba(255, 140, 0, 0.8);
+}
+
+/* WhatsApp button */
+body.dark a.whatsapp {
+  background: linear-gradient(135deg, #1ed760, #19a44e);
+  color: white;
+  box-shadow: 0 6px 15px rgba(30, 215, 96, 0.7);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+body.dark a.whatsapp:hover,
+body.dark a.whatsapp:focus {
+  box-shadow: 0 8px 22px rgba(30, 215, 96, 0.9);
+  transform: scale(1.05);
+}
+
+/* Inputs (search box) */
+body.dark input[type="search"] {
+  background-color: #2a2a2a;
+  color: var(--text-color);
+  border: 1.5px solid var(--accent-color);
+  caret-color: var(--accent-color);
+  transition: border-color 0.3s ease;
+}
+
+body.dark input[type="search"]:focus {
+  border-color: #cc7000;
+  outline: none;
+  box-shadow: 0 0 8px var(--shadow-color);
+}
+
+/* Modal */
+body.dark #customerModal .modal-content {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: 0 0 15px rgba(255, 140, 0, 0.7);
+  border: 1px solid var(--border-color);
+}
+
+/* Select dropdown */
+body.dark select {
+  background-color: #2a2a2a;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
 }
 .order-summary {
   display: flex;
