@@ -646,13 +646,13 @@ body.dark .tab:hover {
 </div>
   <!-- Navigation tabs -->
   <div class="tabs" id="categoryTabs">
-    <button class="tab active" id="homeTab" onclick="showHome()">Home</button>
-    <button class="tab" onclick="showCategory('snacks', this)">Snacks</button>
-    <button class="tab" onclick="showCategory('dairy', this)">Dairy</button>
-    <button class="tab" onclick="showCategory('cold_drinks', this)">Cold Drinks</button>
-    <button class="tab" onclick="showCategory('puja_items', this)">Puja Items</button>
-    <button class="tab" onclick="showCategory('sweets_desserts', this)">Sweets & Desserts </button>
-    <button class="tab" onclick="showCategory('grocery', this)">Grocery</button>
+    <button class="tab active" id="homeTab" data-category="home" onclick="showHome()">Home</button>
+<button class="tab" data-category="snacks" onclick="showCategory('snacks', this)">Snacks</button>
+<button class="tab" data-category="dairy" onclick="showCategory('dairy', this)">Dairy</button>
+<button class="tab" data-category="cold_drinks" onclick="showCategory('cold_drinks', this)">Cold Drinks</button>
+<button class="tab" data-category="puja_items" onclick="showCategory('puja_items', this)">Puja Items</button>
+<button class="tab" data-category="sweets_desserts" onclick="showCategory('sweets_desserts', this)">Sweets & Desserts</button>
+<button class="tab" data-category="grocery" onclick="showCategory('grocery', this)">Grocery</button>
   </div>
 
   <!-- Featured products (Home) -->
@@ -954,44 +954,116 @@ body.dark .tab:hover {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    doc.setFontSize(12);
-    doc.text('Invoice / Bill', 150, 15, { align: 'right' });
+    // Define margins and initial Y position
+    const margin = 15;
+    let y = margin;
 
+    // Title
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Invoice / Bill', 105, y, { align: 'center' });
+
+    y += 10;
+
+    // Date
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const dateStr = new Date().toLocaleString();
+    doc.text(`Date: ${dateStr}`, margin, y);
+
+    y += 10;
+
+    // Customer Info
     const customerName = localStorage.getItem('customerName') || 'N/A';
     const customerPhone = localStorage.getItem('customerPhone') || 'N/A';
     const customerAddress = localStorage.getItem('customerAddress') || 'N/A';
 
-    doc.setFontSize(10);
-    doc.text(`Customer Name: ${customerName}`, 10, 40);
-    doc.text(`Phone: ${customerPhone}`, 10, 47);
-    doc.text(`Address: ${customerAddress}`, 10, 54);
-
     doc.setFontSize(12);
-    doc.text('Order Details:', 10, 70);
-    doc.setFontSize(10);
-    let y = 78;
-    let total = 0;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Customer Details:', margin, y);
+    y += 7;
 
-    document.querySelectorAll('input[type="number"]').forEach(input => {
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Name: ${customerName}`, margin, y);
+    y += 6;
+    doc.text(`Phone: ${customerPhone}`, margin, y);
+    y += 6;
+    doc.text(`Address: ${customerAddress}`, margin, y);
+    y += 10;
+
+    // Draw line
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, 195 - margin, y);
+    y += 8;
+
+    // Table headers
+    doc.setFont('helvetica', 'bold');
+    doc.text('Product', margin, y);
+    doc.text('Qty', 120, y, { align: 'right' });
+    doc.text('Price', 140, y, { align: 'right' });
+    doc.text('Total', 185, y, { align: 'right' });
+    y += 5;
+
+    // Draw another line
+    doc.setLineWidth(0.3);
+    doc.line(margin, y, 195 - margin, y);
+    y += 6;
+
+    // Order items
+    doc.setFont('helvetica', 'normal');
+    let total = 0;
+    const inputs = document.querySelectorAll('input[type="number"]');
+    inputs.forEach(input => {
       const qty = parseInt(input.value);
-      const name = input.dataset.name;
-      const price = parseFloat(input.dataset.price);
       if (qty > 0) {
-        doc.text(`${qty} x ${name} = ₹${qty * price}`, 10, y);
-        y += 7;
-        total += qty * price;
+        const name = input.dataset.name;
+        const price = parseFloat(input.dataset.price);
+        const lineTotal = qty * price;
+        total += lineTotal;
+
+        // Wrap product name if too long
+        const splitName = doc.splitTextToSize(name, 90);
+        doc.text(splitName, margin, y);
+        // Qty, Price, Total aligned right
+        doc.text(String(qty), 120, y, { align: 'right' });
+        doc.text(`₹${price.toFixed(2)}`, 140, y, { align: 'right' });
+        doc.text(`₹${lineTotal.toFixed(2)}`, 185, y, { align: 'right' });
+
+        y += (splitName.length > 1) ? (splitName.length * 7) : 7;
+
+        // Add page break if near bottom
+        if (y > 270) {
+          doc.addPage();
+          y = margin;
+        }
       }
     });
 
-    doc.text('--------------------------', 10, y);
-    y += 7;
-    doc.setFontSize(11);
-    doc.text(`Total: ₹${total}`, 10, y);
-    y += 7;
+    y += 5;
+    // Draw line before totals
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, 195 - margin, y);
+    y += 8;
 
+    // Subtotal and total
+    doc.setFont('helvetica', 'bold');
+    doc.text('Total:', 140, y, { align: 'right' });
+    doc.text(`₹${total.toFixed(2)}`, 185, y, { align: 'right' });
+    y += 15;
+
+    // Delivery time
     const deliveryTime = document.getElementById('deliveryTime').value;
-    doc.text(`Preferred Delivery: ${deliveryTime}`, 10, y + 5);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Preferred Delivery Time: ${deliveryTime}`, margin, y);
+    y += 15;
 
+    // Footer/Thank you note
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text('Thank you for your order!', 105, y, { align: 'center' });
+
+    // Save the PDF
     doc.save('Order_Receipt.pdf');
   } catch (error) {
     console.error('Error generating PDF:', error);
@@ -1024,8 +1096,6 @@ body.dark .tab:hover {
     /* ==========================================================================
        Home / Category navigation logic
     ========================================================================== */
-    const featured = document.getElementById('featuredProducts');
-    const sections = document.querySelectorAll('.category-section');
 
     function showCategory(sectionId, btn) {
       featured.style.display = 'none';
@@ -1043,47 +1113,118 @@ body.dark .tab:hover {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.getElementById('homeTab').classList.add('active');
     }
-   document.getElementById('productSearch').addEventListener('input', function () {
-  const query = this.value.toLowerCase().trim();
-  const featured = document.getElementById('featuredProducts');
-  const sections = document.querySelectorAll('.category-section');
-  const tabs = document.querySelectorAll('.tab');
+   const searchInput = document.getElementById('productSearch');
+const featured = document.getElementById('featuredProducts');
+const sections = document.querySelectorAll('.category-section');
+const noResultsMsgId = 'noResultsMessage';
 
-  if (query === '') {
-    // Empty search: show only active tab's section
+// Create and insert "No results" message element (hidden initially)
+let noResultsMsg = document.getElementById(noResultsMsgId);
+if (!noResultsMsg) {
+  noResultsMsg = document.createElement('div');
+  noResultsMsg.id = noResultsMsgId;
+  noResultsMsg.style.textAlign = 'center';
+  noResultsMsg.style.marginTop = '20px';
+  noResultsMsg.style.fontSize = '1.2em';
+  noResultsMsg.style.color = '#e85d04';
+  noResultsMsg.textContent = 'No products found matching your search, but we try to add this product as soon as possible';
+  noResultsMsg.style.display = 'none';
+  featured.parentNode.insertBefore(noResultsMsg, featured.nextSibling);
+}
+
+// Utility debounce function
+function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+function clearHighlight(element) {
+  element.innerHTML = element.textContent;
+}
+
+function highlightText(element, query) {
+  const text = element.textContent;
+  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  element.innerHTML = text.replace(regex, '<mark>$1</mark>');
+}
+
+function performSearch() {
+  const query = searchInput.value.toLowerCase().trim();
+  if (!query) {
+    // Reset to active tab or home
     const activeTab = document.querySelector('.tab.active');
+    noResultsMsg.style.display = 'none';
+    
     if (activeTab.id === 'homeTab') {
       featured.style.display = 'grid';
       sections.forEach(sec => sec.style.display = 'none');
     } else {
       featured.style.display = 'none';
       sections.forEach(sec => {
-        sec.style.display = (sec.id === activeTab.textContent.toLowerCase().replace(/[\s&_]/g, '')) ? 'grid' : 'none';
+        if (sec.id === activeTab.getAttribute('data-category')) {
+          sec.style.display = 'grid';
+        } else {
+          sec.style.display = 'none';
+        }
       });
     }
-
-    // Show all products in active section
-    const visibleProducts = document.querySelectorAll('.product');
-    visibleProducts.forEach(p => p.style.display = 'flex');
-
-  } else {
-    // Search active: show all sections
-    featured.style.display = 'grid';
-    sections.forEach(sec => (sec.style.display = 'grid'));
-
-    // Filter products in all visible sections
-    const products = document.querySelectorAll('#featuredProducts .product, #categoryContent .product');
-    products.forEach(product => {
-      const name = product.querySelector('.product-info > div:first-child').textContent.toLowerCase();
-      product.style.display = name.includes(query) ? 'flex' : 'none';
+    
+    // Reset product visibility and remove highlights
+    document.querySelectorAll('.product').forEach(product => {
+      product.style.display = 'flex';
+      clearHighlight(product.querySelector('.product-info > div:first-child'));
     });
+    return;
   }
-});
+
+  // Searching: hide featured and all sections initially
+  featured.style.display = 'none';
+  sections.forEach(sec => sec.style.display = 'none');
+  noResultsMsg.style.display = 'none';
+
+  // Flag to track if any match found
+  let anyMatch = false;
+
+  // Search across all products in all category sections + featured
+  const products = document.querySelectorAll('#featuredProducts .product, #categoryContent .product');
+  products.forEach(product => {
+    const nameDiv = product.querySelector('.product-info > div:first-child');
+    const nameText = nameDiv.textContent.toLowerCase();
+    if (nameText.includes(query)) {
+      product.style.display = 'flex';
+      highlightText(nameDiv, query);
+      anyMatch = true;
+
+      // Show the parent category section or featuredProducts container
+      let parentSection = product.closest('.category-section');
+      if (parentSection) {
+        parentSection.style.display = 'grid';
+      } else {
+        featured.style.display = 'grid';
+      }
+    } else {
+      product.style.display = 'none';
+      clearHighlight(nameDiv);
+    }
+  });
+
+  // Show "no results" if nothing matched
+  if (!anyMatch) {
+    noResultsMsg.style.display = 'block';
+  }
+}
+
+// Attach debounced event listener for better performance
+searchInput.removeEventListener('input', performSearch);
+searchInput.addEventListener('input', debounce(performSearch, 250));
 const audio = document.getElementById('bgAudio');
 const audioToggleBtn = document.getElementById('audioToggleBtn');
 
 // Set fixed volume to 5 out of 100 = 0.05
-audio.volume = 0.05;
+audio.volume = 0.01;
 
 // Since muted attribute is present, unmute for sound if needed
 // audio.muted = false; // Uncomment to unmute
