@@ -304,6 +304,38 @@ body.dark #customerModal .modal-content {
   box-shadow: 0 0 15px rgba(255, 140, 0, 0.7);
   border: 1px solid var(--border-color);
 }
+.summary-info a.whatsapp {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 20px;
+  padding: 14px 0;
+  font-size: 1.3rem;
+  border-radius: 30px;
+  text-align: center;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #25D366;
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 15px rgba(37, 211, 102, 0.5);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.summary-info a.whatsapp i {
+  font-size: 24px;
+  color: white;
+}
+
+.summary-info a.whatsapp:hover,
+.summary-info a.whatsapp:focus {
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.8);
+  transform: scale(1.05);
+  outline: none;
+}
 
 /* Select dropdown */
 body.dark select {
@@ -924,10 +956,15 @@ body, html {
   <!-- Total & delivery‑time selector -->
   <!-- Total & delivery‑time selector and actions -->
 <div class="summary-info">
-  <div class="total" style="text-align:center; margin-bottom: 8px;">
+  <div class="total" style="text-align:center; margin-bottom: 12px;">
     Total: ₹<span id="totalAmount">0</span>
   </div>
-  <div class="delivery-time" style="margin: 0 auto;">
+
+  <a id="whatsappLink" class="whatsapp" href="#" target="_blank" rel="noopener noreferrer" style="margin-bottom: 20px; display: block;">
+    <i class="fab fa-whatsapp"></i> Order
+  </a>
+
+  <div class="delivery-time" style="margin: 0 auto 20px;">
     <label for="deliveryTime">Delivery Time:</label>
     <select id="deliveryTime">
       <option value="ASAP">As soon as possible</option>
@@ -936,16 +973,11 @@ body, html {
       <option>6:00 PM – 7:00 PM</option>
     </select>
   </div>
-</div>
 
   <div class="actions" style="display: flex; align-items: center; gap: 12px; justify-content: center;">
-  <button onclick="downloadPDF()">Download Bill (PDF)</button>
-
-  <a id="whatsappLink" class="whatsapp" href="#" target="_blank" rel="noopener noreferrer" style="margin: 0 15px;">
-    <i class="fab fa-whatsapp"></i> Order
-  </a>
-
-  <button id="editCustomerBtn" title="Edit your saved details">Edit Customer Info</button>
+    <button onclick="downloadPDF()">Download Bill (PDF)</button>
+    <button id="editCustomerBtn" title="Edit your saved details">Edit Customer Info</button>
+  </div>
 </div>
 
   <!-- Customer‑info Modal -->
@@ -1543,7 +1575,7 @@ const audio = document.getElementById('bgAudio');
 const audioToggleBtn = document.getElementById('audioToggleBtn');
 
 // Set fixed volume to 5 out of 100 = 0.05
-audio.volume = 0.01;
+audio.volume = 0.05;
 
 // Since muted attribute is present, unmute for sound if needed
 // audio.muted = false; // Uncomment to unmute
