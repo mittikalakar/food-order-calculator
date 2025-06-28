@@ -739,200 +739,17 @@ body.dark .tab:hover {
   </div>
 
   <!-- Featured products (Home) -->
-  <div class="grid" id="featuredProducts">
-    <!-- Product Template -->
-    <div class="product">
-      <img src="https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg" class="product-img" alt="biriyani" />
-      <div class="product-info">
-        <div>Biriyani – ₹150</div>
-        <div class="quantity">
-          <button onclick="changeQty('biriyani', -1)">−</button>
-          <input type="number" id="biriyani" min="0" value="0" data-name="biriyani" data-price="150" />
-          <button onclick="changeQty('biriyani', 1)">+</button>
-        </div>
-      </div>
-    </div>
+ <div class="grid" id="featuredProducts"></div>
 
-    <div class="product">
-      <img src="https://orders.popskitchen.in/storage/2024/09/image-299.png" class="product-img" alt="Egg Roll" />
-      <div class="product-info">
-        <div>Egg Roll – ₹80</div>
-        <div class="quantity">
-          <button onclick="changeQty('egg_roll', -1)">−</button>
-          <input type="number" id="egg_roll" min="0" value="0" data-name="Egg Roll" data-price="80" />
-          <button onclick="changeQty('egg_roll', 1)">+</button>
-        </div>
-      </div>
-    </div>
-
-<div class="product">
-      <img src="https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg" class="product-img" alt="Egg Roll" />
-      <div class="product-info">
-        <div>Moglai – ₹80</div>
-        <div class="quantity">
-          <button onclick="changeQty('moglai', -1)">−</button>
-          <input type="number" id="moglai" min="0" value="0" data-name="moglai" data-price="80" />
-          <button onclick="changeQty('moglai', 1)">+</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="product">
-      <img src="https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1" class="product-img" alt="Chicken Pakora" />
-      <div class="product-info">
-        <div>Chicken Pakora/100gm– ₹60</div>
-        <div class="quantity">
-          <button onclick="changeQty('chicken_pakora', -1)">−</button>
-          <input type="number" id="chicken_pakora" min="0" value="0" data-name="Chicken Pakora" data-price="60" />
-          <button onclick="changeQty('chicken_pakora', 1)">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="product">
-      <img src="https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY" class="product-img" alt="Chicken Momo" />
-      <div class="product-info">
-        <div>Chicken Momo – ₹50</div>
-        <div class="quantity">
-          <button onclick="changeQty('chicken_momo', -1)">−</button>
-          <input type="number" id="chicken_momo" min="0" value="0" data-name="Chicken Momo" data-price="50" />
-          <button onclick="changeQty('chicken_momo', 1)">+</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="product">
-      <img src="https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg" class="product-img" alt="Chowmein" />
-      <div class="product-info">
-        <div>Chowmein – ₹40</div>
-        <div class="quantity">
-          <button onclick="changeQty('chowmein', -1)">−</button>
-          <input type="number" id="chowmein" min="0" value="0" data-name="Chowmein" data-price="40" />
-          <button onclick="changeQty('chowmein', 1)">+</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <!-- … (other featured products remain unchanged) … -->
-  </div>
-
-  <!-- Category sections -->
-  <div id="categoryContent">
-    <!-- Snacks1 -->
-    <div class="grid category-section" id="snacks" style="display:none;">
-      <!-- Lay's India's Magic Masala Potato Chips -->
-      <div class="product">
-  <img src="https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75" class="product-img" alt="Chips" />
-  <div class="product-info">
-    <div>Lay's India's Magic Masala Potato Chips – ₹30</div>
-    <div class="quantity">
-      <button onclick="changeQty('chips', -1)">−</button>
-      <input type="number" id="chips" min="0" value="0" data-name="Chips" data-price="30" />
-      <button onclick="changeQty('chips', 1)">+</button>
-    </div>
-  </div>
+ <!-- Category sections -->
+<div id="categoryContent">
+  <div class="grid category-section" id="snacks" style="display:none;"></div>
+  <div class="grid category-section" id="dairy" style="display:none;"></div>
+  <div class="grid category-section" id="sweets_desserts" style="display:none;"></div>
+  <div class="grid category-section" id="puja_items" style="display:none;"></div>
+  <div class="grid category-section" id="grocery" style="display:none;"></div>
+  <div class="grid category-section" id="cold_drinks" style="display:none;"></div>
 </div>
-<!-- Bingo -->
-<div class="product">
-  <img src="https://m.media-amazon.com/images/I/71e9pUGU4tL.jpg" class="product-img" alt="Bingo" />
-  <div class="product-info">
-    <div>Bingo! Tedhe Medhe Masala Tadka - Sticks with Indian Masala Flavour – ₹30</div>
-    <div class="quantity">
-      <button onclick="changeQty('bingo', -1)">−</button>
-      <input type="number" id="bingo" min="0" value="0" data-name="Bingo" data-price="30" />
-      <button onclick="changeQty('bingo', 1)">+</button>
-    </div>
-  </div>
-</div>
-<!-- Lay's American Style Cream & Onion Potato Chips -->
-<div class="product">
-  <img src="https://cdn.grofers.com/da/cms-assets/cms/product/16a3f07a-9294-46aa-bff8-2e111c8911a5.jpg?ts=1741236557" class="product-img" alt="Lay's American Style Cream & Onion Potato Chips" />
-  <div class="product-info">
-    <div>Lay's American Style Cream & Onion Potato Chips – ₹30</div>
-    <div class="quantity">
-      <button onclick="changeQty('lays_chips', -1)">−</button>
-      <input type="number" id="lays_chips" min="0" value="0" data-name="Lay's American Style Cream & Onion Potato Chips" data-price="30" />
-      <button onclick="changeQty('lays_chips', 1)">+</button>
-    </div>
-  </div>
-</div>
-      <!-- … (existing snack products) … -->
-    </div>
-
-    <!-- Dairy -->
-    <div class="grid category-section" id="dairy" style="display:none;">
-      <!-- … (existing dairy products) … -->
-    </div>
-    
-<!-- sweets_desserts -->
-    <div class="grid category-section" id="sweets_desserts" style="display:none;">
-      <!-- … (existing sweets_desserts products) … -->
-    </div>
-    
-    <!-- puja_items -->
-    <div class="grid category-section" id="puja_items" style="display:none;">
-      <!-- … (existing puja_items products) … -->
-    </div>
-    
-    <!-- grocery -->
-    <div class="grid category-section" id="grocery" style="display:none;">
-      <!-- … (existing grocery products) … -->
-    </div>
-
-    <!-- Cold Drinks -->
-    <div class="grid category-section" id="cold_drinks" style="display:none;">
-      <!-- Thums Up Soft Drink -->
-      <div class="product">
-  <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7" class="product-img" alt="Thums Up Soft Drink bottle" />
-  <div class="product-info">
-    <div>Thums Up Soft Drink – ₹20</div>
-    <div class="quantity">
-      <button onclick="changeQty('Thums Up Soft Drink bottle', -1)">−</button>
-      <input type="number" id="Thums Up Soft Drink bottle" min="0" value="0" data-name="Thums Up Soft Drink bottle" data-price="20" />
-      <button onclick="changeQty('Thums Up Soft Drink bottle', 1)">+</button>
-    </div>
-  </div>
-</div>
-<!-- Sprite Soft Drink -->
-<div class="product">
-  <img src="https://www.bbassets.com/media/uploads/p/l/251040_10-sprite-soft-drink-lime-flavoured.jpg" class="product-img" alt="Sprite Soft Drink" />
-  <div class="product-info">
-    <div>Sprite Soft Drink – ₹20</div>
-    <div class="quantity">
-      <button onclick="changeQty('Thums Up Soft Drink bottle', -1)">−</button>
-      <input type="number" id="Sprite Soft Drink" min="0" value="0" data-name="Sprite Soft Drink" data-price="20" />
-      <button onclick="changeQty('Sprite Soft Drink', 1)">+</button>
-    </div>
-  </div>
-</div>
-<!-- Coca-Cola Soft Drink -->
-<div class="product">
-  <img src="https://cdn.grofers.com/app/images/products/sliding_image/10557a.jpg?ts=1690813220" class="product-img" alt="Coca-Cola Soft Drink" />
-  <div class="product-info">
-    <div>Coca-Cola Soft Drink – ₹20</div>
-    <div class="quantity">
-      <button onclick="changeQty('Coca-Cola Soft Drink', -1)">−</button>
-      <input type="number" id="Coca-Cola Soft Drink" min="0" value="0" data-name="Coca-Cola Soft Drink" data-price="20" />
-      <button onclick="changeQty('Coca-Cola Soft Drink', 1)">+</button>
-    </div>
-  </div>
-</div>
-<!-- Mountain Dew Soft Drink -->
-<div class="product">
-  <img src="https://www.bbassets.com/media/uploads/p/l/40195155_3-mountain-dew-soft-drink.jpg" class="product-img" alt="Mountain Dew Soft Drink" />
-  <div class="product-info">
-    <div>Mountain Dew Soft Drink – ₹20</div>
-    <div class="quantity">
-      <button onclick="changeQty('Mountain Dew Soft Drink', -1)">−</button>
-      <input type="number" id="Mountain Dew Soft Drink" min="0" value="0" data-name="Mountain Dew Soft Drink" data-price="20" />
-      <button onclick="changeQty('Mountain Dew Soft Drink', 1)">+</button>
-    </div>
-  </div>
-</div>
-      <!-- … (existing cold‑drink products) … -->
-    </div>
-  </div>
 
   <!-- Total & delivery‑time selector -->
   <!-- Total & delivery‑time selector and actions -->
@@ -1018,6 +835,137 @@ body.dark .tab:hover {
 
   <!-- Core logic scripts (unchanged except for category/home navigation) -->
   <script>
+    const products = [
+  {
+    id: 'biriyani',
+    name: 'Biriyani',
+    price: 150,
+    img: 'https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg',
+    category: 'home'
+  },
+  {
+    id: 'egg_roll',
+    name: 'Egg Roll',
+    price: 80,
+    img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png',
+    category: 'home'
+  },
+  {
+    id: 'moglai',
+    name: 'Moglai',
+    price: 80,
+    img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg',
+    category: 'home'
+  },
+  {
+    id: 'chicken_pakora',
+    name: 'Chicken Pakora',
+    price: 60,
+    img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1',
+    category: 'home'
+  },
+  {
+    id: 'chicken_momo',
+    name: 'Chicken Momo',
+    price: 50,
+    img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY',
+    category: 'home'
+  },
+  {
+    id: 'chowmein',
+    name: 'Chowmein',
+    price: 40,
+    img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg',
+    category: 'home'
+  },
+  // Snacks examples
+  {
+    id: 'chips',
+    name: "Lay's India's Magic Masala Potato Chips",
+    price: 30,
+    img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75',
+    category: 'snacks'
+  },
+  {
+    id: 'bingo',
+    name: 'Bingo! Tedhe Medhe Masala Tadka',
+    price: 30,
+    img: 'https://m.media-amazon.com/images/I/71e9pUGU4tL.jpg',
+    category: 'snacks'
+  },
+  {
+    id: 'lays_chips',
+    name: "Lay's American Style Cream & Onion Potato Chips",
+    price: 30,
+    img: 'https://cdn.grofers.com/da/cms-assets/cms/product/16a3f07a-9294-46aa-bff8-2e111c8911a5.jpg?ts=1741236557',
+    category: 'snacks'
+  },
+  // Cold drinks example
+  {
+    id: 'thums_up',
+    name: 'Thums Up Soft Drink',
+    price: 20,
+    img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7',
+    category: 'cold_drinks'
+  },
+  {
+    id: 'sprite',
+    name: 'Sprite Soft Drink',
+    price: 20,
+    img: 'https://www.bbassets.com/media/uploads/p/l/251040_10-sprite-soft-drink-lime-flavoured.jpg',
+    category: 'cold_drinks'
+  },
+  {
+    id: 'coca_cola',
+    name: 'Coca-Cola Soft Drink',
+    price: 20,
+    img: 'https://cdn.grofers.com/app/images/products/sliding_image/10557a.jpg?ts=1690813220',
+    category: 'cold_drinks'
+  },
+  {
+    id: 'mountain_dew',
+    name: 'Mountain Dew Soft Drink',
+    price: 20,
+    img: 'https://www.bbassets.com/media/uploads/p/l/40195155_3-mountain-dew-soft-drink.jpg',
+    category: 'cold_drinks'
+  },
+  {
+    id: 'puja_items',
+    name: 'fresho! Rajnigandha Puja Mola - To Decorate, For Festivals & Puja, 1 pc',
+    price: 23,
+    img: 'https://www.bbassets.com/media/uploads/p/l/40232193_2-fresho-rajnigandha-puja-mola-to-decorate-for-festivals-puja.jpg',
+    category: 'puja_items'
+  },
+  {
+    id: 'puja_items',
+    name: 'Hoovu Fresh Marigold String, 40 cm',
+    price: 40,
+    img: 'https://www.bbassets.com/media/uploads/p/l/40214550_2-hoovu-fresh-marigold-string.jpg',
+    category: 'puja_items'
+  },
+  {
+    id: 'puja_items',
+    name: 'Lotus Flower - To Decorate, For Festivals & Puja, 2 pcs',
+    price: 40,
+    img: 'https://www.bbassets.com/media/uploads/p/l/40232194_4-fresho-lotus-flower-to-decorate-for-festivals-puja.jpg',
+    category: 'puja_items'
+  },
+  {
+    id: 'puja_items',
+    name: 'বেলপত্র',
+    price: 5,
+    img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg',
+    category: 'puja_items'
+  },
+  {
+    id: 'puja_items',
+    name: 'The Aroma Factory Jasmine Agarbatti for Pooja, Luxury Incense Sticks, Low Smoke and Zero Charcoal, Premium and Fresh Fragrance for Home, Meditation (100g)',
+    price: 120,
+    img: 'https://m.media-amazon.com/images/I/71R6LqyTN0L._AC_UF894,1000_QL80_.jpg',
+    category: 'puja_items'
+  },
+  // Add more products here similarly...
+];
     // Quantity buttons
     function changeQty(id, diff) {
       const input = document.getElementById(id);
@@ -1285,6 +1233,14 @@ if (rawAddress) {
     return rawAddress;
   }
 }
+window.onload = function () {
+  renderProducts();
+  if (!localStorage.getItem('customerName') || !localStorage.getItem('customerPhone')) {
+    document.getElementById('customerModal').style.display = 'flex';
+  } else {
+    calculateTotal();
+  }
+};
 
     /* ==========================================================================
        Home / Category navigation logic
@@ -1435,6 +1391,50 @@ audioToggleBtn.addEventListener('click', () => {
     audioToggleBtn.setAttribute('aria-pressed', 'false');
   }
 });
+function renderProducts() {
+  // Clear containers first
+  const featuredContainer = document.getElementById('featuredProducts');
+  const categoryContainers = {
+    snacks: document.getElementById('snacks'),
+    dairy: document.getElementById('dairy'),
+    sweets_desserts: document.getElementById('sweets_desserts'),
+    puja_items: document.getElementById('puja_items'),
+    grocery: document.getElementById('grocery'),
+    cold_drinks: document.getElementById('cold_drinks'),
+  };
+
+  featuredContainer.innerHTML = '';
+  Object.values(categoryContainers).forEach(container => container.innerHTML = '');
+
+  // Render home (featured) products
+  products.filter(p => p.category === 'home').forEach(product => {
+    featuredContainer.appendChild(createProductCard(product));
+  });
+
+  // Render category products
+  for (const [category, container] of Object.entries(categoryContainers)) {
+    products.filter(p => p.category === category).forEach(product => {
+      container.appendChild(createProductCard(product));
+    });
+  }
+}
+
+function createProductCard(product) {
+  const div = document.createElement('div');
+  div.className = 'product';
+  div.innerHTML = `
+    <img src="${product.img}" alt="${product.name}" class="product-img" />
+    <div class="product-info">
+      <div>${product.name} – ₹${product.price}</div>
+      <div class="quantity">
+        <button onclick="changeQty('${product.id}', -1)">−</button>
+        <input type="number" id="${product.id}" min="0" value="0" data-name="${product.name}" data-price="${product.price}" />
+        <button onclick="changeQty('${product.id}', 1)">+</button>
+      </div>
+    </div>
+  `;
+  return div;
+}
   </script>
 </body>
 </html>
