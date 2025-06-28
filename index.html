@@ -486,7 +486,7 @@ h2:hover::after {
   cursor: pointer;
 }
 
-.product:hover {
+ .product:hover {
   transform: translateY(-8px) scale(1.03); /* subtle lift and scale */
   box-shadow: 0 12px 24px rgba(232, 93, 4, 0.3); /* warm orange shadow on hover */
 }
@@ -654,6 +654,37 @@ body.dark .tab:hover {
       border: 1px solid #ccc;
       font-size: 16px;
     }
+    #modalState {
+  appearance: none;          /* Remove default arrow */
+  -webkit-appearance: none; /* Safari/Chrome */
+  -moz-appearance: none;    /* Firefox */
+  
+  background-color: white; /* or var(--bg-color) */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 36px 8px 12px; /* right padding for arrow */
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  position: relative;
+  color: #333;
+}
+
+/* Add a custom dropdown arrow using a background image or SVG */
+#modalState {
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23666" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+}
+
+/* On focus, change border color */
+#modalState:focus {
+  border-color: #e85d04;
+  outline: none;
+  box-shadow: 0 0 6px #e85d04aa;
+}
   </style>
 </head>
 <body>
@@ -934,10 +965,54 @@ body.dark .tab:hover {
   <div id="customerModal">
     <div class="modal-content">
       <h3>Please enter your details</h3>
-      <input id="modalName" placeholder="Your Name" type="text" autocomplete="name" />
-      <input id="modalPhone" placeholder="Phone Number" type="tel" autocomplete="tel" />
-      <input id="modalAddress" placeholder="Address (optional)" type="text" autocomplete="street-address" />
-      <button onclick="saveCustomerData()">Save</button>
+<input id="modalName" placeholder="Your Name" type="text" autocomplete="name" />
+<input id="modalPhone" placeholder="Phone Number" type="tel" autocomplete="tel" />
+
+<input id="modalAddress" placeholder="Full Address / Street Address" type="text" autocomplete="address-line1" required />
+<input id="modalArea" placeholder="Area / Locality" type="text" autocomplete="address-line2" required />
+<input id="modalCity" placeholder="City / Town" type="text" autocomplete="address-level2" required />
+<select id="modalState" required autocomplete="address-level1">
+  <option value="" disabled selected>Select State</option>
+  <option value="Andhra Pradesh">Andhra Pradesh</option>
+  <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+  <option value="Assam">Assam</option>
+  <option value="Bihar">Bihar</option>
+  <option value="Chhattisgarh">Chhattisgarh</option>
+  <option value="Goa">Goa</option>
+  <option value="Gujarat">Gujarat</option>
+  <option value="Haryana">Haryana</option>
+  <option value="Himachal Pradesh">Himachal Pradesh</option>
+  <option value="Jharkhand">Jharkhand</option>
+  <option value="Karnataka">Karnataka</option>
+  <option value="Kerala">Kerala</option>
+  <option value="Madhya Pradesh">Madhya Pradesh</option>
+  <option value="Maharashtra">Maharashtra</option>
+  <option value="Manipur">Manipur</option>
+  <option value="Meghalaya">Meghalaya</option>
+  <option value="Mizoram">Mizoram</option>
+  <option value="Nagaland">Nagaland</option>
+  <option value="Odisha">Odisha</option>
+  <option value="Punjab">Punjab</option>
+  <option value="Rajasthan">Rajasthan</option>
+  <option value="Sikkim">Sikkim</option>
+  <option value="Tamil Nadu">Tamil Nadu</option>
+  <option value="Telangana">Telangana</option>
+  <option value="Tripura">Tripura</option>
+  <option value="Uttar Pradesh">Uttar Pradesh</option>
+  <option value="Uttarakhand">Uttarakhand</option>
+  <option value="West Bengal">West Bengal</option>
+  <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+  <option value="Chandigarh">Chandigarh</option>
+  <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+  <option value="Delhi">Delhi</option>
+  <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+  <option value="Ladakh">Ladakh</option>
+  <option value="Lakshadweep">Lakshadweep</option>
+  <option value="Puducherry">Puducherry</option>
+</select>
+<input id="modalPin" placeholder="PIN Code" type="text" pattern="[1-9][0-9]{5}" title="6 digit PIN code" autocomplete="postal-code" required />
+
+<button onclick="saveCustomerData()">Save</button>
     </div>
   </div>
 
@@ -973,7 +1048,7 @@ body.dark .tab:hover {
       // Customer data from localStorage
       const name = localStorage.getItem('customerName') || 'N/A';
       const phone = localStorage.getItem('customerPhone') || 'N/A';
-      const address = localStorage.getItem('customerAddress') || 'N/A';
+      const address = getFormattedAddress();
 
       const orderText = encodeURIComponent(
         `Hello! My name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nI'd like to order:\n${orderDetails.join('\n')}\nTotal: ₹${total}\nPreferred Delivery: ${time}\n\nThank you!`
@@ -982,23 +1057,55 @@ body.dark .tab:hover {
     }
 
     // Save customer data
-    function saveCustomerData() {
-      const name = document.getElementById('modalName').value.trim();
-      const phone = document.getElementById('modalPhone').value.trim();
-      const address = document.getElementById('modalAddress').value.trim();
+ // Save customer data - fixed to avoid nested JSON string
+function saveCustomerData() {
+  const name = document.getElementById('modalName').value.trim();
+  const phone = document.getElementById('modalPhone').value.trim();
+  const address = document.getElementById('modalAddress').value.trim();
+  const area = document.getElementById('modalArea').value.trim();
+  const city = document.getElementById('modalCity').value.trim();
+  const state = document.getElementById('modalState').value.trim();
+  const pin = document.getElementById('modalPin').value.trim();
 
-      if (!name || !phone) {
-        alert('Please enter at least your name and phone number.');
-        return;
-      }
+  if (!name || !phone || !address || !area || !city || !state || !pin) {
+    alert('Please fill in all required fields.');
+    return;
+  }
 
-      localStorage.setItem('customerName', name);
-      localStorage.setItem('customerPhone', phone);
-      localStorage.setItem('customerAddress', address);
+  // Validate PIN code format (6 digits, first digit non-zero)
+  const pinRegex = /^[1-9][0-9]{5}$/;
+  if (!pinRegex.test(pin)) {
+    alert('Please enter a valid 6-digit PIN code.');
+    return;
+  }
 
-      document.getElementById('customerModal').style.display = 'none';
-      calculateTotal();
-    }
+  // Create a flat object - no nested stringifying
+  const fullAddress = {
+    address,
+    area,
+    city,
+    state,
+    pin
+  };
+
+  localStorage.setItem('customerName', name);
+  localStorage.setItem('customerPhone', phone);
+  localStorage.setItem('customerAddress', JSON.stringify(fullAddress));
+
+  document.getElementById('customerModal').style.display = 'none';
+  calculateTotal();
+}
+// When loading address from localStorage - parse once and build string
+const rawAddress = localStorage.getItem('customerAddress');
+let customerAddress = 'N/A';
+if (rawAddress) {
+  try {
+    const addrObj = JSON.parse(rawAddress);
+    customerAddress = `${addrObj.address}, ${addrObj.area}, ${addrObj.city}, ${addrObj.state} - ${addrObj.pin}`;
+  } catch {
+    customerAddress = rawAddress;
+  }
+}
 
     // PDF generation (unchanged)
     async function downloadPDF() {
@@ -1132,7 +1239,30 @@ body.dark .tab:hover {
     document.getElementById('editCustomerBtn').addEventListener('click', () => {
       document.getElementById('modalName').value = localStorage.getItem('customerName') || '';
       document.getElementById('modalPhone').value = localStorage.getItem('customerPhone') || '';
-      document.getElementById('modalAddress').value = localStorage.getItem('customerAddress') || '';
+      const rawAddress = localStorage.getItem('customerAddress');
+if (rawAddress) {
+  try {
+    const addrObj = JSON.parse(rawAddress);
+    document.getElementById('modalAddress').value = addrObj.address || '';
+    document.getElementById('modalArea').value = addrObj.area || '';
+    document.getElementById('modalCity').value = addrObj.city || '';
+    document.getElementById('modalState').value = addrObj.state || '';
+    document.getElementById('modalPin').value = addrObj.pin || '';
+  } catch {
+    // fallback if parse fails
+    document.getElementById('modalAddress').value = '';
+    document.getElementById('modalArea').value = '';
+    document.getElementById('modalCity').value = '';
+    document.getElementById('modalState').value = '';
+    document.getElementById('modalPin').value = '';
+  }
+} else {
+  document.getElementById('modalAddress').value = '';
+  document.getElementById('modalArea').value = '';
+  document.getElementById('modalCity').value = '';
+  document.getElementById('modalState').value = '';
+  document.getElementById('modalPin').value = '';
+}
       document.getElementById('customerModal').style.display = 'flex';
     });
 
@@ -1144,6 +1274,17 @@ body.dark .tab:hover {
         calculateTotal();
       }
     };
+    function getFormattedAddress() {
+  const rawAddress = localStorage.getItem('customerAddress');
+  if (!rawAddress) return 'N/A';
+
+  try {
+    const addrObj = JSON.parse(rawAddress);
+    return `${addrObj.address}, ${addrObj.area}, ${addrObj.city}, ${addrObj.state} - ${addrObj.pin}`;
+  } catch {
+    return rawAddress;
+  }
+}
 
     /* ==========================================================================
        Home / Category navigation logic
