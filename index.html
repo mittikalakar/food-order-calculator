@@ -13,6 +13,47 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
+  .dark-mode-toggle, .audio-control-toggle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dark-mode-toggle {
+  float: left;
+}
+
+.audio-control-toggle {
+  float: right;
+}
+
+/* Style the button similar to dark mode toggle */
+.audio-control-toggle button {
+  background: #ffd580;
+  border-radius: 30px;
+  width: 60px;
+  height: 32px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 8px #ffb347aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #5a2e0c;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.audio-control-toggle button:hover,
+.audio-control-toggle button:focus {
+  background: #ffb347;
+  box-shadow: 0 0 12px #ffb347cc;
+  outline: none;
+}
+
+/* FontAwesome icon size */
+.audio-control-toggle button i {
+  font-size: 20px;
+}
     :root {
   --bg-color: #fff8f0;
   --text-color: #5a2e0c;
@@ -63,7 +104,7 @@ body.dark {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
+  padding: 0 4px;
   box-sizing: border-box;
   font-size: 16px;
   color: #fff;
@@ -80,22 +121,25 @@ body.dark {
   display: inline-block;
   color: #ffba00;
   transition: color 0.3s ease;
+  margin-left: 4px !important;
 }
 
 .moon-icon {
   display: none;
   color: #555;
   transition: color 0.3s ease;
+  margin-right: 4px !important;
 }
 
 /* The sliding circle */
 .toggle-slider::before {
+  pointer-events: none;
   content: '';
   position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 24px;
-  height: 24px;
+  left: 2px !important;
+  width: 28px !important;
+  height: 28px !important;
+  top: 2px !important;
   background: white;
   border-radius: 50%;
   box-shadow: 0 0 6px #ffa500cc;
@@ -105,7 +149,7 @@ body.dark {
 
 /* When checked, slide the circle to the right */
 .dark-mode-toggle input:checked + .toggle-slider::before {
-  transform: translateX(28px);
+  transform: translateX(30px);
   box-shadow: 0 0 12px #fffacdcc;
 }
 
@@ -561,6 +605,15 @@ body.dark .tab:hover {
   </style>
 </head>
 <body>
+<audio id="bgAudio" autoplay loop>
+  <source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+<div class="audio-control-toggle" title="Play/Pause background music" aria-label="Play/Pause audio">
+  <button id="audioToggleBtn" aria-pressed="true" aria-label="Pause audio">
+    <i class="fa-solid fa-pause"></i>
+  </button>
+</div>
   <!-- Dark mode switch -->
   <div class="dark-mode-toggle">
   <label>
@@ -597,9 +650,9 @@ body.dark .tab:hover {
     <button class="tab" onclick="showCategory('snacks', this)">Snacks</button>
     <button class="tab" onclick="showCategory('dairy', this)">Dairy</button>
     <button class="tab" onclick="showCategory('cold_drinks', this)">Cold Drinks</button>
-    <button class="tab" onclick="showCategory('Puja_Items', this)">Puja Items</button>
-    <button class="tab" onclick="showCategory('Sweets_&_Desserts', this)">Sweets & Desserts </button>
-    <button class="tab" onclick="showCategory('Grocery', this)">Grocery</button>
+    <button class="tab" onclick="showCategory('puja_items', this)">Puja Items</button>
+    <button class="tab" onclick="showCategory('sweets_desserts', this)">Sweets & Desserts </button>
+    <button class="tab" onclick="showCategory('grocery', this)">Grocery</button>
   </div>
 
   <!-- Featured products (Home) -->
@@ -727,6 +780,21 @@ body.dark .tab:hover {
     <!-- Dairy -->
     <div class="grid category-section" id="dairy" style="display:none;">
       <!-- … (existing dairy products) … -->
+    </div>
+    
+<!-- sweets_desserts -->
+    <div class="grid category-section" id="sweets_desserts" style="display:none;">
+      <!-- … (existing sweets_desserts products) … -->
+    </div>
+    
+    <!-- puja_items -->
+    <div class="grid category-section" id="puja_items" style="display:none;">
+      <!-- … (existing puja_items products) … -->
+    </div>
+    
+    <!-- grocery -->
+    <div class="grid category-section" id="grocery" style="display:none;">
+      <!-- … (existing grocery products) … -->
     </div>
 
     <!-- Cold Drinks -->
@@ -1009,6 +1077,28 @@ body.dark .tab:hover {
       const name = product.querySelector('.product-info > div:first-child').textContent.toLowerCase();
       product.style.display = name.includes(query) ? 'flex' : 'none';
     });
+  }
+});
+const audio = document.getElementById('bgAudio');
+const audioToggleBtn = document.getElementById('audioToggleBtn');
+
+// Set fixed volume to 5 out of 100 = 0.05
+audio.volume = 0.05;
+
+// Since muted attribute is present, unmute for sound if needed
+// audio.muted = false; // Uncomment to unmute
+
+audioToggleBtn.addEventListener('click', () => {
+  if (audio.paused) {
+    audio.play();
+    audioToggleBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    audioToggleBtn.setAttribute('aria-label', 'Pause audio');
+    audioToggleBtn.setAttribute('aria-pressed', 'true');
+  } else {
+    audio.pause();
+    audioToggleBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    audioToggleBtn.setAttribute('aria-label', 'Play audio');
+    audioToggleBtn.setAttribute('aria-pressed', 'false');
   }
 });
   </script>
