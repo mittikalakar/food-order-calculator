@@ -356,6 +356,32 @@
   border-color: var(--primary);
   color: var(--primary);
 }
+@media (max-width: 768px) {
+  /* Product grid: 2 items per row */
+  #product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+  }
+
+  /* Mobile category tabs container scroll */
+  #mobile-category-tabs-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+  }
+
+  /* Make mobile category tabs flex and nowrap for horizontal scroll */
+  #mobile-category-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  /* Mobile category chips: keep them inline and nicely spaced */
+  .mobile-category-chip {
+    flex: 0 0 auto; /* Prevent shrinking */
+  }
+}
   </style>
 </head>
 <body>
