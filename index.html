@@ -15,6 +15,11 @@
   
   <!-- PDF Generation Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+  if (!localStorage.getItem('customerName') || !localStorage.getItem('customerPhone')) {
+    window.location.href = 'login.html';
+  }
+</script>
 
   <style>
     /* --- 1. Core Setup & CSS Variables --- */
@@ -271,6 +276,86 @@
           transform: translateY(0);
       }
     }
+    .modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--surface-color);
+  padding: 25px 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  font-family: var(--font-heading);
+  color: var(--primary);
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.modal-actions button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-actions button[type="submit"] {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.modal-actions button[type="submit"]:hover {
+  background-color: var(--primary-dark);
+}
+
+.modal-actions button#cancelCustomerInfoBtn {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.modal-actions button#cancelCustomerInfoBtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
   </style>
 </head>
 <body>
@@ -530,9 +615,28 @@ function calculateCart() {
 
 function updateWhatsappLink() {
     const { items, total } = calculateCart();
-    const customerName = localStorage.getItem('customerName') || "Customer";
-    const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
-    const message = `Hello, ${customerName}! I'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total}*\n\nThank you!`;
+    const name = localStorage.getItem('customerName') || 'Customer';
+const phone = localStorage.getItem('customerPhone') || '';
+const address = localStorage.getItem('customerAddress') || '';
+const pincode = localStorage.getItem('customerPincode') || '';
+const landmark = localStorage.getItem('customerLandmark') || '';
+
+const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
+
+const message = 
+`Hello, my name is ${name}.
+Phone: ${phone}
+Address: ${address}
+Pincode: ${pincode}
+Landmark: ${landmark}
+
+I'd like to place an order:
+
+${orderDetails}
+
+*Total: ₹${total}*
+
+Thank you!`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/917431059519?text=${encodedMessage}`;
     
@@ -549,11 +653,78 @@ function rerenderAll() {
 
 // Dummy functions for PDF and Customer Info. You can replace these with your actual logic.
 function downloadPDF() {
-    alert("PDF download functionality will be implemented here.");
+    const { items, total } = calculateCart();
+    if(items.length === 0) {
+        alert("Your cart is empty. Add some items before downloading the bill.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("FreshBites - Your Order Bill", 14, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Date: ${new Date().toLocaleString()}`, 14, 30);
+
+    let y = 40;
+    doc.text("Items:", 14, y);
+
+    y += 10;
+    items.forEach(item => {
+        const line = `${item.quantity} x ${item.name} @ ₹${item.price} = ₹${item.price * item.quantity}`;
+        doc.text(line, 14, y);
+        y += 10;
+    });
+
+    y += 5;
+    doc.text(`Grand Total: ₹${total}`, 14, y);
+
+    doc.save("FreshBites_Bill.pdf");
 }
 function showCustomerInfoModal() {
-    alert("Customer info modal will be shown here.");
+    const modal = document.getElementById('customer-info-modal');
+    document.getElementById('customerName').value = localStorage.getItem('customerName') || '';
+    document.getElementById('customerPhone').value = localStorage.getItem('customerPhone') || '';
+    document.getElementById('customerAddress').value = localStorage.getItem('customerAddress') || '';
+    document.getElementById('customerPincode').value = localStorage.getItem('customerPincode') || '';
+    document.getElementById('customerLandmark').value = localStorage.getItem('customerLandmark') || '';
+    modal.classList.remove('hidden');
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('customerInfoForm');
+    const cancelBtn = document.getElementById('cancelCustomerInfoBtn');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+
+        const name = form.customerName.value.trim();
+        const phone = form.customerPhone.value.trim();
+        const address = form.customerAddress.value.trim();
+        const pincode = form.customerPincode.value.trim();
+        const landmark = form.customerLandmark.value.trim();
+
+        if(!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
+            alert('Please enter valid details for all required fields.');
+            return;
+        }
+
+        localStorage.setItem('customerName', name);
+        localStorage.setItem('customerPhone', phone);
+        localStorage.setItem('customerAddress', address);
+        localStorage.setItem('customerPincode', pincode);
+        localStorage.setItem('customerLandmark', landmark);
+
+        alert('Your info has been saved!');
+        hideCustomerInfoModal();
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        hideCustomerInfoModal();
+    });
+});
 
 // --- 6. INITIALIZATION & EVENT LISTENERS ---
 
@@ -613,8 +784,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+function showCustomerInfoModal() {
+    const modal = document.getElementById('customer-info-modal');
+    const nameInput = document.getElementById('customerName');
+    const phoneInput = document.getElementById('customerPhone');
 
+    // Load existing info from localStorage
+    nameInput.value = localStorage.getItem('customerName') || '';
+    phoneInput.value = localStorage.getItem('customerPhone') || '';
+
+    modal.classList.remove('hidden');
+}
+
+function hideCustomerInfoModal() {
+    const modal = document.getElementById('customer-info-modal');
+    modal.classList.add('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('customerInfoForm');
+    const cancelBtn = document.getElementById('cancelCustomerInfoBtn');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = form.customerName.value.trim();
+        const phone = form.customerPhone.value.trim();
+
+        if(name && phone.match(/^\d{10}$/)) {
+            localStorage.setItem('customerName', name);
+            localStorage.setItem('customerPhone', phone);
+            alert('Your info has been saved!');
+            hideCustomerInfoModal();
+        } else {
+            alert('Please enter a valid name and 10-digit phone number.');
+        }
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        hideCustomerInfoModal();
+    });
+});
 </script>
+<!-- Customer Info Modal -->
+<div id="customer-info-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+  <div class="modal-content">
+    <h2 id="modalTitle">Edit Your Info</h2>
+    <form id="customerInfoForm">
+      <!-- Update inside modal-content form -->
 
+<label for="customerName">Name:</label>
+<input type="text" id="customerName" name="customerName" required />
+
+<label for="customerPhone">Phone Number:</label>
+<input type="tel" id="customerPhone" name="customerPhone" pattern="[0-9]{10}" placeholder="10-digit number" required />
+
+<label for="customerAddress">Address:</label>
+<input type="text" id="customerAddress" name="customerAddress" required />
+
+<label for="customerPincode">Pincode:</label>
+<input type="text" id="customerPincode" name="customerPincode" pattern="[0-9]{6}" placeholder="6-digit pincode" required />
+
+<label for="customerLandmark">Landmark:</label>
+<input type="text" id="customerLandmark" name="customerLandmark" />
+      <div class="modal-actions">
+        <button type="submit">Save</button>
+        <button type="button" id="cancelCustomerInfoBtn">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
 </body>
 </html>
