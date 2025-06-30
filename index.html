@@ -180,20 +180,59 @@
     .cart-actions .secondary-btn { background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); }
     .cart-actions .secondary-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-    /* --- 7. Mobile View & Modals --- */
-    #mobile-cart-btn, #mobile-cart-modal { display: none; }
+    /* --- 7. Mobile View & Specific Elements --- */
+    #mobile-category-tabs-container, #mobile-cart-btn, #mobile-cart-modal { display: none; }
     .hidden { display: none !important; }
+    
+    #mobile-category-tabs-container {
+        padding: 0 0 15px 0;
+        margin-bottom: 15px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    #mobile-category-tabs-container::-webkit-scrollbar { height: 4px; background-color: #f0f0f0; }
+    #mobile-category-tabs-container::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 2px; }
+
+    #mobile-category-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+    .mobile-category-chip {
+        padding: 8px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        background-color: var(--surface-color);
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 0.9rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        display: flex; /* ADDED FOR ICON */
+        align-items: center; /* ADDED FOR ICON */
+        gap: 8px; /* ADDED FOR ICON */
+    }
+    .mobile-category-chip.active {
+        background-color: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+    }
+    .mobile-category-chip i { font-size: 1rem; } /* ADDED FOR ICON */
+
 
     @media (max-width: 1024px) {
       .app-layout { grid-template-columns: 1fr; padding: 10px; padding-bottom: 100px; }
-      .sidebar, .cart-area { display: none; }
-      .logo { font-size: 1.5rem; }
+      .sidebar, .cart-area { display: none; } /* Hide desktop versions */
       .app-header { grid-column: auto; padding: 10px; }
+      .logo { font-size: 1.5rem; }
       #product-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
       .product-card .info { padding: 10px; }
       .product-card .name { font-size: 0.9rem; }
       .product-card .price { font-size: 1rem; }
       .add-to-cart-btn, .quantity-control { font-size: 0.8rem; padding: 6px 10px; }
+      
+      #mobile-category-tabs-container { display: block; } /* Show mobile categories */
       
       #mobile-cart-btn {
         display: flex; justify-content: space-between; align-items: center;
@@ -208,17 +247,29 @@
       #mobile-cart-btn .item-count { background-color: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.9rem; }
       #mobile-cart-btn .total { font-size: 1.1rem; font-weight: 600; }
       
+      /* THIS IS THE KEY FIX */
       #mobile-cart-modal {
         position: fixed; inset: 0; background-color: rgba(0,0,0,0.5);
         z-index: 1001;
+        display: flex; /* Changed from none to flex for alignment */
+        align-items: flex-end; /* Align cart to the bottom */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
       }
-      #mobile-cart-modal.visible { display: block; }
+      #mobile-cart-modal.visible {
+          opacity: 1;
+          visibility: visible;
+      }
       #mobile-cart-modal .cart-wrapper {
-        position: absolute; bottom: 0; left: 0; right: 0;
+        width: 100%;
         height: 85vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
-        transform: translateY(100%); animation: slide-up 0.4s forwards ease-out;
+        transform: translateY(100%);
+        transition: transform 0.4s ease-out;
       }
-       @keyframes slide-up { to { transform: translateY(0); } }
+      #mobile-cart-modal.visible .cart-wrapper {
+          transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -236,7 +287,7 @@
       </div>
     </header>
 
-    <!-- Left Sidebar: Categories -->
+    <!-- Left Sidebar: Categories (Desktop) -->
     <aside class="sidebar">
       <h3>Categories</h3>
       <nav class="category-nav" id="category-nav">
@@ -249,6 +300,11 @@
       <div class="search-bar">
         <input type="search" id="productSearch" placeholder="Search for your favorite items...">
       </div>
+      <div id="mobile-category-tabs-container">
+          <div id="mobile-category-tabs">
+            <!-- Mobile category chips will be rendered here by JS -->
+          </div>
+      </div>
       <div id="product-grid">
         <!-- Products will be rendered here by JS -->
       </div>
@@ -258,7 +314,7 @@
       </div>
     </main>
 
-    <!-- Right Sidebar: Cart -->
+    <!-- Right Sidebar: Cart (Desktop) -->
     <aside class="cart-area" id="desktop-cart">
       <!-- Desktop cart will be rendered here by JS -->
     </aside>
@@ -273,12 +329,10 @@
   </div>
 
   <!-- Mobile Cart Modal -->
-  <div id="mobile-cart-modal" class="hidden">
+  <div id="mobile-cart-modal">
       <!-- Mobile cart will be rendered here by JS -->
   </div>
 
-  <!-- Customer Info Modal (you can use your existing one and style it) -->
-  
   <audio id="bgAudio" loop>
     <source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" />
   </audio>
@@ -308,11 +362,13 @@ const CATEGORIES = {
 };
 
 // --- 2. STATE ---
-let cart = []; // { id, name, price, img, quantity }
+let cart = [];
+let activeFilter = 'All';
 
 // --- 3. DOM ELEMENTS ---
 const productGrid = document.getElementById('product-grid');
 const categoryNav = document.getElementById('category-nav');
+const mobileCategoryTabs = document.getElementById('mobile-category-tabs');
 const desktopCartContainer = document.getElementById('desktop-cart');
 const mobileCartModalContainer = document.getElementById('mobile-cart-modal');
 const mobileCartBtn = document.getElementById('mobile-cart-btn');
@@ -347,7 +403,6 @@ function renderProducts(filter = 'All', searchTerm = '') {
             productGrid.appendChild(card);
         }
     });
-
     noResultsDiv.classList.toggle('hidden', hasResults);
 }
 
@@ -367,16 +422,28 @@ function getButtonHTML(productId) {
 
 function renderCategories() {
     const ul = document.createElement('ul');
+    mobileCategoryTabs.innerHTML = ''; 
+
     Object.entries(CATEGORIES).forEach(([name, iconClass]) => {
+        const isActive = name === activeFilter;
+        // Desktop
         const li = document.createElement('li');
         li.innerHTML = `
-            <a href="#" class="${name === 'All' ? 'active' : ''}" data-category="${name}">
+            <a href="#" class="${isActive ? 'active' : ''}" data-category="${name}">
                 <i class="${iconClass}"></i>
                 <span>${name}</span>
             </a>
         `;
         ul.appendChild(li);
+
+        // Mobile
+        const chip = document.createElement('button');
+        chip.className = `mobile-category-chip ${isActive ? 'active' : ''}`;
+        chip.dataset.category = name;
+        chip.innerHTML = `<i class="${iconClass}"></i><span>${name}</span>`;
+        mobileCategoryTabs.appendChild(chip);
     });
+    categoryNav.innerHTML = '';
     categoryNav.appendChild(ul);
 }
 
@@ -409,9 +476,9 @@ function renderCart() {
                     <span>₹${total}</span>
                 </div>
                 <div class="cart-actions">
-                    <a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
-                    <button class="action-btn secondary-btn" onclick="alert('Download PDF clicked!')"><i class="fa-solid fa-file-pdf"></i> Download Bill</button>
-                    <button class="action-btn secondary-btn" onclick="alert('Edit Info clicked!')"><i class="fa-solid fa-user-pen"></i> Edit My Info</button>
+                    <a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
+                    <button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button>
+                    <button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button>
                 </div>
             </div>
             ` : ''}
@@ -449,6 +516,12 @@ function handleQuantityChange(productId, change) {
     rerenderAll();
 }
 
+function handleCategoryChange(newCategory) {
+    activeFilter = newCategory;
+    renderCategories();
+    renderProducts(activeFilter, productSearch.value);
+}
+
 function calculateCart() {
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -457,13 +530,12 @@ function calculateCart() {
 
 function updateWhatsappLink() {
     const { items, total } = calculateCart();
-    const customerName = "Customer"; // Placeholder
+    const customerName = localStorage.getItem('customerName') || "Customer";
     const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
-    const message = `Hello! I'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total}*\n\nThank you!`;
+    const message = `Hello, ${customerName}! I'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total}*\n\nThank you!`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/917431059519?text=${encodedMessage}`;
     
-    // Set for both desktop and mobile carts if they exist
     const desktopBtn = document.querySelector('#desktop-cart #whatsapp-order-btn');
     const mobileBtn = document.querySelector('#mobile-cart-modal #whatsapp-order-btn');
     if (desktopBtn) desktopBtn.href = whatsappLink;
@@ -471,9 +543,16 @@ function updateWhatsappLink() {
 }
 
 function rerenderAll() {
-    const activeCategory = document.querySelector('.category-nav a.active').dataset.category;
-    renderProducts(activeCategory, productSearch.value);
+    renderProducts(activeFilter, productSearch.value);
     renderCart();
+}
+
+// Dummy functions for PDF and Customer Info. You can replace these with your actual logic.
+function downloadPDF() {
+    alert("PDF download functionality will be implemented here.");
+}
+function showCustomerInfoModal() {
+    alert("Customer info modal will be shown here.");
 }
 
 // --- 6. INITIALIZATION & EVENT LISTENERS ---
@@ -483,21 +562,22 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProducts();
     renderCart();
 
-    // Category filtering
+    // Desktop Category filtering
     categoryNav.addEventListener('click', e => {
         e.preventDefault();
         const link = e.target.closest('a');
-        if (link) {
-            document.querySelectorAll('.category-nav a').forEach(a => a.classList.remove('active'));
-            link.classList.add('active');
-            renderProducts(link.dataset.category, productSearch.value);
-        }
+        if (link) handleCategoryChange(link.dataset.category);
+    });
+
+    // Mobile Category filtering
+    mobileCategoryTabs.addEventListener('click', e => {
+        const chip = e.target.closest('.mobile-category-chip');
+        if (chip) handleCategoryChange(chip.dataset.category);
     });
     
     // Search
     productSearch.addEventListener('input', () => {
-        const activeCategory = document.querySelector('.category-nav a.active').dataset.category;
-        renderProducts(activeCategory, productSearch.value);
+        renderProducts(activeFilter, productSearch.value);
     });
 
     // Mobile cart modal
@@ -506,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     mobileCartModalContainer.addEventListener('click', e => {
-        // Close if clicking on the background overlay
+        // Close if clicking on the background overlay itself
         if (e.target.id === 'mobile-cart-modal') {
             mobileCartModalContainer.classList.remove('visible');
         }
@@ -525,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.volume = 0.3;
     audioBtn.addEventListener('click', () => {
         if(audio.paused) {
-            audio.play();
+            audio.play().catch(e => console.log("Audio autoplay was blocked by the browser."));
             audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
         } else {
             audio.pause();
