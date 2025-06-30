@@ -653,35 +653,85 @@ function rerenderAll() {
 
 // Dummy functions for PDF and Customer Info. You can replace these with your actual logic.
 function downloadPDF() {
-    const { items, total } = calculateCart();
-    if(items.length === 0) {
-        alert("Your cart is empty. Add some items before downloading the bill.");
-        return;
-    }
+  const { items, total } = calculateCart();
+  if(items.length === 0) {
+      alert("Your cart is empty. Add some items before downloading the bill.");
+      return;
+  }
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-    doc.setFontSize(18);
-    doc.text("FreshBites - Your Order Bill", 14, 20);
+  // Header
+  doc.setFontSize(22);
+  doc.setFont("helvetica", "bold");
+  doc.text("FreshBites", 105, 20, null, null, "center");
 
-    doc.setFontSize(12);
-    doc.text(`Date: ${new Date().toLocaleString()}`, 14, 30);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text("Your Local Order Hub", 105, 28, null, null, "center");
 
-    let y = 40;
-    doc.text("Items:", 14, y);
+  doc.setDrawColor(0);
+  doc.setLineWidth(0.5);
+  doc.line(14, 32, 196, 32); // horizontal line
 
-    y += 10;
-    items.forEach(item => {
-        const line = `${item.quantity} x ${item.name} @ ₹${item.price} = ₹${item.price * item.quantity}`;
-        doc.text(line, 14, y);
-        y += 10;
-    });
+  // Customer Info
+  const name = localStorage.getItem('customerName') || 'N/A';
+  const phone = localStorage.getItem('customerPhone') || 'N/A';
+  const address = localStorage.getItem('customerAddress') || 'N/A';
+  const pincode = localStorage.getItem('customerPincode') || 'N/A';
+  const landmark = localStorage.getItem('customerLandmark') || '';
 
-    y += 5;
-    doc.text(`Grand Total: ₹${total}`, 14, y);
+  doc.setFontSize(12);
+  doc.text(`Name: ${name}`, 14, 40);
+  doc.text(`Phone: ${phone}`, 14, 47);
+  doc.text(`Address: ${address}`, 14, 54);
+  doc.text(`Pincode: ${pincode}`, 14, 61);
+  if(landmark) doc.text(`Landmark: ${landmark}`, 14, 68);
 
-    doc.save("FreshBites_Bill.pdf");
+  // Date & Invoice No (optional)
+  const dateStr = new Date().toLocaleString();
+  doc.text(`Date: ${dateStr}`, 150, 40);
+
+  // Table headers
+  const startY = landmark ? 80 : 74;
+  doc.setFont("helvetica", "bold");
+  doc.text("Item", 14, startY);
+  doc.text("Qty", 110, startY, null, null, "center");
+  doc.text("Price", 140, startY, null, null, "right");
+  doc.text("Total", 190, startY, null, null, "right");
+
+  doc.setLineWidth(0.2);
+  doc.line(14, startY + 2, 196, startY + 2); // line below headers
+
+  // Table content
+  doc.setFont("helvetica", "normal");
+  let y = startY + 10;
+  items.forEach(item => {
+    doc.text(item.name, 14, y, {maxWidth: 90});
+    doc.text(String(item.quantity), 110, y, null, null, "center");
+    doc.text(`₹${item.price.toFixed(2)}`, 140, y, null, null, "right");
+    doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, 190, y, null, null, "right");
+    y += 8;
+  });
+
+  // Horizontal line before total
+  doc.line(14, y, 196, y);
+  y += 8;
+
+  // Total
+  doc.setFont("helvetica", "bold");
+  doc.text("Grand Total:", 140, y, null, null, "right");
+  doc.text(`₹${total.toFixed(2)}`, 190, y, null, null, "right");
+
+  // Footer note
+  y += 20;
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "italic");
+  doc.text("Thank you for ordering with FreshBites!", 105, y, null, null, "center");
+
+  // Save PDF
+  doc.save(`FreshBites_Bill_${Date.now()}.pdf`);
 }
 function showCustomerInfoModal() {
     const modal = document.getElementById('customer-info-modal');
