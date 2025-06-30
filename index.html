@@ -710,8 +710,8 @@ function downloadPDF() {
   items.forEach(item => {
     doc.text(item.name, 14, y, {maxWidth: 90});
     doc.text(String(item.quantity), 110, y, null, null, "center");
-    doc.text(`\u20B9${item.price.toFixed(2)}`, 140, y, null, null, "right");
-    doc.text(`\u20B9${(item.price * item.quantity).toFixed(2)}`, 190, y, null, null, "right");
+    doc.text(`Rs.${item.price.toFixed(2)}`, 140, y, null, null, "right");
+    doc.text(`Rs.${(item.price * item.quantity).toFixed(2)}`, 190, y, null, null, "right");
     y += 8;
   });
 
@@ -722,7 +722,7 @@ function downloadPDF() {
   // Total
   doc.setFont("helvetica", "bold");
   doc.text("Grand Total:", 140, y, null, null, "right");
-  doc.text(`\u20B9${total.toFixed(2)}`, 190, y, null, null, "right");
+  doc.text(`Rs.${total.toFixed(2)}`, 190, y, null, null, "right");
 
   // Footer note
   y += 20;
