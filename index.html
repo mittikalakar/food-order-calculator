@@ -16,10 +16,11 @@
   <!-- PDF Generation Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-  if (!localStorage.getItem('customerName') || !localStorage.getItem('customerPhone')) {
-    window.location.href = 'login.html';
-  }
-</script>
+    // This login check remains exactly as you had it.
+    if (!localStorage.getItem('customerName') || !localStorage.getItem('customerPhone')) {
+      window.location.href = 'login.html';
+    }
+  </script>
 
   <style>
     /* --- 1. Core Setup & CSS Variables --- */
@@ -119,12 +120,8 @@
     .category-nav i { font-size: 1.1rem; width: 20px; text-align: center; color: var(--text-secondary); transition: color 0.2s; }
     
     /* --- 5. Main Content (Products) --- */
-    .product-grid-area .search-bar { margin-bottom: 25px; }
-    .product-grid-area input[type="search"] {
-      width: 100%; padding: 12px 20px; border-radius: 8px;
-      border: 1px solid var(--border-color); background-color: var(--surface-color);
-      font-size: 1rem; color: var(--text-primary);
-    }
+    .mobile-filter-bar { display: none; } /* THIS IS THE NEW ELEMENT, HIDDEN ON DESKTOP */
+
     #product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -139,7 +136,6 @@
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px var(--shadow-color); }
     .product-card img { width: 100%; height: 160px; object-fit: cover; }
     .product-card .info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
-    .product-card .category { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
     .product-card .name { font-weight: 600; flex-grow: 1; margin-bottom: 10px; }
     .product-card .footer { display: flex; justify-content: space-between; align-items: center; }
     .product-card .price { font-weight: 700; font-size: 1.2rem; color: var(--primary); }
@@ -147,11 +143,9 @@
       border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;
     }
     .add-to-cart-btn { background-color: var(--primary); color: #fff; padding: 8px 15px; }
-    .add-to-cart-btn:hover { background-color: var(--primary-dark); }
     .quantity-control { display: flex; align-items: center; gap: 8px; background-color: var(--primary); color: #fff; }
     .quantity-control button { background: none; border: none; color: #fff; font-size: 1.2rem; width: 30px; cursor: pointer; }
-    .quantity-control span { font-size: 1rem; }
-
+    
     /* --- 6. Cart Area --- */
     .cart-area { position: sticky; top: 20px; height: calc(100vh - 40px); display: flex; flex-direction: column; }
     .cart-wrapper {
@@ -165,79 +159,70 @@
     .cart-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
     .cart-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
     .cart-item .details { flex-grow: 1; }
-    .cart-item .name { font-weight: 500; }
-    .cart-item .price { color: var(--text-secondary); font-size: 0.9rem; }
-    .cart-item .quantity-control { font-size: 0.9rem; }
-    .cart-item .quantity-control button { font-size: 1rem; width: 25px; }
     .cart-footer { padding: 20px; border-top: 1px solid var(--border-color); background-color: var(--bg-color); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;}
     .cart-total { display: flex; justify-content: space-between; font-weight: 600; font-size: 1.2rem; margin-bottom: 20px; }
     .cart-total span:last-child { color: var(--primary); }
     .cart-actions { display: flex; flex-direction: column; gap: 10px; }
-    .cart-actions .action-btn {
+    .action-btn {
       width: 100%; padding: 12px; border-radius: 8px;
       border: none; font-weight: 600; font-size: 1rem;
       cursor: pointer; transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      text-decoration: none;
+      display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
     }
-    .cart-actions .whatsapp-btn { background-color: #25D366; color: #fff; }
-    .cart-actions .whatsapp-btn:hover { background-color: #1ebe57; }
-    .cart-actions .secondary-btn { background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); }
-    .cart-actions .secondary-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .whatsapp-btn { background-color: #25D366; color: #fff; }
+    .secondary-btn { background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); }
 
-    /* --- 7. Mobile View & Specific Elements --- */
-    #mobile-category-tabs-container, #mobile-cart-btn, #mobile-cart-modal { display: none; }
+    /* --- 7. All Modals & Mobile View --- */
+    #mobile-cart-btn, #mobile-cart-modal, .modal { display: none; }
     .hidden { display: none !important; }
     
-    #mobile-category-tabs-container {
-        padding: 0 0 15px 0;
-        margin-bottom: 15px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    .modal {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 2000; opacity: 0; visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
     }
-    #mobile-category-tabs-container::-webkit-scrollbar { height: 4px; background-color: #f0f0f0; }
-    #mobile-category-tabs-container::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 2px; }
+    .modal.visible { opacity: 1; visibility: visible; display: flex; }
+    .modal-content {
+        background: var(--surface-color); padding: 25px 30px; border-radius: 12px;
+        max-width: 400px; width: 90%;
+        box-shadow: 0 4px 20px var(--shadow-color);
+        transform: scale(0.9); transition: transform 0.3s;
+    }
+    .modal.visible .modal-content { transform: scale(1); }
 
-    #mobile-category-tabs {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 10px;
-    }
-    .mobile-category-chip {
-        padding: 8px 16px;
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        background-color: var(--surface-color);
-        color: var(--text-secondary);
-        font-weight: 500;
-        font-size: 0.9rem;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.2s ease;
-        display: flex; /* ADDED FOR ICON */
-        align-items: center; /* ADDED FOR ICON */
-        gap: 8px; /* ADDED FOR ICON */
-    }
-    .mobile-category-chip.active {
-        background-color: var(--primary);
-        color: #fff;
-        border-color: var(--primary);
-    }
-    .mobile-category-chip i { font-size: 1rem; } /* ADDED FOR ICON */
+    /* Category Modal Specifics */
+    #category-modal-list { list-style: none; }
+    #category-modal-list a { display: block; padding: 15px; border-radius: 8px; text-decoration: none; color: var(--text-primary); font-weight: 500; display: flex; align-items: center; gap: 15px; }
+    #category-modal-list a.active { background-color: var(--primary); color: #fff; }
 
+    /* Customer Info Modal Specifics */
+    #customer-info-modal h2 { margin-bottom: 20px; font-family: var(--font-heading); color: var(--primary); }
+    #customer-info-modal label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-secondary); text-align: left; }
+    #customer-info-modal input { width: 100%; padding: 10px 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1rem; color: var(--text-primary); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 10px; }
+    .modal-actions button { padding: 10px 18px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
+    .modal-actions button[type="submit"] { background-color: var(--primary); color: #fff; }
+    .modal-actions button[type="button"] { background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-primary); }
 
     @media (max-width: 1024px) {
       .app-layout { grid-template-columns: 1fr; padding: 10px; padding-bottom: 100px; }
-      .sidebar, .cart-area { display: none; } /* Hide desktop versions */
+      .sidebar, .cart-area, .product-grid-area .search-bar { display: none; }
       .app-header { grid-column: auto; padding: 10px; }
       .logo { font-size: 1.5rem; }
-      #product-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-      .product-card .info { padding: 10px; }
-      .product-card .name { font-size: 0.9rem; }
-      .product-card .price { font-size: 1rem; }
-      .add-to-cart-btn, .quantity-control { font-size: 0.8rem; padding: 6px 10px; }
+
+      .mobile-filter-bar { /* Show the new bar on mobile */
+          display: flex; gap: 10px;
+          margin-bottom: 20px;
+      }
+      #productSearch-mobile { width: 100%; padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--surface-color); font-size: 1rem; color: var(--text-primary); }
+      #category-filter-btn {
+          padding: 0 20px; border: 1px solid var(--border-color);
+          background-color: var(--surface-color); border-radius: 8px;
+          cursor: pointer; font-size: 1.1rem; color: var(--text-secondary);
+      }
       
-      #mobile-category-tabs-container { display: block; } /* Show mobile categories */
+      #product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
       
       #mobile-cart-btn {
         display: flex; justify-content: space-between; align-items: center;
@@ -249,147 +234,24 @@
         transform: translateY(200%); animation: slide-in 0.5s forwards ease-out;
       }
       @keyframes slide-in { to { transform: translateY(0); } }
-      #mobile-cart-btn .item-count { background-color: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.9rem; }
-      #mobile-cart-btn .total { font-size: 1.1rem; font-weight: 600; }
       
-      /* THIS IS THE KEY FIX */
       #mobile-cart-modal {
-        position: fixed; inset: 0; background-color: rgba(0,0,0,0.5);
-        z-index: 1001;
-        display: flex; /* Changed from none to flex for alignment */
-        align-items: flex-end; /* Align cart to the bottom */
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s, visibility 0.3s;
-      }
-      #mobile-cart-modal.visible {
-          opacity: 1;
-          visibility: visible;
-      }
-      #mobile-cart-modal .cart-wrapper {
-        width: 100%;
-        height: 85vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
-        transform: translateY(100%);
-        transition: transform 0.4s ease-out;
+        display: flex; align-items: flex-end;
       }
       #mobile-cart-modal.visible .cart-wrapper {
           transform: translateY(0);
       }
+      #mobile-cart-modal .cart-wrapper {
+        width: 100%; height: 85vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+        transform: translateY(100%); transition: transform 0.4s ease-out;
+      }
     }
-    .modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-}
-
-.modal.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: var(--surface-color);
-  padding: 25px 30px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 4px 20px var(--shadow-color);
-}
-
-.modal-content h2 {
-  margin-bottom: 20px;
-  font-family: var(--font-heading);
-  color: var(--primary);
-}
-
-.modal-content label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.modal-content input {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  font-size: 1rem;
-  color: var(--text-primary);
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-}
-
-.modal-actions button {
-  padding: 10px 18px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.modal-actions button[type="submit"] {
-  background-color: var(--primary);
-  color: #fff;
-}
-
-.modal-actions button[type="submit"]:hover {
-  background-color: var(--primary-dark);
-}
-
-.modal-actions button#cancelCustomerInfoBtn {
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-}
-
-.modal-actions button#cancelCustomerInfoBtn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-@media (max-width: 768px) {
-  /* Product grid: 2 items per row */
-  #product-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 15px !important;
-  }
-
-  /* Mobile category tabs container scroll */
-  #mobile-category-tabs-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px;
-  }
-
-  /* Make mobile category tabs flex and nowrap for horizontal scroll */
-  #mobile-category-tabs {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-  }
-
-  /* Mobile category chips: keep them inline and nicely spaced */
-  .mobile-category-chip {
-    flex: 0 0 auto; /* Prevent shrinking */
-  }
-}
   </style>
 </head>
 <body>
 
-  <!-- Main App Structure -->
   <div class="app-layout">
     
-    <!-- Header -->
     <header class="app-header">
       <div class="logo">FreshBites</div>
       <div class="top-controls">
@@ -398,58 +260,68 @@
       </div>
     </header>
 
-    <!-- Left Sidebar: Categories (Desktop) -->
     <aside class="sidebar">
       <h3>Categories</h3>
-      <nav class="category-nav" id="category-nav">
-        <!-- Categories will be rendered here by JS -->
-      </nav>
+      <nav class="category-nav" id="category-nav"></nav>
     </aside>
 
-    <!-- Center: Product Grid -->
     <main class="product-grid-area">
-      <div class="search-bar">
+      <div class="search-bar"> <!-- Search for Desktop -->
         <input type="search" id="productSearch" placeholder="Search for your favorite items...">
       </div>
-      <div id="mobile-category-tabs-container">
-          <div id="mobile-category-tabs">
-            <!-- Mobile category chips will be rendered here by JS -->
-          </div>
+      <div class="mobile-filter-bar"> <!-- Search and Filter for Mobile -->
+        <input type="search" id="productSearch-mobile" placeholder="Search for items...">
+        <button id="category-filter-btn" title="Filter by category"><i class="fa-solid fa-filter"></i></button>
       </div>
-      <div id="product-grid">
-        <!-- Products will be rendered here by JS -->
-      </div>
-      <div id="no-results" class="hidden" style="text-align: center; padding: 40px; color: var(--text-secondary);">
-        <h3>No products found</h3>
-        <p>Try adjusting your search or category selection.</p>
-      </div>
+      <div id="product-grid"></div>
+      <div id="no-results" class="hidden"><h3>No products found</h3></div>
     </main>
 
-    <!-- Right Sidebar: Cart (Desktop) -->
-    <aside class="cart-area" id="desktop-cart">
-      <!-- Desktop cart will be rendered here by JS -->
-    </aside>
+    <aside class="cart-area" id="desktop-cart"></aside>
 
   </div>
 
-  <!-- Mobile Floating Cart Button -->
-  <div id="mobile-cart-btn" class="hidden">
-      <span class="item-count">0 items</span>
-      <span>View Your Order</span>
-      <span class="total">₹0</span>
+  <div id="mobile-cart-btn" class="hidden"></div>
+  <div id="mobile-cart-modal" class="modal"></div>
+  
+  <!-- NEW: Category Modal for Mobile -->
+  <div id="category-modal" class="modal">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h3>All Categories</h3>
+              <button id="close-category-modal-btn">×</button>
+          </div>
+          <ul id="category-modal-list"></ul>
+      </div>
+  </div>
+  
+  <!-- Customer Info Modal (This is your original modal) -->
+  <div id="customer-info-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="modalTitle">Edit Your Info</h2>
+      <form id="customerInfoForm">
+        <label for="customerName">Name:</label>
+        <input type="text" id="customerName" name="customerName" required />
+        <label for="customerPhone">Phone Number:</label>
+        <input type="tel" id="customerPhone" name="customerPhone" pattern="[0-9]{10}" placeholder="10-digit number" required />
+        <label for="customerAddress">Address:</label>
+        <input type="text" id="customerAddress" name="customerAddress" required />
+        <label for="customerPincode">Pincode:</label>
+        <input type="text" id="customerPincode" name="customerPincode" pattern="[0-9]{6}" placeholder="6-digit pincode" required />
+        <label for="customerLandmark">Landmark:</label>
+        <input type="text" id="customerLandmark" name="customerLandmark" />
+        <div class="modal-actions">
+          <button type="submit">Save</button>
+          <button type="button" id="cancelCustomerInfoBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <!-- Mobile Cart Modal -->
-  <div id="mobile-cart-modal">
-      <!-- Mobile cart will be rendered here by JS -->
-  </div>
-
-  <audio id="bgAudio" loop>
-    <source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" />
-  </audio>
+  <audio id="bgAudio" loop><source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" /></audio>
 
 <script>
-// --- 1. DATA ---
+// --- 1. DATA (WITH MORE CATEGORIES ADDED TO TEST SCROLLING) ---
 const ALL_PRODUCTS = [
   { id: 'biriyani', name: 'Biriyani', price: 150, img: 'https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg', category: 'Main Course' },
   { id: 'egg_roll', name: 'Egg Roll', price: 80, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
@@ -461,14 +333,18 @@ const ALL_PRODUCTS = [
   { id: 'thums_up', name: 'Thums Up', price: 20, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
   { id: 'sprite', name: 'Sprite', price: 20, img: 'https://www.bbassets.com/media/uploads/p/l/251040_10-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
   { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 5, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
+  { id: 'rasgulla', name: 'Rasgulla', price: 15, img: 'https://www.allrecipes.com/thmb/h0x1olv357y2dGq2nJkR_tvsxF0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/156715-rasgulla-ddmfs-3X4-0359-f19b26b3e3624835850e054231f24d9c.jpg', category: 'Sweets & Desserts'},
+  { id: 'sugar', name: 'Sugar (1kg)', price: 45, img: 'https://m.media-amazon.com/images/I/61kYd7a-aeL.jpg', category: 'Grocery'},
 ];
 
 const CATEGORIES = {
     'All': 'fa-solid fa-store',
     'Main Course': 'fa-solid fa-bowl-food',
     'Snacks': 'fa-solid fa-cookie-bite',
+    'Sweets & Desserts': 'fa-solid fa-ice-cream',
     'Cold Drinks': 'fa-solid fa-martini-glass',
     'Packaged Snacks': 'fa-solid fa-bag-shopping',
+    'Grocery': 'fa-solid fa-carrot',
     'Puja Items': 'fa-solid fa-om'
 };
 
@@ -477,40 +353,39 @@ let cart = [];
 let activeFilter = 'All';
 
 // --- 3. DOM ELEMENTS ---
+// All DOM element references are now consolidated here for clarity
 const productGrid = document.getElementById('product-grid');
 const categoryNav = document.getElementById('category-nav');
-const mobileCategoryTabs = document.getElementById('mobile-category-tabs');
 const desktopCartContainer = document.getElementById('desktop-cart');
 const mobileCartModalContainer = document.getElementById('mobile-cart-modal');
 const mobileCartBtn = document.getElementById('mobile-cart-btn');
-const productSearch = document.getElementById('productSearch');
+const productSearchDesktop = document.getElementById('productSearch');
+const productSearchMobile = document.getElementById('productSearch-mobile');
 const noResultsDiv = document.getElementById('no-results');
+const categoryFilterBtn = document.getElementById('category-filter-btn');
+const categoryModal = document.getElementById('category-modal');
+const categoryModalList = document.getElementById('category-modal-list');
+const closeCategoryModalBtn = document.getElementById('close-category-modal-btn');
+const customerInfoModal = document.getElementById('customer-info-modal');
+const customerInfoForm = document.getElementById('customerInfoForm');
+const cancelCustomerInfoBtn = document.getElementById('cancelCustomerInfoBtn');
+const darkModeToggle = document.getElementById('darkModeToggle');
+const audio = document.getElementById('bgAudio');
+const audioBtn = document.getElementById('audioToggleBtn');
 
 // --- 4. RENDER FUNCTIONS ---
 function renderProducts(filter = 'All', searchTerm = '') {
     productGrid.innerHTML = '';
     let hasResults = false;
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-
     ALL_PRODUCTS.forEach(product => {
         const categoryMatch = filter === 'All' || product.category === filter;
         const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm);
-        
         if (categoryMatch && searchMatch) {
             hasResults = true;
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.innerHTML = `
-                <img src="${product.img}" alt="${product.name}" loading="lazy">
-                <div class="info">
-                    <span class="category">${product.category}</span>
-                    <p class="name">${product.name}</p>
-                    <div class="footer">
-                        <span class="price">₹${product.price}</span>
-                        ${getButtonHTML(product.id)}
-                    </div>
-                </div>
-            `;
+            card.innerHTML = `<img src="${product.img}" alt="${product.name}" loading="lazy"><div class="info"><p class="name">${product.name}</p><div class="footer"><span class="price">₹${product.price}</span>${getButtonHTML(product.id)}</div></div>`;
             productGrid.appendChild(card);
         }
     });
@@ -520,96 +395,59 @@ function renderProducts(filter = 'All', searchTerm = '') {
 function getButtonHTML(productId) {
     const itemInCart = cart.find(item => item.id === productId);
     if (itemInCart) {
-        return `
-            <div class="quantity-control">
-                <button onclick="handleQuantityChange('${productId}', -1)">-</button>
-                <span>${itemInCart.quantity}</span>
-                <button onclick="handleQuantityChange('${productId}', 1)">+</button>
-            </div>
-        `;
+        return `<div class="quantity-control"><button onclick="handleQuantityChange('${productId}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange('${productId}', 1)">+</button></div>`;
     }
     return `<button class="add-to-cart-btn" onclick="handleAddToCart('${productId}')">Add</button>`;
 }
 
 function renderCategories() {
-    const ul = document.createElement('ul');
-    mobileCategoryTabs.innerHTML = ''; 
-
+    const desktopList = document.createElement('ul');
+    categoryModalList.innerHTML = ''; 
     Object.entries(CATEGORIES).forEach(([name, iconClass]) => {
         const isActive = name === activeFilter;
-        // Desktop
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <a href="#" class="${isActive ? 'active' : ''}" data-category="${name}">
-                <i class="${iconClass}"></i>
-                <span>${name}</span>
-            </a>
-        `;
-        ul.appendChild(li);
-
-        // Mobile
-        const chip = document.createElement('button');
-        chip.className = `mobile-category-chip ${isActive ? 'active' : ''}`;
-        chip.dataset.category = name;
-        chip.innerHTML = `<i class="${iconClass}"></i><span>${name}</span>`;
-        mobileCategoryTabs.appendChild(chip);
+        const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`;
+        const desktopLi = document.createElement('li');
+        desktopLi.innerHTML = linkHTML;
+        desktopList.appendChild(desktopLi);
+        const mobileLi = document.createElement('li');
+        mobileLi.innerHTML = linkHTML;
+        categoryModalList.appendChild(mobileLi);
     });
     categoryNav.innerHTML = '';
-    categoryNav.appendChild(ul);
+    categoryNav.appendChild(desktopList);
 }
 
 function renderCart() {
     const { items, total, count } = calculateCart();
-    
     const cartHTML = `
         <div class="cart-wrapper">
             <div class="cart-header">Your Order</div>
             <div class="cart-items">
-                ${items.length === 0 ? '<p class="cart-empty-msg">Your cart is empty. Add some items!</p>' : items.map(item => `
+                ${items.length === 0 ? '<p class="cart-empty-msg">Your cart is empty.</p>' : items.map(item => `
                     <div class="cart-item">
                         <img src="${item.img}" alt="${item.name}">
-                        <div class="details">
-                            <p class="name">${item.name}</p>
-                            <p class="price">₹${item.price} x ${item.quantity} = ₹${item.price * item.quantity}</p>
-                        </div>
-                        <div class="quantity-control">
-                            <button onclick="handleQuantityChange('${item.id}', -1)">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="handleQuantityChange('${item.id}', 1)">+</button>
-                        </div>
-                    </div>
-                `).join('')}
+                        <div class="details"><p class="name">${item.name}</p><p class="price">₹${item.price} x ${item.quantity} = ₹${item.price * item.quantity}</p></div>
+                        <div class="quantity-control"><button onclick="handleQuantityChange('${item.id}', -1)">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange('${item.id}', 1)">+</button></div>
+                    </div>`).join('')}
             </div>
             ${items.length > 0 ? `
             <div class="cart-footer">
-                <div class="cart-total">
-                    <span>Grand Total</span>
-                    <span>₹${total}</span>
-                </div>
+                <div class="cart-total"><span>Grand Total</span><span>₹${total}</span></div>
                 <div class="cart-actions">
                     <a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
                     <button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button>
                     <button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button>
                 </div>
-            </div>
-            ` : ''}
-        </div>
-    `;
-    
+            </div>` : ''}
+        </div>`;
     desktopCartContainer.innerHTML = cartHTML;
     mobileCartModalContainer.innerHTML = cartHTML;
-    
+    mobileCartBtn.innerHTML = `<span class="item-count">${count} item${count !== 1 ? 's' : ''}</span><span>View Your Order</span><span class="total">₹${total}</span>`;
     mobileCartBtn.classList.toggle('hidden', items.length === 0);
-    mobileCartBtn.querySelector('.item-count').textContent = `${count} item${count !== 1 ? 's' : ''}`;
-    mobileCartBtn.querySelector('.total').textContent = `₹${total}`;
-
-    if(items.length > 0) {
-      updateWhatsappLink();
-    }
+    if(items.length > 0) updateWhatsappLink();
 }
 
-// --- 5. EVENT HANDLERS & LOGIC ---
-
+// --- 5. LOGIC & HANDLERS ---
 function handleAddToCart(productId) {
     const product = ALL_PRODUCTS.find(p => p.id === productId);
     cart.push({ ...product, quantity: 1 });
@@ -620,9 +458,7 @@ function handleQuantityChange(productId, change) {
     const itemIndex = cart.findIndex(item => item.id === productId);
     if (itemIndex > -1) {
         cart[itemIndex].quantity += change;
-        if (cart[itemIndex].quantity <= 0) {
-            cart.splice(itemIndex, 1);
-        }
+        if (cart[itemIndex].quantity <= 0) cart.splice(itemIndex, 1);
     }
     rerenderAll();
 }
@@ -630,7 +466,10 @@ function handleQuantityChange(productId, change) {
 function handleCategoryChange(newCategory) {
     activeFilter = newCategory;
     renderCategories();
-    renderProducts(activeFilter, productSearch.value);
+    // Use the value from whichever search bar is visible
+    const searchTerm = window.innerWidth <= 1024 ? productSearchMobile.value : productSearchDesktop.value;
+    renderProducts(activeFilter, searchTerm);
+    categoryModal.classList.remove('visible');
 }
 
 function calculateCart() {
@@ -641,293 +480,144 @@ function calculateCart() {
 
 function updateWhatsappLink() {
     const { items, total } = calculateCart();
-    const name = localStorage.getItem('customerName') || 'Customer';
-const phone = localStorage.getItem('customerPhone') || '';
-const address = localStorage.getItem('customerAddress') || '';
-const pincode = localStorage.getItem('customerPincode') || '';
-const landmark = localStorage.getItem('customerLandmark') || '';
-
-const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
-
-const message = 
-`Hello, my name is ${name}.
-Phone: ${phone}
-Address: ${address}
-Pincode: ${pincode}
-Landmark: ${landmark}
-
-I'd like to place an order:
-
-${orderDetails}
-
-*Total: ₹${total}*
-
-Thank you!`;
+    const name = localStorage.getItem('customerName') || 'N/A';
+    const phone = localStorage.getItem('customerPhone') || 'N/A';
+    const address = localStorage.getItem('customerAddress') || 'N/A';
+    const pincode = localStorage.getItem('customerPincode') || 'N/A';
+    const landmark = localStorage.getItem('customerLandmark') || '';
+    const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
+    const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total}*\n\nThank you!`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/917431059519?text=${encodedMessage}`;
-    
-    const desktopBtn = document.querySelector('#desktop-cart #whatsapp-order-btn');
-    const mobileBtn = document.querySelector('#mobile-cart-modal #whatsapp-order-btn');
-    if (desktopBtn) desktopBtn.href = whatsappLink;
-    if (mobileBtn) mobileBtn.href = whatsappLink;
+    document.querySelectorAll('#whatsapp-order-btn').forEach(btn => btn.href = whatsappLink);
 }
 
 function rerenderAll() {
-    renderProducts(activeFilter, productSearch.value);
+    const searchTerm = window.innerWidth <= 1024 ? productSearchMobile.value : productSearchDesktop.value;
+    renderProducts(activeFilter, searchTerm);
     renderCart();
 }
 
-// Dummy functions for PDF and Customer Info. You can replace these with your actual logic.
 function downloadPDF() {
-  const { items, total } = calculateCart();
-  if(items.length === 0) {
-      alert("Your cart is empty. Add some items before downloading the bill.");
-      return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  // Header
-  doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
-  doc.text("FreshBites", 105, 20, null, null, "center");
-
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.text("Your Local Order Hub", 105, 28, null, null, "center");
-
-  doc.setDrawColor(0);
-  doc.setLineWidth(0.5);
-  doc.line(14, 32, 196, 32); // horizontal line
-
-  // Customer Info
-  const name = localStorage.getItem('customerName') || 'N/A';
-  const phone = localStorage.getItem('customerPhone') || 'N/A';
-  const address = localStorage.getItem('customerAddress') || 'N/A';
-  const pincode = localStorage.getItem('customerPincode') || 'N/A';
-  const landmark = localStorage.getItem('customerLandmark') || '';
-
-  doc.setFontSize(12);
-  doc.text(`Name: ${name}`, 14, 40);
-  doc.text(`Phone: ${phone}`, 14, 47);
-  doc.text(`Address: ${address}`, 14, 54);
-  doc.text(`Pincode: ${pincode}`, 14, 61);
-  if(landmark) doc.text(`Landmark: ${landmark}`, 14, 68);
-
-  // Date & Invoice No (optional)
-  const dateStr = new Date().toLocaleString();
-  doc.text(`Date: ${dateStr}`, 150, 40);
-
-  // Table headers
-  const startY = landmark ? 80 : 74;
-  doc.setFont("helvetica", "bold");
-  doc.text("Item", 14, startY);
-  doc.text("Qty", 110, startY, null, null, "center");
-  doc.text("Price", 140, startY, null, null, "right");
-  doc.text("Total", 190, startY, null, null, "right");
-
-  doc.setLineWidth(0.2);
-  doc.line(14, startY + 2, 196, startY + 2); // line below headers
-
-  // Table content
-  doc.setFont("helvetica", "normal");
-  let y = startY + 10;
-  items.forEach(item => {
-    doc.text(item.name, 14, y, {maxWidth: 90});
-    doc.text(String(item.quantity), 110, y, null, null, "center");
-    doc.text(`Rs.${item.price.toFixed(2)}`, 140, y, null, null, "right");
-    doc.text(`Rs.${(item.price * item.quantity).toFixed(2)}`, 190, y, null, null, "right");
-    y += 8;
-  });
-
-  // Horizontal line before total
-  doc.line(14, y, 196, y);
-  y += 8;
-
-  // Total
-  doc.setFont("helvetica", "bold");
-  doc.text("Grand Total:", 140, y, null, null, "right");
-  doc.text(`Rs.${total.toFixed(2)}`, 190, y, null, null, "right");
-
-  // Footer note
-  y += 20;
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "italic");
-  doc.text("Thank you for ordering with FreshBites!", 105, y, null, null, "center");
-
-  // Save PDF
-  doc.save(`FreshBites_Bill_${Date.now()}.pdf`);
+    const { items, total } = calculateCart();
+    if(items.length === 0) { alert("Your cart is empty."); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(22).setFont("helvetica", "bold").text("FreshBites", 105, 20, null, null, "center");
+    doc.setFontSize(12).setFont("helvetica", "normal").text("Your Local Order Hub", 105, 28, null, null, "center");
+    doc.setDrawColor(0).setLineWidth(0.5).line(14, 32, 196, 32);
+    const name = localStorage.getItem('customerName') || 'N/A', phone = localStorage.getItem('customerPhone') || 'N/A', address = localStorage.getItem('customerAddress') || 'N/A', pincode = localStorage.getItem('customerPincode') || 'N/A', landmark = localStorage.getItem('customerLandmark') || '';
+    doc.setFontSize(12).text(`Name: ${name}`, 14, 40).text(`Phone: ${phone}`, 14, 47).text(`Address: ${address}`, 14, 54).text(`Pincode: ${pincode}`, 14, 61);
+    if(landmark) doc.text(`Landmark: ${landmark}`, 14, 68);
+    doc.text(`Date: ${new Date().toLocaleString()}`, 150, 40);
+    const startY = landmark ? 80 : 74;
+    doc.setFont("helvetica", "bold").text("Item", 14, startY).text("Qty", 110, startY, null, null, "center").text("Price", 140, startY, null, null, "right").text("Total", 190, startY, null, null, "right");
+    doc.setLineWidth(0.2).line(14, startY + 2, 196, startY + 2);
+    doc.setFont("helvetica", "normal");
+    let y = startY + 10;
+    items.forEach(item => { doc.text(item.name, 14, y, {maxWidth: 90}); doc.text(String(item.quantity), 110, y, null, null, "center"); doc.text(`Rs.${item.price.toFixed(2)}`, 140, y, null, null, "right"); doc.text(`Rs.${(item.price * item.quantity).toFixed(2)}`, 190, y, null, null, "right"); y += 8; });
+    doc.line(14, y, 196, y); y += 8;
+    doc.setFont("helvetica", "bold").text("Grand Total:", 140, y, null, null, "right").text(`Rs.${total.toFixed(2)}`, 190, y, null, null, "right");
+    y += 20;
+    doc.setFontSize(10).setFont("helvetica", "italic").text("Thank you for ordering with FreshBites!", 105, y, null, null, "center");
+    doc.save(`FreshBites_Bill_${Date.now()}.pdf`);
 }
+
 function showCustomerInfoModal() {
-    const modal = document.getElementById('customer-info-modal');
     document.getElementById('customerName').value = localStorage.getItem('customerName') || '';
     document.getElementById('customerPhone').value = localStorage.getItem('customerPhone') || '';
     document.getElementById('customerAddress').value = localStorage.getItem('customerAddress') || '';
     document.getElementById('customerPincode').value = localStorage.getItem('customerPincode') || '';
     document.getElementById('customerLandmark').value = localStorage.getItem('customerLandmark') || '';
-    modal.classList.remove('hidden');
+    customerInfoModal.classList.add('visible');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('customerInfoForm');
-    const cancelBtn = document.getElementById('cancelCustomerInfoBtn');
-
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-
-        const name = form.customerName.value.trim();
-        const phone = form.customerPhone.value.trim();
-        const address = form.customerAddress.value.trim();
-        const pincode = form.customerPincode.value.trim();
-        const landmark = form.customerLandmark.value.trim();
-
-        if(!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
-            alert('Please enter valid details for all required fields.');
-            return;
-        }
-
-        localStorage.setItem('customerName', name);
-        localStorage.setItem('customerPhone', phone);
-        localStorage.setItem('customerAddress', address);
-        localStorage.setItem('customerPincode', pincode);
-        localStorage.setItem('customerLandmark', landmark);
-
-        alert('Your info has been saved!');
-        hideCustomerInfoModal();
-    });
-
-    cancelBtn.addEventListener('click', () => {
-        hideCustomerInfoModal();
-    });
-});
+function hideCustomerInfoModal() {
+    customerInfoModal.classList.remove('visible');
+}
 
 // --- 6. INITIALIZATION & EVENT LISTENERS ---
-
+// This is now a single, consolidated block for all event listeners.
 document.addEventListener('DOMContentLoaded', () => {
+    // Initial Renders
     renderCategories();
     renderProducts();
     renderCart();
 
-    // Desktop Category filtering
+    // Desktop Category Filtering
     categoryNav.addEventListener('click', e => {
         e.preventDefault();
         const link = e.target.closest('a');
         if (link) handleCategoryChange(link.dataset.category);
     });
 
-    // Mobile Category filtering
-    mobileCategoryTabs.addEventListener('click', e => {
-        const chip = e.target.closest('.mobile-category-chip');
-        if (chip) handleCategoryChange(chip.dataset.category);
-    });
-    
-    // Search
-    productSearch.addEventListener('input', () => {
-        renderProducts(activeFilter, productSearch.value);
-    });
-
-    // Mobile cart modal
-    mobileCartBtn.addEventListener('click', () => {
-        mobileCartModalContainer.classList.add('visible');
-    });
-
-    mobileCartModalContainer.addEventListener('click', e => {
-        // Close if clicking on the background overlay itself
-        if (e.target.id === 'mobile-cart-modal') {
-            mobileCartModalContainer.classList.remove('visible');
+    // Mobile Category Modal Listeners
+    categoryFilterBtn.addEventListener('click', () => categoryModal.classList.add('visible'));
+    closeCategoryModalBtn.addEventListener('click', () => categoryModal.classList.remove('visible'));
+    categoryModal.addEventListener('click', e => {
+        if (e.target.id === 'category-modal') categoryModal.classList.remove('visible');
+        const link = e.target.closest('a');
+        if(link) {
+            e.preventDefault();
+            handleCategoryChange(link.dataset.category);
         }
     });
+    
+    // Search for both desktop and mobile
+    function handleSearch() {
+        const searchTerm = this.value;
+        // Sync the other search bar's value
+        if (this.id === 'productSearch') {
+            productSearchMobile.value = searchTerm;
+        } else {
+            productSearchDesktop.value = searchTerm;
+        }
+        renderProducts(activeFilter, searchTerm);
+    }
+    productSearchDesktop.addEventListener('input', handleSearch);
+    productSearchMobile.addEventListener('input', handleSearch);
 
-    // Dark Mode Toggle
-    const darkModeToggle = document.getElementById('darkModeToggle');
+    // Mobile Cart Modal
+    mobileCartBtn.addEventListener('click', () => mobileCartModalContainer.classList.add('visible'));
+    mobileCartModalContainer.addEventListener('click', e => {
+        if (e.target.id === 'mobile-cart-modal') mobileCartModalContainer.classList.remove('visible');
+    });
+
+    // Dark Mode & Audio Toggles
     darkModeToggle.addEventListener('click', () => {
         document.body.classList.toggle('dark');
         darkModeToggle.innerHTML = document.body.classList.contains('dark') ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     });
-
-    // Audio Toggle
-    const audio = document.getElementById('bgAudio');
-    const audioBtn = document.getElementById('audioToggleBtn');
-    audio.volume = 0.3;
     audioBtn.addEventListener('click', () => {
         if(audio.paused) {
-            audio.play().catch(e => console.log("Audio autoplay was blocked by the browser."));
+            audio.play().catch(e => console.log("Audio play blocked."));
             audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
         } else {
             audio.pause();
             audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
         }
     });
-});
-function showCustomerInfoModal() {
-    const modal = document.getElementById('customer-info-modal');
-    const nameInput = document.getElementById('customerName');
-    const phoneInput = document.getElementById('customerPhone');
 
-    // Load existing info from localStorage
-    nameInput.value = localStorage.getItem('customerName') || '';
-    phoneInput.value = localStorage.getItem('customerPhone') || '';
-
-    modal.classList.remove('hidden');
-}
-
-function hideCustomerInfoModal() {
-    const modal = document.getElementById('customer-info-modal');
-    modal.classList.add('hidden');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('customerInfoForm');
-    const cancelBtn = document.getElementById('cancelCustomerInfoBtn');
-
-    form.addEventListener('submit', e => {
+    // Customer Info Form
+    customerInfoForm.addEventListener('submit', e => {
         e.preventDefault();
-        const name = form.customerName.value.trim();
-        const phone = form.customerPhone.value.trim();
-
-        if(name && phone.match(/^\d{10}$/)) {
-            localStorage.setItem('customerName', name);
-            localStorage.setItem('customerPhone', phone);
-            alert('Your info has been saved!');
-            hideCustomerInfoModal();
-        } else {
-            alert('Please enter a valid name and 10-digit phone number.');
+        const name = customerInfoForm.customerName.value.trim(), phone = customerInfoForm.customerPhone.value.trim(), address = customerInfoForm.customerAddress.value.trim(), pincode = customerInfoForm.customerPincode.value.trim(), landmark = customerInfoForm.customerLandmark.value.trim();
+        if(!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
+            alert('Please enter valid details for all required fields.');
+            return;
         }
-    });
-
-    cancelBtn.addEventListener('click', () => {
+        localStorage.setItem('customerName', name);
+        localStorage.setItem('customerPhone', phone);
+        localStorage.setItem('customerAddress', address);
+        localStorage.setItem('customerPincode', pincode);
+        localStorage.setItem('customerLandmark', landmark);
+        alert('Your info has been saved!');
         hideCustomerInfoModal();
+        updateWhatsappLink(); // Update link immediately after saving new info
     });
+    cancelCustomerInfoBtn.addEventListener('click', hideCustomerInfoModal);
 });
 </script>
-<!-- Customer Info Modal -->
-<div id="customer-info-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
-  <div class="modal-content">
-    <h2 id="modalTitle">Edit Your Info</h2>
-    <form id="customerInfoForm">
-      <!-- Update inside modal-content form -->
 
-<label for="customerName">Name:</label>
-<input type="text" id="customerName" name="customerName" required />
-
-<label for="customerPhone">Phone Number:</label>
-<input type="tel" id="customerPhone" name="customerPhone" pattern="[0-9]{10}" placeholder="10-digit number" required />
-
-<label for="customerAddress">Address:</label>
-<input type="text" id="customerAddress" name="customerAddress" required />
-
-<label for="customerPincode">Pincode:</label>
-<input type="text" id="customerPincode" name="customerPincode" pattern="[0-9]{6}" placeholder="6-digit pincode" required />
-
-<label for="customerLandmark">Landmark:</label>
-<input type="text" id="customerLandmark" name="customerLandmark" />
-      <div class="modal-actions">
-        <button type="submit">Save</button>
-        <button type="button" id="cancelCustomerInfoBtn">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
 </body>
 </html>
