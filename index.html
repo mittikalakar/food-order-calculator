@@ -427,128 +427,113 @@
   <audio id="bgAudio" loop><source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" /></audio>
 
 <script>
-  
-  // a. Parse category from URL
-function getCategoryFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const category = params.get('category');
-  return category || 'All';
-}
+  // 1. Validate category param from URL
+  function getCategoryFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get('category');
+    return category && CATEGORIES.hasOwnProperty(category) ? category : 'All';
+  }
 
-// b. Use the category param as initial filter
-let activeFilter = getCategoryFromUrl();
-  
-// --- 1. DATA (WITH MORE CATEGORIES ADDED TO TEST SCROLLING) ---
-const ALL_PRODUCTS = [
-  { id: 'biriyani', name: 'Chicken Biriyani', price: 110, inStock: true, img: 'https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', category: 'Main Course' },
-  { id: 'egg_roll', name: 'Egg Roll', price: 40, inStock: true, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
-  { id: 'moglai', name: 'Moglai', price: 60, inStock: true, img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg', category: 'Main Course' },
-  { id: 'chicken_pakora', name: 'Chicken Pakora', price: 45, inStock: true, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
-  { id: 'chicken_momo', name: 'Chicken Momo', price: 50, inStock: true, img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY', category: 'Snacks' },
-  { id: 'chowmein', name: 'Chowmein', price: 40, inStock: true, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
-  { id: 'chips', name: "Lay's Magic Masala", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
-  { id: 'chips', name: "Lay's Potato Chips", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75', category: 'Packaged Snacks' },
-  { id: 'thums_up', name: 'Thums Up', price: 20, inStock: true, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
-  { id: 'sprite', name: 'Sprite Soft Drink 750 Ml', price: 38, inStock: true, img: 'https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
-  { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2,inStock: true, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
-  { id: 'rasgulla', name: 'Rasgulla', price: 9, inStock: true, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
-  { id: 'sugar', name: 'Sugar (1kg)', price: 45, inStock: true, img: 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg=', category: 'Grocery'},
-];
+  // Global activeFilter variable
+  let activeFilter = 'All';
 
-const CATEGORIES = {
-    'All': 'fa-solid fa-store',
-    'Main Course': 'fa-solid fa-bowl-food',
-    'Snacks': 'fa-solid fa-cookie-bite',
-    'Sweets & Desserts': 'fa-solid fa-ice-cream',
-    'Cold Drinks': 'fa-solid fa-martini-glass',
-    'Packaged Snacks': 'fa-solid fa-bag-shopping',
-    'Grocery': 'fa-solid fa-carrot',
-    'Puja Items': 'fa-solid fa-om'
-};
+  // --- 1. DATA (WITH MORE CATEGORIES ADDED TO TEST SCROLLING) ---
+  const ALL_PRODUCTS = [
+    { id: 'biriyani', name: 'Chicken Biriyani', price: 110, inStock: true, img: 'https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', category: 'Main Course' },
+    { id: 'egg_roll', name: 'Egg Roll', price: 40, inStock: true, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
+    { id: 'moglai', name: 'Moglai', price: 60, inStock: true, img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg', category: 'Main Course' },
+    { id: 'chicken_pakora', name: 'Chicken Pakora', price: 45, inStock: true, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
+    { id: 'chicken_momo', name: 'Chicken Momo', price: 50, inStock: true, img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY', category: 'Snacks' },
+    { id: 'chowmein', name: 'Chowmein', price: 40, inStock: true, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
+    { id: 'chips', name: "Lay's Magic Masala", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
+    { id: 'chips', name: "Lay's Potato Chips", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75', category: 'Packaged Snacks' },
+    { id: 'thums_up', name: 'Thums Up', price: 20, inStock: true, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
+    { id: 'sprite', name: 'Sprite Soft Drink 750 Ml', price: 38, inStock: true, img: 'https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
+    { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2,inStock: true, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
+    { id: 'rasgulla', name: 'Rasgulla', price: 9, inStock: true, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
+    { id: 'sugar', name: 'Sugar (1kg)', price: 45, inStock: true, img: 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg=', category: 'Grocery'},
+  ];
 
-// --- 2. STATE ---
-let cart = [];
-let activeFilter = 'All';
+  const CATEGORIES = {
+      'All': 'fa-solid fa-store',
+      'Main Course': 'fa-solid fa-bowl-food',
+      'Snacks': 'fa-solid fa-cookie-bite',
+      'Sweets & Desserts': 'fa-solid fa-ice-cream',
+      'Cold Drinks': 'fa-solid fa-martini-glass',
+      'Packaged Snacks': 'fa-solid fa-bag-shopping',
+      'Grocery': 'fa-solid fa-carrot',
+      'Puja Items': 'fa-solid fa-om'
+  };
 
-// --- 3. DOM ELEMENTS ---
-// All DOM element references are now consolidated here for clarity
-const productGrid = document.getElementById('product-grid');
-const categoryNav = document.getElementById('category-nav');
-const desktopCartContainer = document.getElementById('desktop-cart');
-const mobileCartModalContainer = document.getElementById('mobile-cart-modal');
-const mobileCartBtn = document.getElementById('mobile-cart-btn');
-const productSearchDesktop = document.getElementById('productSearch');
-const productSearchMobile = document.getElementById('productSearch-mobile');
-const noResultsDiv = document.getElementById('no-results');
-const categoryFilterBtn = document.getElementById('category-filter-btn');
-const categoryModal = document.getElementById('category-modal');
-const categoryModalList = document.getElementById('category-modal-list');
-const closeCategoryModalBtn = document.getElementById('close-category-modal-btn');
-const customerInfoModal = document.getElementById('customer-info-modal');
-const customerInfoForm = document.getElementById('customerInfoForm');
-const cancelCustomerInfoBtn = document.getElementById('cancelCustomerInfoBtn');
-const darkModeToggle = document.getElementById('darkModeToggle');
-const audio = document.getElementById('bgAudio');
-const audioBtn = document.getElementById('audioToggleBtn');
+  // --- DOM elements ---
+  const productGrid = document.getElementById('product-grid');
+  const categoryNav = document.getElementById('category-nav');
+  const desktopCartContainer = document.getElementById('desktop-cart');
+  const mobileCartModalContainer = document.getElementById('mobile-cart-modal');
+  const mobileCartBtn = document.getElementById('mobile-cart-btn');
+  const productSearchDesktop = document.getElementById('productSearch');
+  const productSearchMobile = document.getElementById('productSearch-mobile');
+  const noResultsDiv = document.getElementById('no-results');
+  const categoryFilterBtn = document.getElementById('category-filter-btn');
+  const categoryModal = document.getElementById('category-modal');
+  const categoryModalList = document.getElementById('category-modal-list');
+  const closeCategoryModalBtn = document.getElementById('close-category-modal-btn');
+  const customerInfoModal = document.getElementById('customer-info-modal');
+  const customerInfoForm = document.getElementById('customerInfoForm');
+  const cancelCustomerInfoBtn = document.getElementById('cancelCustomerInfoBtn');
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const audio = document.getElementById('bgAudio');
+  const audioBtn = document.getElementById('audioToggleBtn');
 
-// --- 4. RENDER FUNCTIONS ---
-function renderProducts(filter = 'All', searchTerm = '') {
-  productGrid.innerHTML = '';
-  let hasResults = false;
-  const lowerCaseSearchTerm = searchTerm.toLowerCase();
-  
-  ALL_PRODUCTS.forEach(product => {
-    const categoryMatch = filter === 'All' || product.category === filter;
-    const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm);
-    
-    if (categoryMatch && searchMatch) {
-      hasResults = true;
-      const card = document.createElement('div');
-      card.className = 'product-card';
+  // --- Render functions ---
 
-      // Out of stock badge HTML
-      const outOfStockBadge = !product.inStock ? '<span class="out-of-stock">Out of Stock</span>' : '';
+  function renderProducts(filter = 'All', searchTerm = '') {
+    productGrid.innerHTML = '';
+    let hasResults = false;
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-      // Add button or disabled button
-      const addButtonHTML = product.inStock 
-        ? `<button class="add-to-cart-btn" onclick="handleAddToCart('${product.id}')">Add</button>`
-        : `<button class="add-to-cart-btn" disabled>Out of Stock</button>`;
+    ALL_PRODUCTS.forEach(product => {
+      const categoryMatch = filter === 'All' || product.category === filter;
+      const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm);
 
-      card.innerHTML = `
-        <img src="${product.img}" alt="${product.name}" loading="lazy">
-        <div class="info">
-          <p class="name">${product.name} ${outOfStockBadge}</p>
-          <div class="footer">
-            <span class="price">₹${product.price}</span>
-            ${addButtonHTML}
-          </div>
-        </div>`;
+      if (categoryMatch && searchMatch) {
+        hasResults = true;
+        const card = document.createElement('div');
+        card.className = 'product-card';
 
-      productGrid.appendChild(card);
-    }
-  });
+        const outOfStockBadge = !product.inStock ? '<span class="out-of-stock">Out of Stock</span>' : '';
 
-  noResultsDiv.classList.toggle('hidden', hasResults);
-}
+        const addButtonHTML = product.inStock 
+          ? `<button class="add-to-cart-btn" onclick="handleAddToCart('${product.id}')">Add</button>`
+          : `<button class="add-to-cart-btn" disabled>Out of Stock</button>`;
 
-function getButtonHTML(productId) {
-    const itemInCart = cart.find(item => item.id === productId);
-    if (itemInCart) {
-        return `<div class="quantity-control"><button onclick="handleQuantityChange('${productId}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange('${productId}', 1)">+</button></div>`;
-    }
-    return `<button class="add-to-cart-btn" onclick="handleAddToCart('${productId}')">Add</button>`;
-}
+        card.innerHTML = `
+          <img src="${product.img}" alt="${product.name}" loading="lazy">
+          <div class="info">
+            <p class="name">${product.name} ${outOfStockBadge}</p>
+            <div class="footer">
+              <span class="price">₹${product.price}</span>
+              ${addButtonHTML}
+            </div>
+          </div>`;
 
-function renderCategories() {
+        productGrid.appendChild(card);
+      }
+    });
+
+    noResultsDiv.classList.toggle('hidden', hasResults);
+  }
+
+  function renderCategories() {
     const desktopList = document.createElement('ul');
-    categoryModalList.innerHTML = ''; 
+    categoryModalList.innerHTML = '';
     Object.entries(CATEGORIES).forEach(([name, iconClass]) => {
-        const isActive = name === activeFilter;
-        const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`;
-        const desktopLi = document.createElement('li');
-        desktopLi.innerHTML = linkHTML;
-        desktopList.appendChild(desktopLi);
-        const mobileLi = document.createElement('li');
+      const isActive = name === activeFilter;
+      const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`;
+      const desktopLi = document.createElement('li');
+      desktopLi.innerHTML = linkHTML;
+      desktopList.appendChild(desktopLi);
+      const mobileLi = document.createElement('li');
         mobileLi.innerHTML = linkHTML;
         categoryModalList.appendChild(mobileLi);
     });
