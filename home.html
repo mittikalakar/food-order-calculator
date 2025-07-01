@@ -6,88 +6,262 @@
   <title>FreshBites - Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lobster&display=swap" rel="stylesheet" />
   <style>
+    /* Reset & base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
     body {
+      margin: 0;
+      min-height: 100vh;
       font-family: 'Poppins', sans-serif;
-      background: #f7f7f7;
-      margin: 0; padding: 0;
+      background-color: #fff8f6;
+      color: #2c2c2c;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      align-items: center;
       justify-content: center;
-      text-align: center;
+      align-items: center;
       padding: 20px;
+      user-select: none;
+      animation: fadeIn 0.8s ease forwards;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    h1, p {
+      user-select: none;
     }
     h1 {
       font-family: 'Lobster', cursive;
-      color: #ff6f61;
-      font-size: 3rem;
-      margin-bottom: 10px;
+      font-size: 3.4rem;
+      margin-bottom: 0.25em;
+      color: #ff6f61; /* Coral orange */
+      text-align: center;
+      line-height: 1.1;
     }
     p {
+      font-size: 1.3rem;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      font-weight: 500;
       color: #555;
-      font-size: 1.1rem;
-      margin-bottom: 30px;
+      text-align: center;
+      line-height: 1.4;
     }
-    .categories {
+    nav.categories {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 20px;
-      max-width: 600px;
+      justify-content: center;
+      max-width: 700px;
       width: 100%;
+      border-radius: 16px;
+      background: #fff;
+      padding: 24px 20px;
+      box-shadow:
+        0 4px 12px rgba(255, 111, 97, 0.25);
+      user-select: none;
     }
-    .category-btn {
-      background-color: #ff6f61;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      padding: 15px 30px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
+    nav.categories button {
       flex: 1 1 40%;
       max-width: 200px;
+      background-color: #ff6f61;
+      border: none;
+      border-radius: 30px;
+      padding: 16px 36px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(255, 111, 97, 0.4);
+      transition:
+        background-color 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.2s ease;
     }
-    .category-btn:hover {
+    nav.categories button:hover,
+    nav.categories button:focus-visible {
       background-color: #e6564a;
+      outline-offset: 3px;
+      outline: 3px solid #f9a49a;
+      box-shadow: 0 8px 22px rgba(230, 86, 74, 0.7);
+      transform: translateY(-3px);
+    }
+    nav.categories button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(230, 86, 74, 0.5);
+    }
+    nav.categories button:focus {
+      outline: none;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding: 15px 10px;
+      width: 100%;
+      max-width: 700px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+      user-select: none;
+    }
+    footer a {
+      color: #ff6f61;
+      text-decoration: none;
+      margin: 0 12px;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    footer a:hover,
+    footer a:focus-visible {
+      color: #e6564a;
+      outline-offset: 2px;
+      outline: 2px solid #f9a49a;
+      border-radius: 4px;
+    }
+
+    /* Dark Mode */
+    body.dark {
+      background-color: #1c1c1e;
+      color: #f0f0f0;
+    }
+    body.dark nav.categories {
+      background: #2c2c2e;
+      box-shadow: 0 4px 12px rgba(255, 111, 97, 0.6);
+    }
+    body.dark nav.categories button {
+      background-color: #ff7b6e;
+      box-shadow: 0 6px 15px rgba(255, 123, 110, 0.6);
+      color: #fff;
+    }
+    body.dark nav.categories button:hover,
+    body.dark nav.categories button:focus-visible {
+      background-color: #e05e54;
+      outline-color: #f9a49a;
+      box-shadow: 0 8px 22px rgba(224, 94, 84, 0.85);
+    }
+    body.dark footer {
+      color: #bbb;
+    }
+    body.dark footer a {
+      color: #ff7b6e;
+    }
+    body.dark footer a:hover,
+    body.dark footer a:focus-visible {
+      color: #e05e54;
+    }
+
+    /* Dark mode toggle button */
+    #darkModeToggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ff6f61;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      color: white;
+      font-size: 1.3rem;
+      display: grid;
+      place-content: center;
+      box-shadow: 0 4px 12px rgba(255, 111, 97, 0.6);
+      transition: background-color 0.3s;
+      z-index: 100;
+      user-select: none;
+    }
+    #darkModeToggle:hover,
+    #darkModeToggle:focus-visible {
+      background-color: #e6564a;
+      outline-offset: 3px;
+      outline: 3px solid #f9a49a;
+      outline-radius: 50%;
+    }
+    #darkModeToggle:focus {
+      outline: none;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2.4rem;
+      }
+      p {
+        font-size: 1rem;
+        max-width: 90%;
+      }
+      nav.categories button {
+        flex: 1 1 100%;
+        max-width: none;
+        padding: 14px 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>Welcome to FreshBites</h1>
-  <p>Hello, <span id="customerNameDisplay">Customer</span>! Please select a category to start ordering.</p>
+  <button id="darkModeToggle" aria-label="Toggle dark mode" title="Toggle Dark Mode" type="button">🌙</button>
 
-  <div class="categories" id="categoryButtons">
-    <!-- Category buttons inserted by JS -->
-  </div>
+  <main role="main" aria-label="Homepage main content" style="width: 100%; max-width: 700px;">
+    <h1>FreshBites</h1>
+    <p>Hello, <strong id="customerNameDisplay">Customer</strong>! What would you like to explore today?</p>
+
+    <nav class="categories" aria-label="Food categories">
+      <!-- category buttons inserted by JS -->
+    </nav>
+  </main>
+
+  <footer role="contentinfo">
+    <a href="#" tabindex="0">Terms</a>
+    <a href="#" tabindex="0">Contact</a>
+    <a href="#" tabindex="0">Privacy</a>
+  </footer>
 
   <script>
+    // Categories array
     const CATEGORIES = ['All', 'Main Course', 'Snacks', 'Cold Drinks', 'Packaged Snacks', 'Puja Items'];
 
-    // Show customer name from localStorage
+    // Show customer name from localStorage or fallback
     const customerName = localStorage.getItem('customerName') || 'Customer';
     document.getElementById('customerNameDisplay').textContent = customerName;
 
-    const container = document.getElementById('categoryButtons');
+    const nav = document.querySelector('nav.categories');
 
+    // Create buttons for categories
     CATEGORIES.forEach(category => {
       const btn = document.createElement('button');
-      btn.className = 'category-btn';
+      btn.type = 'button';
       btn.textContent = category;
+      btn.setAttribute('aria-label', `Browse category ${category}`);
       btn.addEventListener('click', () => {
-        // Navigate to index.html with category query param
-        const url = new URL(window.location.origin + '/food-order-calculator');
-        if (category !== 'All') {
-          url.searchParams.set('category', category);
-        }
+        const url = new URL(window.location.origin + '/index.html');
+        if(category !== 'All') url.searchParams.set('category', category);
         window.location.href = url.toString();
       });
-      container.appendChild(btn);
+      nav.appendChild(btn);
     });
-  </script>
 
+    // Dark mode toggle logic
+    <script>
+  const darkModeToggle = document.getElementById('darkModeToggle');
+
+  // Load saved mode
+  if(localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark');
+    darkModeToggle.textContent = '☀️';
+  }
+
+  darkModeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    darkModeToggle.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+  });
+</script>
 </body>
 </html>
