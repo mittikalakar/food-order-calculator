@@ -126,28 +126,34 @@
   </main>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-      e.preventDefault();
+    const allowedPincodes = ['743391', '743372'];
 
-      const name = this.name.value.trim();
-      const phone = this.phone.value.trim();
-      const address = this.address.value.trim();
-      const pincode = this.pincode.value.trim();
-      const landmark = this.landmark.value.trim();
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+  e.preventDefault();
 
-      if (!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
-        alert('Please fill in all required fields correctly.');
-        return;
-      }
+  const name = this.name.value.trim();
+  const phone = this.phone.value.trim();
+  const address = this.address.value.trim();
+  const pincode = this.pincode.value.trim();
+  const landmark = this.landmark.value.trim();
 
-      localStorage.setItem('customerName', name);
-      localStorage.setItem('customerPhone', phone);
-      localStorage.setItem('customerAddress', address);
-      localStorage.setItem('customerPincode', pincode);
-      localStorage.setItem('customerLandmark', landmark);
+  if (!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
+    alert('Please fill in all required fields correctly.');
+    return;
+  }
 
-      window.location.href = 'home.html'; // Redirect to your new home page
-    });
+  localStorage.setItem('customerName', name);
+  localStorage.setItem('customerPhone', phone);
+  localStorage.setItem('customerAddress', address);
+  localStorage.setItem('customerPincode', pincode);
+  localStorage.setItem('customerLandmark', landmark);
+
+  if (!allowedPincodes.includes(pincode)) {
+    alert('Sorry, our service is not available in your area yet. We are coming soon!');
+  }
+
+  window.location.href = 'home.html'; // Redirect as usual
+});
   </script>
 </body>
 </html>
