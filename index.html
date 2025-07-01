@@ -485,23 +485,36 @@ function renderProducts(filter = 'All', searchTerm = '') {
   productGrid.innerHTML = '';
   let hasResults = false;
   const lowerCaseSearchTerm = searchTerm.toLowerCase();
-  
+
   ALL_PRODUCTS.forEach(product => {
     const categoryMatch = filter === 'All' || product.category === filter;
     const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm);
-    
+
     if (categoryMatch && searchMatch) {
       hasResults = true;
+
+      const inCartItem = cart.find(item => item.id === product.id);
+      const quantity = inCartItem ? inCartItem.quantity : 0;
+
       const card = document.createElement('div');
       card.className = 'product-card';
 
-      // Out of stock badge HTML
       const outOfStockBadge = !product.inStock ? '<span class="out-of-stock">Out of Stock</span>' : '';
 
-      // Add button or disabled button
-      const addButtonHTML = product.inStock 
-        ? `<button class="add-to-cart-btn" onclick="handleAddToCart('${product.id}')">Add</button>`
-        : `<button class="add-to-cart-btn" disabled>Out of Stock</button>`;
+      let buttonHTML = '';
+      if (!product.inStock) {
+        buttonHTML = `<button class="add-to-cart-btn" disabled>Out of Stock</button>`;
+      } else if (quantity > 0) {
+        buttonHTML = `
+          <div class="quantity-control">
+            <button onclick="handleQuantityChange('${product.id}', -1)">-</button>
+            <span>${quantity}</span>
+            <button onclick="handleQuantityChange('${product.id}', 1)">+</button>
+          </div>
+        `;
+      } else {
+        buttonHTML = `<button class="add-to-cart-btn" onclick="handleAddToCart('${product.id}')">Add</button>`;
+      }
 
       card.innerHTML = `
         <img src="${product.img}" alt="${product.name}" loading="lazy">
@@ -509,17 +522,18 @@ function renderProducts(filter = 'All', searchTerm = '') {
           <p class="name">${product.name} ${outOfStockBadge}</p>
           <div class="footer">
             <span class="price">₹${product.price}</span>
-            ${addButtonHTML}
+            ${buttonHTML}
           </div>
-        </div>`;
+        </div>
+      `;
 
       productGrid.appendChild(card);
     }
   });
-
+  
   noResultsDiv.classList.toggle('hidden', hasResults);
 }
-
+  
 function getButtonHTML(productId) {
     const itemInCart = cart.find(item => item.id === productId);
     if (itemInCart) {
