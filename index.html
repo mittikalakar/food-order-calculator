@@ -427,6 +427,17 @@
   <audio id="bgAudio" loop><source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" /></audio>
 
 <script>
+  
+  // a. Parse category from URL
+function getCategoryFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const category = params.get('category');
+  return category || 'All';
+}
+
+// b. Use the category param as initial filter
+let activeFilter = getCategoryFromUrl();
+  
 // --- 1. DATA (WITH MORE CATEGORIES ADDED TO TEST SCROLLING) ---
 const ALL_PRODUCTS = [
   { id: 'biriyani', name: 'Chicken Biriyani', price: 110, inStock: true, img: 'https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', category: 'Main Course' },
@@ -714,7 +725,7 @@ setupClearableInput(productSearchDesktop);
 setupClearableInput(productSearchMobile);
     // Initial Renders
     renderCategories();
-    renderProducts();
+    renderProducts(activeFilter);
     renderCart();
 
     // Desktop Category Filtering
