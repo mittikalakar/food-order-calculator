@@ -235,6 +235,95 @@
       }
       @keyframes slide-in { to { transform: translateY(0); } }
       
+/* Advanced Search Box Styles */
+#productSearch, #productSearch-mobile {
+  width: 100%;
+  padding: 12px 45px 12px 40px; /* space for icon and clear button */
+  border-radius: 16px;
+  border: 2px solid var(--border-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--surface-color);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.06),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  outline-offset: 3px;
+  outline-color: transparent;
+  position: relative;
+  font-family: var(--font-body);
+  letter-spacing: 0.03em;
+}
+
+#productSearch::placeholder,
+#productSearch-mobile::placeholder {
+  color: var(--text-secondary);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+#productSearch:hover,
+#productSearch-mobile:hover {
+  border-color: var(--primary-dark);
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.1),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#productSearch:focus,
+#productSearch-mobile:focus {
+  border-color: var(--primary);
+  box-shadow:
+    inset 0 2px 6px var(--primary),
+    0 0 12px var(--primary);
+  outline-color: var(--primary);
+  background-color: var(--bg-color);
+}
+
+/* Add search icon using background SVG */
+#productSearch, #productSearch-mobile {
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23757575' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM10 14a4 4 0 110-8 4 4 0 010 8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 20px 20px;
+}
+
+/* Clear button inside input */
+#productSearch.clearable, #productSearch-mobile.clearable {
+  padding-right: 40px;
+  position: relative;
+}
+
+#productSearch.clearable::-webkit-search-cancel-button,
+#productSearch-mobile.clearable::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: url("data:image/svg+xml,%3Csvg fill='%23757575' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 6L6 18M6 6l12 12' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
+  background-size: 20px 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  #productSearch, #productSearch-mobile {
+    font-size: 1rem;
+    padding: 10px 40px 10px 36px;
+    border-radius: 14px;
+  }
+}
+
+#category-filter-btn:hover {
+  background-color: var(--primary);
+  color: #fff;
+}
+      
       #mobile-cart-modal {
         display: flex; align-items: flex-end;
       }
@@ -331,7 +420,7 @@ const ALL_PRODUCTS = [
   { id: 'chowmein', name: 'Chowmein', price: 40, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
   { id: 'chips', name: "Lay's Magic Masala", price: 10, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
   { id: 'thums_up', name: 'Thums Up', price: 20, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
-  { id: 'sprite', name: 'Sprite', price: 20, img: 'https://www.bbassets.com/media/uploads/p/l/251040_10-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
+  { id: 'sprite', name: 'Sprite', price: 20, img: 'https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
   { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
   { id: 'rasgulla', name: 'Rasgulla', price: 9, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
   { id: 'sugar', name: 'Sugar (1kg)', price: 45, img: 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg=', category: 'Grocery'},
@@ -539,6 +628,27 @@ function hideCustomerInfoModal() {
 // --- 6. INITIALIZATION & EVENT LISTENERS ---
 // This is now a single, consolidated block for all event listeners.
 document.addEventListener('DOMContentLoaded', () => {
+   
+   function setupClearableInput(input) {
+  input.addEventListener('input', () => {
+    if (input.value.length > 0) {
+      input.classList.add('clearable');
+    } else {
+      input.classList.remove('clearable');
+    }
+  });
+
+  input.addEventListener('click', e => {
+    if (e.target.classList.contains('clearable')) {
+      input.value = '';
+      input.classList.remove('clearable');
+      input.dispatchEvent(new Event('input')); // trigger search update
+    }
+  });
+}
+
+setupClearableInput(productSearchDesktop);
+setupClearableInput(productSearchMobile);
     // Initial Renders
     renderCategories();
     renderProducts();
