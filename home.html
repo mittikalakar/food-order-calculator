@@ -242,7 +242,7 @@
       btn.textContent = category;
       btn.setAttribute('aria-label', `Browse category ${category}`);
       btn.addEventListener('click', () => {
-        const url = new URL(window.location.origin + '/index.html');
+        const url = new URL(window.location.origin + '/food-order-calculator');
         if(category !== 'All') url.searchParams.set('category', category);
         window.location.href = url.toString();
       });
