@@ -335,6 +335,23 @@
         transform: translateY(100%); transition: transform 0.4s ease-out;
       }
     }
+    .out-of-stock {
+  display: inline-block;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.add-to-cart-btn[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
   </style>
 </head>
 <body>
@@ -342,7 +359,7 @@
   <div class="app-layout">
     
     <header class="app-header">
-      <div class="logo">FreshBites</div>
+      <div class="logo">Mitti Kalakar</div>
       <div class="top-controls">
         <button id="darkModeToggle" class="control-btn" title="Toggle Dark Mode"><i class="fa-solid fa-moon"></i></button>
         <button id="audioToggleBtn" class="control-btn" title="Play/Pause Music"><i class="fa-solid fa-volume-xmark"></i></button>
@@ -385,7 +402,7 @@
   </div>
   
   <!-- Customer Info Modal (This is your original modal) -->
-  <div id="customer-info-modal" class="modal hidden">
+  <div id="customer-info-modal" class="modal">
     <div class="modal-content">
       <h2 id="modalTitle">Edit Your Info</h2>
       <form id="customerInfoForm">
@@ -412,18 +429,19 @@
 <script>
 // --- 1. DATA (WITH MORE CATEGORIES ADDED TO TEST SCROLLING) ---
 const ALL_PRODUCTS = [
-  { id: 'biriyani', name: 'Biriyani', price: 110, img: 'https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg', category: 'Main Course' },
-  { id: 'egg_roll', name: 'Egg Roll', price: 40, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
-  { id: 'moglai', name: 'Moglai', price: 60, img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg', category: 'Main Course' },
-  { id: 'chicken_pakora', name: 'Chicken Pakora', price: 45, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
-  { id: 'chicken_momo', name: 'Chicken Momo', price: 50, img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY', category: 'Snacks' },
-  { id: 'chowmein', name: 'Chowmein', price: 40, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
-  { id: 'chips', name: "Lay's Magic Masala", price: 10, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
-  { id: 'thums_up', name: 'Thums Up', price: 20, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
-  { id: 'sprite', name: 'Sprite', price: 20, img: 'https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
-  { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
-  { id: 'rasgulla', name: 'Rasgulla', price: 9, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
-  { id: 'sugar', name: 'Sugar (1kg)', price: 45, img: 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg=', category: 'Grocery'},
+  { id: 'biriyani', name: 'Chicken Biriyani', price: 110, inStock: true, img: 'https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', category: 'Main Course' },
+  { id: 'egg_roll', name: 'Egg Roll', price: 40, inStock: true, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
+  { id: 'moglai', name: 'Moglai', price: 60, inStock: true, img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg', category: 'Main Course' },
+  { id: 'chicken_pakora', name: 'Chicken Pakora', price: 45, inStock: true, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
+  { id: 'chicken_momo', name: 'Chicken Momo', price: 50, inStock: true, img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY', category: 'Snacks' },
+  { id: 'chowmein', name: 'Chowmein', price: 40, inStock: true, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
+  { id: 'chips', name: "Lay's Magic Masala", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
+  { id: 'chips', name: "Lay's Potato Chips", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75', category: 'Packaged Snacks' },
+  { id: 'thums_up', name: 'Thums Up', price: 20, inStock: true, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
+  { id: 'sprite', name: 'Sprite Soft Drink 750 Ml', price: 38, inStock: true, img: 'https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
+  { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2,inStock: true, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
+  { id: 'rasgulla', name: 'Rasgulla', price: 9, inStock: true, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
+  { id: 'sugar', name: 'Sugar (1kg)', price: 45, inStock: true, img: 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg=', category: 'Grocery'},
 ];
 
 const CATEGORIES = {
@@ -464,21 +482,42 @@ const audioBtn = document.getElementById('audioToggleBtn');
 
 // --- 4. RENDER FUNCTIONS ---
 function renderProducts(filter = 'All', searchTerm = '') {
-    productGrid.innerHTML = '';
-    let hasResults = false;
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    ALL_PRODUCTS.forEach(product => {
-        const categoryMatch = filter === 'All' || product.category === filter;
-        const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm);
-        if (categoryMatch && searchMatch) {
-            hasResults = true;
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `<img src="${product.img}" alt="${product.name}" loading="lazy"><div class="info"><p class="name">${product.name}</p><div class="footer"><span class="price">₹${product.price}</span>${getButtonHTML(product.id)}</div></div>`;
-            productGrid.appendChild(card);
-        }
-    });
-    noResultsDiv.classList.toggle('hidden', hasResults);
+  productGrid.innerHTML = '';
+  let hasResults = false;
+  const lowerCaseSearchTerm = searchTerm.toLowerCase();
+  
+  ALL_PRODUCTS.forEach(product => {
+    const categoryMatch = filter === 'All' || product.category === filter;
+    const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm);
+    
+    if (categoryMatch && searchMatch) {
+      hasResults = true;
+      const card = document.createElement('div');
+      card.className = 'product-card';
+
+      // Out of stock badge HTML
+      const outOfStockBadge = !product.inStock ? '<span class="out-of-stock">Out of Stock</span>' : '';
+
+      // Add button or disabled button
+      const addButtonHTML = product.inStock 
+        ? `<button class="add-to-cart-btn" onclick="handleAddToCart('${product.id}')">Add</button>`
+        : `<button class="add-to-cart-btn" disabled>Out of Stock</button>`;
+
+      card.innerHTML = `
+        <img src="${product.img}" alt="${product.name}" loading="lazy">
+        <div class="info">
+          <p class="name">${product.name} ${outOfStockBadge}</p>
+          <div class="footer">
+            <span class="price">₹${product.price}</span>
+            ${addButtonHTML}
+          </div>
+        </div>`;
+
+      productGrid.appendChild(card);
+    }
+  });
+
+  noResultsDiv.classList.toggle('hidden', hasResults);
 }
 
 function getButtonHTML(productId) {
@@ -538,9 +577,13 @@ function renderCart() {
 
 // --- 5. LOGIC & HANDLERS ---
 function handleAddToCart(productId) {
-    const product = ALL_PRODUCTS.find(p => p.id === productId);
-    cart.push({ ...product, quantity: 1 });
-    rerenderAll();
+  const product = ALL_PRODUCTS.find(p => p.id === productId);
+  if (!product.inStock) {
+    alert('Sorry, this product is out of stock.');
+    return;
+  }
+  cart.push({ ...product, quantity: 1 });
+  rerenderAll();
 }
 
 function handleQuantityChange(productId, change) {
@@ -567,18 +610,38 @@ function calculateCart() {
     return { items: cart, total, count };
 }
 
+const allowedPincodes = ['743391', '743372'];
+
 function updateWhatsappLink() {
-    const { items, total } = calculateCart();
-    const name = localStorage.getItem('customerName') || 'N/A';
-    const phone = localStorage.getItem('customerPhone') || 'N/A';
-    const address = localStorage.getItem('customerAddress') || 'N/A';
-    const pincode = localStorage.getItem('customerPincode') || 'N/A';
-    const landmark = localStorage.getItem('customerLandmark') || '';
-    const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
-    const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total}*\n\nThank you!`;
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappLink = `https://wa.me/917431059519?text=${encodedMessage}`;
-    document.querySelectorAll('#whatsapp-order-btn').forEach(btn => btn.href = whatsappLink);
+  const { items, total } = calculateCart();
+  const pincode = localStorage.getItem('customerPincode') || '';
+
+  if (!allowedPincodes.includes(pincode)) {
+    // Disable WhatsApp order button and show alert on click
+    document.querySelectorAll('#whatsapp-order-btn').forEach(btn => {
+      btn.href = '#';
+      btn.onclick = function(e) {
+        e.preventDefault();
+        alert('Sorry, we currently do not deliver to your area. We are coming soon!');
+      };
+    });
+    return;
+  }
+
+  // Normal WhatsApp link generation when pincode is allowed
+  const name = localStorage.getItem('customerName') || 'N/A';
+  const phone = localStorage.getItem('customerPhone') || 'N/A';
+  const address = localStorage.getItem('customerAddress') || 'N/A';
+  const landmark = localStorage.getItem('customerLandmark') || '';
+  const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
+  const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total}*\n\nThank you!`;
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappLink = `https://wa.me/917431059519?text=${encodedMessage}`;
+
+  document.querySelectorAll('#whatsapp-order-btn').forEach(btn => {
+    btn.href = whatsappLink;
+    btn.onclick = null;
+  });
 }
 
 function rerenderAll() {
