@@ -323,17 +323,17 @@
 <script>
 // --- 1. DATA (WITH MORE CATEGORIES ADDED TO TEST SCROLLING) ---
 const ALL_PRODUCTS = [
-  { id: 'biriyani', name: 'Biriyani', price: 150, img: 'https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg', category: 'Main Course' },
-  { id: 'egg_roll', name: 'Egg Roll', price: 80, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
-  { id: 'moglai', name: 'Moglai', price: 80, img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg', category: 'Main Course' },
-  { id: 'chicken_pakora', name: 'Chicken Pakora', price: 60, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
+  { id: 'biriyani', name: 'Biriyani', price: 110, img: 'https://melam.com/wp-content/uploads/2022/12/ambur-biriyani.jpg', category: 'Main Course' },
+  { id: 'egg_roll', name: 'Egg Roll', price: 40, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
+  { id: 'moglai', name: 'Moglai', price: 60, img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg', category: 'Main Course' },
+  { id: 'chicken_pakora', name: 'Chicken Pakora', price: 45, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
   { id: 'chicken_momo', name: 'Chicken Momo', price: 50, img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY', category: 'Snacks' },
   { id: 'chowmein', name: 'Chowmein', price: 40, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
-  { id: 'chips', name: "Lay's Magic Masala", price: 30, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
+  { id: 'chips', name: "Lay's Magic Masala", price: 10, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
   { id: 'thums_up', name: 'Thums Up', price: 20, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
   { id: 'sprite', name: 'Sprite', price: 20, img: 'https://www.bbassets.com/media/uploads/p/l/251040_10-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
-  { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 5, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
-  { id: 'rasgulla', name: 'Rasgulla', price: 15, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
+  { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
+  { id: 'rasgulla', name: 'Rasgulla', price: 9, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
   { id: 'sugar', name: 'Sugar (1kg)', price: 45, img: 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg=', category: 'Grocery'},
 ];
 
