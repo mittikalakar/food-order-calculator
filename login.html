@@ -126,60 +126,36 @@
   </main>
 
   <script>
-    const allowedPincodes = ['743391', '743372'];
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbzl3JmsW8GieGagcZkxsEJ9VvbmST-yS2IodWWdbrAQcvgDgKRGLG9e_wig5QqPWWOr/exec'; // Replace this with your deployed Apps Script URL
+  const allowedPincodes = ['743391', '743372'];
 
-    document.getElementById('loginForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-      const name = this.name.value.trim();
-      const phone = this.phone.value.trim();
-      const address = this.address.value.trim();
-      const pincode = this.pincode.value.trim();
-      const landmark = this.landmark.value.trim();
+    const name = this.name.value.trim();
+    const phone = this.phone.value.trim();
+    const address = this.address.value.trim();
+    const pincode = this.pincode.value.trim();
+    const landmark = this.landmark.value.trim();
 
-      if (!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
-        alert('Please fill in all required fields correctly.');
-        return;
-      }
+    if (!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
+      alert('Please fill in all required fields correctly.');
+      return;
+    }
 
-      const payload = {
-        name,
-        phone,
-        address,
-        pincode,
-        landmark,
-      };
+    // Save data locally only
+    localStorage.setItem('customerName', name);
+    localStorage.setItem('customerPhone', phone);
+    localStorage.setItem('customerAddress', address);
+    localStorage.setItem('customerPincode', pincode);
+    localStorage.setItem('customerLandmark', landmark);
 
-      try {
-        const response = await fetch(webAppUrl, {
-          method: 'POST',
-          body: JSON.stringify(payload),
-          headers: { 'Content-Type': 'application/json' }
-        });
-        const result = await response.json();
+    if (!allowedPincodes.includes(pincode)) {
+      alert('Sorry, our service is not available in your area yet. We are coming soon!');
+    }
 
-        if (result.result === 'success') {
-          // Store in localStorage as before
-          localStorage.setItem('customerName', name);
-          localStorage.setItem('customerPhone', phone);
-          localStorage.setItem('customerAddress', address);
-          localStorage.setItem('customerPincode', pincode);
-          localStorage.setItem('customerLandmark', landmark);
-
-          if (!allowedPincodes.includes(pincode)) {
-            alert('Sorry, our service is not available in your area yet. We are coming soon!');
-          }
-          window.location.href = 'home.html'; // Redirect after successful submission
-        } else {
-          alert('Failed to save data. Please try again later.');
-          console.error(result.error);
-        }
-      } catch (error) {
-        alert('Error submitting data. Please check your connection and try again.');
-        console.error(error);
-      }
-    });
-  </script>
+    // Redirect to home page
+    window.location.href = 'home.html';
+  });
+</script>
 </body>
 </html>
