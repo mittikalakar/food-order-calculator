@@ -125,37 +125,75 @@
     </form>
   </main>
 
-  <script>
-  const allowedPincodes = ['743391', '743372'];
+    <script>
+    // --- START: PASTE YOUR WEB APP URL HERE ---
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyr5Dy3PpybBw5lwm7EnTWioYEqxjblchqOymjRVA3ve8K8EkjmHDJslUBV2I1WbeTv/exec';
+    // --- END: PASTE YOUR WEB APP URL HERE ---
+    
+    const allowedPincodes = ['743391', '743372'];
+    const loginForm = document.getElementById('loginForm');
+    const submitButton = loginForm.querySelector('button[type="submit"]');
 
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
 
-    const name = this.name.value.trim();
-    const phone = this.phone.value.trim();
-    const address = this.address.value.trim();
-    const pincode = this.pincode.value.trim();
-    const landmark = this.landmark.value.trim();
+      // Get form data
+      const name = this.name.value.trim();
+      const phone = this.phone.value.trim();
+      const address = this.address.value.trim();
+      const pincode = this.pincode.value.trim();
+      const landmark = this.landmark.value.trim();
 
-    if (!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
-      alert('Please fill in all required fields correctly.');
-      return;
-    }
+      // Basic validation
+      if (!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) {
+        alert('Please fill in all required fields correctly.');
+        return;
+      }
 
-    // Save data locally only
-    localStorage.setItem('customerName', name);
-    localStorage.setItem('customerPhone', phone);
-    localStorage.setItem('customerAddress', address);
-    localStorage.setItem('customerPincode', pincode);
-    localStorage.setItem('customerLandmark', landmark);
+      // Disable the button to prevent multiple submissions
+      submitButton.disabled = true;
+      submitButton.textContent = 'Saving...';
+      
+      // Create a FormData object to send to Google Apps Script
+      const formData = new FormData(this);
 
-    if (!allowedPincodes.includes(pincode)) {
-      alert('Sorry, our service is not available in your area yet. We are coming soon!');
-    }
+      // Send the data to the Google Sheet
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.result === 'success') {
+          console.log('Successfully saved to Google Sheet.');
+        } else {
+          // Log the error but don't stop the user's flow
+          console.error('Error saving to Google Sheet:', data.error);
+        }
+      })
+      .catch(error => {
+        // Log the network error but don't stop the user's flow
+        console.error('Network error while saving to Google Sheet:', error);
+      })
+      .finally(() => {
+        // This part runs whether the save was successful or not
+        
+        // Save data locally
+        localStorage.setItem('customerName', name);
+        localStorage.setItem('customerPhone', phone);
+        localStorage.setItem('customerAddress', address);
+        localStorage.setItem('customerPincode', pincode);
+        localStorage.setItem('customerLandmark', landmark);
 
-    // Redirect to home page
-    window.location.href = 'home.html';
-  });
-</script>
+        // Check pincode availability
+        if (!allowedPincodes.includes(pincode)) {
+          alert('Sorry, our service is not available in your area yet. We are coming soon!');
+        }
+
+        // Redirect to home page
+        window.location.href = 'home.html';
+      });
+    });
+  </script>
 </body>
 </html>
