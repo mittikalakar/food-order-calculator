@@ -396,6 +396,56 @@
     border-radius: 14px;
   }
 }
+    /* Center and constrain search bar width on desktop */
+.search-bar {
+  max-width: 600px;
+  margin: 0 auto 20px auto;
+  padding: 0 15px;
+}
+
+/* Explicit desktop search input styling */
+#productSearch {
+  width: 100%;
+  padding: 12px 45px 12px 40px;
+  border-radius: 16px;
+  border: 2px solid var(--border-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--surface-color);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.06),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  outline-offset: 3px;
+  outline-color: transparent;
+  position: relative;
+  font-family: var(--font-body);
+  letter-spacing: 0.03em;
+}
+
+/* Ensure placeholder and focus styles match mobile */
+#productSearch::placeholder {
+  color: var(--text-secondary);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+#productSearch:hover {
+  border-color: var(--primary-dark);
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.1),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#productSearch:focus {
+  border-color: var(--primary);
+  box-shadow:
+    inset 0 2px 6px var(--primary),
+    0 0 12px var(--primary);
+  outline-color: var(--primary);
+  background-color: var(--bg-color);
+}
   </style>
 </head>
 <body>
