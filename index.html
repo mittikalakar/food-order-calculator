@@ -731,19 +731,53 @@ function updateWhatsappLink() {
     return;
   }
 
-  // Normal WhatsApp link generation when pincode is allowed
   const name = localStorage.getItem('customerName') || 'N/A';
   const phone = localStorage.getItem('customerPhone') || 'N/A';
   const address = localStorage.getItem('customerAddress') || 'N/A';
   const landmark = localStorage.getItem('customerLandmark') || '';
   const orderDetails = items.map(item => `${item.quantity} x ${item.name}`).join('\n');
-  const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total}*\n\nThank you!`;
-  const encodedMessage = encodeURIComponent(message);
-  const whatsappLink = `https://wa.me/917431059519?text=${encodedMessage}`;
 
   document.querySelectorAll('#whatsapp-order-btn').forEach(btn => {
-    btn.href = whatsappLink;
-    btn.onclick = null;
+    btn.href = '#'; // prevent default
+    btn.onclick = function(e) {
+      e.preventDefault();
+
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser. Cannot place order.');
+        return;
+      }
+
+      btn.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const latitude = position.coords.latitude.toFixed(6);
+          const longitude = position.coords.longitude.toFixed(6);
+
+          let message =
+            `Hello, my name is ${name}.\n` +
+            `Phone: ${phone}\n` +
+            `Address: ${address}\n` +
+            `Pincode: ${pincode}\n` +
+            `Landmark: ${landmark}\n\n` +
+            `I'd like to place an order:\n\n${orderDetails}\n\n` +
+            `*Total: ₹${total}*\n\n` +
+            `My current location:\nhttps://maps.google.com/?q=${latitude},${longitude}\n\n` +
+            `Thank you!`;
+
+          const encodedMessage = encodeURIComponent(message);
+          const whatsappLink = `https://wa.me/917431059519?text=${encodedMessage}`;
+
+          window.open(whatsappLink, '_blank');
+          btn.disabled = false;
+        },
+        error => {
+          alert('Location permission denied or unavailable. Cannot place order.');
+          btn.disabled = false;
+        },
+        { timeout: 10000 }
+      );
+    };
   });
 }
 
