@@ -352,6 +352,50 @@
   cursor: not-allowed;
   opacity: 0.7;
 }
+/* Improved Variant Selector */
+.variant-selector {
+  width: 100%;
+  padding: 10px 40px 10px 14px; /* extra right padding for arrow */
+  margin-bottom: 14px;
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  background-color: var(--surface-color);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  appearance: none; /* Remove default arrow */
+  background-image:
+    url("data:image/svg+xml,%3Csvg fill='%23757575' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, #ffffff 0%,#f9f9f9 100%);
+  background-repeat: no-repeat, repeat;
+  background-position: right 14px center, 0 0;
+  background-size: 20px 20px, 100%;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.variant-selector:hover,
+.variant-selector:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+  outline: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg fill='%23ff6f61' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, #ffffff 0%,#f9f9f9 100%);
+}
+
+/* For better spacing on mobile */
+@media (max-width: 480px) {
+  .variant-selector {
+    font-size: 0.95rem;
+    padding: 8px 36px 8px 12px;
+    border-radius: 14px;
+  }
+}
   </style>
 </head>
 <body>
@@ -430,16 +474,16 @@
   
 // --- 1. DATA (WITH MORE CATEGORIES ADDED TO TEST SCROLLING) ---
 const ALL_PRODUCTS = [
-  { id: 'biriyani', name: 'Chicken Biriyani', price: 110, inStock: true, img: 'https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', category: 'Main Course' },
-  { id: 'egg_roll', name: 'Egg Roll', price: 40, inStock: true, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
+  { id: 'biriyani', name: 'Chicken Biriyani', variants: [ { label: 'Full Plate', price: 110 }, { label: 'Half Plate', price: 70 } ], inStock: true, img: 'https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', category: 'Main Course' },
+  { id: 'roll', name: 'Roll', variants: [ { label: 'Egg Roll', price: 40 }, { label: 'Chicken Roll', price: 55 } ], inStock: true, img: 'https://orders.popskitchen.in/storage/2024/09/image-299.png', category: 'Snacks' },
   { id: 'moglai', name: 'Moglai', price: 60, inStock: true, img: 'https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg', category: 'Main Course' },
-  { id: 'chicken_pakora', name: 'Chicken Pakora', price: 45, inStock: true, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
-  { id: 'chicken_momo', name: 'Chicken Momo', price: 50, inStock: true, img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY', category: 'Snacks' },
-  { id: 'chowmein', name: 'Chowmein', price: 40, inStock: true, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
-  { id: 'chips01', name: "Lay's Magic Masala", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
-  { id: 'chips02', name: "Lay's Potato Chips", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75', category: 'Packaged Snacks' },
-  { id: 'thums_up', name: 'Thums Up', price: 20, inStock: true, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
-  { id: 'sprite', name: 'Sprite Soft Drink 750 Ml', price: 38, inStock: true, img: 'https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
+  { id: 'chicken_pakora', name: 'Chicken Pakora', variants: [ { label: '100 gm', price: 35 }, { label: '200 gm', price: 70 } ], inStock: true, img: 'https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1', category: 'Snacks' },
+  { id: 'momo', name: 'Momo', variants: [ { label: 'Chicken Momo', price: 50 }, { label: 'Veg Momo', price: 35 } ], inStock: true, img: 'https://lh5.googleusercontent.com/proxy/h0oFHzag9rFLzKCYxD1OvYSHvTBfHqy5gXMerb2Djv12lvh3LSV-DK0UaRUQ3LnbiXqwuPl-QsAxgPJGE5UvgoPBQgqY', category: 'Snacks' },
+  { id: 'chowmein', name: 'Chowmein', variants: [ { label: 'Egg Chowmein(Full)', price: 45 }, { label: 'Egg Chowmein(Half)', price: 25 }, { label: 'Egg Chicken Chowmein(Full)', price: 60 }, { label: 'Egg Chicken Chowmein(Half)', price: 40 } ], inStock: true, img: 'https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg', category: 'Snacks' },
+  { id: 'chips', name: "Lay's Magic Masala", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75', category: 'Packaged Snacks' },
+  { id: 'chips', name: "Lay's Potato Chips", price: 10, inStock: true, img: 'https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75', category: 'Packaged Snacks' },
+  { id: 'thums_up', name: 'Thums Up', variants: [ { label: '500 ml', price: 30 }, { label: '750 ml', price: 40 } ], inStock: true, img: 'https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7', category: 'Cold Drinks' },
+  { id: 'sprite', name: 'Sprite Soft Drink 750 Ml', variants: [ { label: '500 ml', price: 30 }, { label: '750 ml', price: 40 } ], inStock: true, img: 'https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg', category: 'Cold Drinks' },
   { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2,inStock: true, img: 'https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg', category: 'Puja Items' },
   { id: 'rasgulla', name: 'Rasgulla', price: 9, inStock: true, img: 'https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447', category: 'Sweets & Desserts'},
   { id: 'sugar', name: 'Sugar (1kg)', price: 45, inStock: true, img: 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg=', category: 'Grocery'},
@@ -494,7 +538,7 @@ function renderProducts(filter = 'All', searchTerm = '') {
     if (categoryMatch && searchMatch) {
       hasResults = true;
 
-      const inCartItem = cart.find(item => item.id === product.id);
+      const inCartItem = cart.find(item => item.id === product.id && (!product.variants || item.variantLabel === (product.variants[0]?.label || '')));
       const quantity = inCartItem ? inCartItem.quantity : 0;
 
       const card = document.createElement('div');
@@ -502,6 +546,21 @@ function renderProducts(filter = 'All', searchTerm = '') {
 
       const outOfStockBadge = !product.inStock ? '<span class="out-of-stock">Out of Stock</span>' : '';
 
+      // Build variant selector if variants exist
+      let variantSelectorHTML = '';
+      let displayedPrice = product.price || 0;
+
+      if (product.variants && product.variants.length > 0) {
+        displayedPrice = product.variants[0].price; // default price from first variant
+
+        variantSelectorHTML = `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">
+          ${product.variants.map((v, i) =>
+            `<option value="${i}">${v.label} - ₹${v.price}</option>`
+          ).join('')}
+        </select>`;
+      }
+
+      // Build add-to-cart or quantity control button HTML
       let buttonHTML = '';
       if (!product.inStock) {
         buttonHTML = `<button class="add-to-cart-btn" disabled>Out of Stock</button>`;
@@ -514,15 +573,17 @@ function renderProducts(filter = 'All', searchTerm = '') {
           </div>
         `;
       } else {
-        buttonHTML = `<button class="add-to-cart-btn" onclick="handleAddToCart('${product.id}')">Add</button>`;
+        // Add data-variant-index="0" to indicate default variant
+        buttonHTML = `<button class="add-to-cart-btn" data-variant-index="0" onclick="handleAddToCart('${product.id}', 0)">Add</button>`;
       }
 
       card.innerHTML = `
         <img src="${product.img}" alt="${product.name}" loading="lazy">
         <div class="info">
           <p class="name">${product.name} ${outOfStockBadge}</p>
+          ${variantSelectorHTML}
           <div class="footer">
-            <span class="price">₹${product.price}</span>
+            <span class="price">₹${displayedPrice}</span>
             ${buttonHTML}
           </div>
         </div>
@@ -569,7 +630,10 @@ function renderCart() {
                 ${items.length === 0 ? '<p class="cart-empty-msg">Your cart is empty.</p>' : items.map(item => `
                     <div class="cart-item">
                         <img src="${item.img}" alt="${item.name}">
-                        <div class="details"><p class="name">${item.name}</p><p class="price">₹${item.price} x ${item.quantity} = ₹${item.price * item.quantity}</p></div>
+                        <div class="details">
+  <p class="name">${item.name} ${item.variantLabel ? '(' + item.variantLabel + ')' : ''}</p>
+  <p class="price">₹${item.price} x ${item.quantity} = ₹${item.price * item.quantity}</p>
+</div>
                         <div class="quantity-control"><button onclick="handleQuantityChange('${item.id}', -1)">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange('${item.id}', 1)">+</button></div>
                     </div>`).join('')}
             </div>
@@ -591,13 +655,37 @@ function renderCart() {
 }
 
 // --- 5. LOGIC & HANDLERS ---
-function handleAddToCart(productId) {
+function handleAddToCart(productId, variantIndex = 0) {
   const product = ALL_PRODUCTS.find(p => p.id === productId);
-  if (!product.inStock) {
+  if (!product || !product.inStock) {
     alert('Sorry, this product is out of stock.');
     return;
   }
-  cart.push({ ...product, quantity: 1 });
+
+  let price = product.price;
+  let variantLabel = '';
+
+  if (product.variants) {
+    price = product.variants[variantIndex].price;
+    variantLabel = product.variants[variantIndex].label;
+  }
+
+  // Check if this exact product + variant is already in cart
+  const existingIndex = cart.findIndex(item => item.id === productId && item.variantLabel === variantLabel);
+
+  if (existingIndex > -1) {
+    cart[existingIndex].quantity += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: price,
+      img: product.img,
+      variantLabel: variantLabel,
+      quantity: 1
+    });
+  }
+
   rerenderAll();
 }
 
@@ -706,6 +794,30 @@ function hideCustomerInfoModal() {
 // --- 6. INITIALIZATION & EVENT LISTENERS ---
 // This is now a single, consolidated block for all event listeners.
 document.addEventListener('DOMContentLoaded', () => {
+   
+   document.addEventListener('change', (e) => {
+  if (e.target.classList.contains('variant-selector')) {
+    const productId = e.target.dataset.productId;
+    const variantIndex = parseInt(e.target.value, 10);
+    const product = ALL_PRODUCTS.find(p => p.id === productId);
+    if (!product) return;
+
+    // Update price display
+    const card = e.target.closest('.product-card');
+    if (card) {
+      const priceEl = card.querySelector('.price');
+      if (priceEl) {
+        priceEl.textContent = `₹${product.variants[variantIndex].price}`;
+      }
+
+      // Update add button onclick to pass variant index
+      const addBtn = card.querySelector('.add-to-cart-btn');
+      if (addBtn) {
+        addBtn.setAttribute('data-variant-index', variantIndex);
+      }
+    }
+  }
+});
    
    function setupClearableInput(input) {
   input.addEventListener('input', () => {
