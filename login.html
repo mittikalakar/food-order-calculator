@@ -118,8 +118,8 @@
       <label for="pincode">Pincode <span aria-hidden="true" style="color:#ff6f61;">*</span></label>
       <input type="text" id="pincode" name="pincode" pattern="[0-9]{6}" required aria-required="true" placeholder="6-digit pincode" maxlength="6" inputmode="numeric" />
 
-      <label for="landmark">Landmark (optional)</label>
-      <input type="text" id="landmark" name="landmark" placeholder="Nearby landmark or notes" />
+      <label for="landmark">Landmark <span aria-hidden="true" style="color:#ff6f61;">*</span></label>
+      <input type="text" id="landmark" name="landmark" autocomplete="street-address" required aria-required="true" placeholder="Nearby landmark or notes" />
 
       <button type="submit">Save & Continue</button>
     </form>
