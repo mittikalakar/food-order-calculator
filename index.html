@@ -15,6 +15,7 @@
   
   <!-- PDF Generation Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
   <script>
     if (!localStorage.getItem('customerName') || !localStorage.getItem('customerPhone')) {
       window.location.href = 'login.html';
@@ -124,9 +125,36 @@
     .category-nav a.active i { color: #fff; }
     .category-nav i { font-size: 1.1rem; width: 20px; text-align: center; color: var(--text-secondary); transition: color 0.2s; }
     
-    /* --- 5. Main Content (Products) --- */
+    /* --- 5. Main Content (Products & Search) --- */
+    .product-grid-area { min-width: 0; }
     .mobile-filter-bar { display: none; }
+    .search-bar { max-width: 600px; margin: 0 auto 20px auto; }
 
+    .search-container { position: relative; flex-grow: 1; }
+    .search-container .fa-magnifying-glass {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        pointer-events: none;
+    }
+    input[type="search"] {
+        width: 100%;
+        padding: 12px 20px 12px 48px;
+        border-radius: 50px;
+        border: 1px solid var(--border-color);
+        background-color: var(--surface-color);
+        font-size: 1rem;
+        color: var(--text-primary);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="search"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+    }
+    
     #product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -160,7 +188,31 @@
     }
     .cart-header { padding: 20px; border-bottom: 1px solid var(--border-color); font-size: 1.2rem; font-weight: 600; }
     .cart-items { flex-grow: 1; overflow-y: auto; padding: 10px 20px; }
-    .cart-empty-msg { text-align: center; padding-top: 50px; color: var(--text-secondary); }
+    .cart-empty-msg {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 50px 20px;
+      height: 100%;
+      color: var(--text-secondary);
+    }
+    .cart-empty-msg i {
+      font-size: 3.5rem;
+      margin-bottom: 25px;
+      color: var(--border-color);
+    }
+    .cart-empty-msg p {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .cart-empty-msg span {
+      font-size: 0.9rem;
+    }
+    body.dark .cart-empty-msg i { color: var(--dark-border); }
     .cart-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
     .cart-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
     .cart-item .details { flex-grow: 1; }
@@ -179,6 +231,8 @@
 
     /* --- 7. All Modals & Mobile View --- */
     #mobile-cart-btn, #mobile-cart-modal, .modal { display: none; }
+    #mobile-cart-btn { font-weight: 600; }
+    .item-count i { margin-right: 8px; vertical-align: -1px; }
     .hidden { display: none !important; }
     
     .modal {
@@ -210,19 +264,33 @@
 
     @media (max-width: 1024px) {
       .app-layout { grid-template-columns: 1fr; padding: 10px; padding-bottom: 100px; }
-      .sidebar, .cart-area, .product-grid-area .search-bar { display: none; }
+      .sidebar, .cart-area, .search-bar { display: none; }
       .app-header { grid-column: auto; padding: 10px; }
       .logo { font-size: 1.5rem; }
 
       .mobile-filter-bar {
           display: flex; gap: 10px;
           margin-bottom: 20px;
+          align-items: center;
       }
-      #productSearch-mobile { width: 100%; padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--surface-color); font-size: 1rem; color: var(--text-primary); }
       #category-filter-btn {
-          padding: 0 20px; border: 1px solid var(--border-color);
-          background-color: var(--surface-color); border-radius: 8px;
-          cursor: pointer; font-size: 1.1rem; color: var(--text-secondary);
+          flex-shrink: 0;
+          width: 50px;
+          height: 50px;
+          padding: 0;
+          border: 1px solid var(--border-color);
+          background-color: var(--surface-color);
+          border-radius: 50%;
+          cursor: pointer;
+          font-size: 1.1rem;
+          color: var(--text-secondary);
+          display: grid;
+          place-content: center;
+          transition: all 0.2s ease;
+      }
+      #category-filter-btn:hover {
+          color: var(--primary);
+          border-color: var(--primary);
       }
       
       #product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
@@ -257,13 +325,6 @@
     }
     .add-to-cart-btn[disabled] { background-color: #ccc; cursor: not-allowed; opacity: 0.7; }
     
-    /* Center and constrain search bar width on desktop */
-    .search-bar {
-      max-width: 600px;
-      margin: 0 auto 20px auto;
-      padding: 0 15px;
-    }
-
     /* Improved Variant Selector */
     .variant-selector {
       width: 100%;
@@ -283,8 +344,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
-      /* FIX: Use CSS variables for color and background */
       color: var(--text-primary);
       background-color: var(--surface-color);
       background-image:
@@ -300,6 +359,43 @@
       background-image:
         url("data:image/svg+xml,%3Csvg fill='%23ff6f61' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"),
         linear-gradient(to bottom, var(--gradient-start) 0%, var(--gradient-end) 100%);
+    }
+    
+    /* --- 8. Footer --- */
+    .app-footer {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 40px;
+      background-color: var(--surface-color);
+      border-top: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .app-footer .tagline {
+      margin-top: 8px;
+      font-size: 0.9rem;
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 20px;
+    }
+    .social-links a {
+      font-size: 1.4rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .social-links a:hover {
+      color: var(--primary);
+      transform: translateY(-3px);
+    }
+    @media (max-width: 1024px) {
+        .app-footer {
+            margin-top: 20px;
+        }
     }
   </style>
 </head>
@@ -322,10 +418,16 @@
 
     <main class="product-grid-area">
       <div class="search-bar">
-        <input type="search" id="productSearch" placeholder="Search for your favorite items...">
+        <div class="search-container">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" id="productSearch" placeholder="Search for your favorite items...">
+        </div>
       </div>
       <div class="mobile-filter-bar">
-        <input type="search" id="productSearch-mobile" placeholder="Search for items...">
+        <div class="search-container">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" id="productSearch-mobile" placeholder="Search for items...">
+        </div>
         <button id="category-filter-btn" title="Filter by category"><i class="fa-solid fa-filter"></i></button>
       </div>
       <div id="product-grid"></div>
@@ -333,6 +435,16 @@
     </main>
 
     <aside class="cart-area" id="desktop-cart"></aside>
+
+    <footer class="app-footer">
+      <p>© 2024 Mitti Kalakar. All Rights Reserved.</p>
+      <p class="tagline">Your local one-stop shop for fresh food and daily needs.</p>
+      <div class="social-links">
+        <a href="#" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/917431059519" aria-label="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </footer>
 
   </div>
 
@@ -400,7 +512,6 @@ const CATEGORIES = {
 // --- 2. STATE ---
 let cart = [];
 let activeFilter = 'All';
-// NEW: State to remember UI choices, like selected variants
 let uiState = { selectedVariants: {} };
 
 // --- 3. DOM ELEMENTS ---
@@ -434,10 +545,9 @@ function renderProducts(filter = 'All', searchTerm = '') {
       hasResults = true;
       const card = document.createElement('div');
       card.className = 'product-card';
-      card.dataset.productId = product.id; // Add product ID for easier reference
+      card.dataset.productId = product.id;
       
       const hasVariants = product.variants && product.variants.length > 0;
-      // FIX: Get the "sticky" selected variant index from our UI state, default to 0
       const selectedVariantIndex = uiState.selectedVariants[product.id] || 0;
       
       let variantSelectorHTML = '';
@@ -447,7 +557,6 @@ function renderProducts(filter = 'All', searchTerm = '') {
         displayedPrice = product.variants[selectedVariantIndex].price;
         variantSelectorHTML = `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">
           ${product.variants.map((v, i) =>
-            // FIX: Add 'selected' attribute if this is the chosen variant
             `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`
           ).join('')}
         </select>`;
@@ -474,7 +583,6 @@ function renderProducts(filter = 'All', searchTerm = '') {
   noResultsDiv.classList.toggle('hidden', hasResults);
 }
 
-// FIX: Helper function to get the correct button/quantity control HTML
 function getButtonHTML(product, selectedVariantIndex = 0) {
     if (!product.inStock) {
         return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`;
@@ -523,7 +631,12 @@ function renderCart() {
         <div class="cart-wrapper">
             <div class="cart-header">Your Order</div>
             <div class="cart-items">
-                ${items.length === 0 ? '<p class="cart-empty-msg">Your cart is empty.</p>' : items.map(item => `
+                ${items.length === 0 ? `
+                  <div class="cart-empty-msg">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <p>Your cart is empty.</p>
+                    <span>Add items to get started!</span>
+                  </div>` : items.map(item => `
                     <div class="cart-item">
                         <img src="${item.img}" alt="${item.name}">
                         <div class="details">
@@ -549,7 +662,7 @@ function renderCart() {
         </div>`;
     desktopCartContainer.innerHTML = cartHTML;
     mobileCartModalContainer.innerHTML = cartHTML;
-    mobileCartBtn.innerHTML = `<span class="item-count">${count} item${count !== 1 ? 's' : ''}</span><span>View Your Order</span><span class="total">₹${total}</span>`;
+    mobileCartBtn.innerHTML = `<span class="item-count"><i class="fa-solid fa-bag-shopping"></i> ${count}</span><span>View Your Order</span><span class="total">₹${total}</span>`;
     mobileCartBtn.classList.toggle('hidden', items.length === 0);
     if(items.length > 0) updateWhatsappLink();
 }
@@ -691,27 +804,20 @@ function hideCustomerInfoModal() {
 
 // --- 6. INITIALIZATION & EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', () => {
-    // FIX: Listen for variant changes to update card UI and state
     document.addEventListener('change', (e) => {
       if (e.target.classList.contains('variant-selector')) {
         const card = e.target.closest('.product-card');
         const productId = card.dataset.productId;
         const newIndex = parseInt(e.target.value, 10);
-
-        // 1. Update the UI state to remember the selection
         uiState.selectedVariants[productId] = newIndex;
-
-        // 2. Update the card's UI dynamically without a full re-render
         const product = ALL_PRODUCTS.find(p => p.id === productId);
         card.querySelector('.price').textContent = `₹${product.variants[newIndex].price}`;
         card.querySelector('.action-wrapper').innerHTML = getButtonHTML(product, newIndex);
       }
     });
 
-    // Initial Renders
     rerenderAll();
 
-    // Event listeners
     categoryNav.addEventListener('click', e => { e.preventDefault(); const link = e.target.closest('a'); if (link) handleCategoryChange(link.dataset.category); });
     document.getElementById('category-filter-btn').addEventListener('click', () => categoryModal.classList.add('visible'));
     document.getElementById('close-category-modal-btn').addEventListener('click', () => categoryModal.classList.remove('visible'));
