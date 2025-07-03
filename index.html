@@ -29,16 +29,16 @@
       --font-heading: 'Lobster', cursive;
       
       /* Light Mode */
-      --bg-color: #f7f7f7;
-      --surface-color: #ffffff;
-      --text-primary: #1a1a1a;
-      --text-secondary: #555555;
-      --border-color: #e0e0e0;
-      --primary: #ff6f61;
-      --primary-dark: #e6564a;
-      --shadow-color: rgba(0, 0, 0, 0.08);
-      --gradient-start: #ffffff;
-      --gradient-end: #f9f9f9;
+      --bg-color: #fff6f0;          /* light warm cream */
+      --surface-color: #fff8f4;     /* slightly lighter warm surface */
+      --text-primary: #3a2e2e;      /* warm dark brown */
+      --text-secondary: #7a5a54;    /* warm medium brown */
+      --border-color: #f0d9d5;      /* soft warm border */
+      --primary: #ff6f61;           /* coral orange (keep) */
+      --primary-dark: #e6564a;      /* darker coral (keep) */
+      --shadow-color: rgba(230, 111, 97, 0.12); /* warm shadow */
+      --gradient-start: #fff8f4;
+      --gradient-end: #fdf1ec;
 
       /* Dark Mode */
       --dark-bg: #1c1c1e;
@@ -53,15 +53,15 @@
     }
 
     body.dark {
-      --bg-color: var(--dark-bg);
-      --surface-color: var(--dark-surface);
-      --text-primary: var(--dark-text-primary);
-      --text-secondary: var(--dark-text-secondary);
-      --border-color: var(--dark-border);
-      --primary: var(--dark-primary);
-      --shadow-color: var(--dark-shadow);
-      --gradient-start: var(--dark-gradient-start);
-      --gradient-end: var(--dark-gradient-end);
+      --bg-color: #3a2e2e;          /* warm dark brown */
+      --surface-color: #4a3b38;     /* dark warm surface */
+      --text-primary: #fff3f0;      /* warm off-white */
+      --text-secondary: #c9b4af;    /* soft warm light brown */
+      --border-color: #6e504c;      /* warm border */
+      --primary: #ff7b6e;
+      --shadow-color: rgba(230, 123, 110, 0.25);
+      --gradient-start: #4a3b38;
+      --gradient-end: #5a4a47;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
