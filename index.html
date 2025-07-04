@@ -61,9 +61,28 @@
     .dot.active { background-color: #fff; transform: scale(1.2); }
     .out-of-stock-overlay { position: absolute; inset: 0; background-color: rgba(255, 248, 244, 0.3); backdrop-filter: blur(4px) grayscale(80%); display: grid; place-content: center; z-index: 10; pointer-events: none; }
     body.dark .out-of-stock-overlay { background-color: rgba(74, 59, 56, 0.3); }
-    .out-of-stock-overlay .badge { background-color: #e74c3c; color: white; padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 1.1rem; transform: rotate(-10deg); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-    .category-badge { position: absolute; top: 12px; left: 12px; background-color: color-mix(in srgb, var(--primary) 85%, black 10%); color: white; padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; z-index: 5; text-decoration: none; transition: transform 0.2s; }
-    .category-badge:hover { transform: scale(1.05); }
+    /* --- MODIFICATION 1: Category Icon Badge Style --- */
+    .category-icon-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 36px;
+      height: 36px;
+      background-color: color-mix(in srgb, var(--primary) 85%, black 10%);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      z-index: 5;
+      text-decoration: none;
+      transition: transform 0.2s ease-in-out;
+      display: grid;
+      place-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .category-icon-badge:hover {
+      transform: scale(1.1);
+    }
     .product-card .info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
     .product-card .name { font-weight: 600; font-size: 1.1rem; flex-grow: 1; margin-bottom: 12px; }
     .product-card .footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
@@ -105,6 +124,16 @@
     .modal.visible { opacity: 1; visibility: visible; display: flex; }
     .modal-content { background: var(--surface-color); padding: 25px 30px; border-radius: 12px; max-width: 400px; width: 90%; box-shadow: 0 4px 20px var(--shadow-color); transform: scale(0.9); transition: transform 0.3s; }
     .modal.visible .modal-content { transform: scale(1); }
+    /* --- MODIFICATION 2: Smooth Modal Animation --- */
+    #category-modal .modal-content {
+      transform: translateY(40px);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out;
+    }
+    #category-modal.visible .modal-content {
+      transform: translateY(0);
+      opacity: 1;
+    }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .modal-header h3 { font-size: 1.3rem; color: var(--text-primary); }
     #close-category-modal-btn { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 0 5px; }
@@ -135,14 +164,13 @@
       #category-filter-btn { flex-shrink: 0; width: 50px; height: 50px; padding: 0; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 50%; cursor: pointer; font-size: 1.1rem; color: var(--text-secondary); display: grid; place-content: center; transition: all 0.2s ease; }
       #product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
       
-      /* --- MOBILE CARD FIX START --- */
       .product-card .info {
         padding: 12px;
       }
       .product-card .name {
         font-size: 0.9rem;
         margin-bottom: 8px;
-        min-height: 2.7em; /* Allocate space for 2 lines of text */
+        min-height: 2.7em; 
       }
       .product-card .price {
         font-size: 1.2rem;
@@ -153,16 +181,16 @@
       }
       .quantity-control {
         gap: 4px;
-        border-radius: 8px; /* Ensure radius is consistent */
+        border-radius: 8px;
       }
       .quantity-control button {
         width: 30px;
-        height: 34px; /* Matches padding/size of add button */
+        height: 34px;
         font-size: 1.1rem;
       }
       .quantity-control span {
         font-size: 1rem;
-        min-width: 12px; /* Give it some minimum width */
+        min-width: 12px;
         text-align: center;
       }
       .variant-selector {
@@ -173,7 +201,6 @@
         background-size: 16px 16px, 100%;
         border-radius: 8px;
       }
-      /* --- MOBILE CARD FIX END --- */
 
       #mobile-cart-btn { display: flex; justify-content: space-between; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px; background-color: var(--primary); color: #fff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); cursor: pointer; z-index: 1000; transform: translateY(200%); animation: slide-in 0.5s forwards ease-out; }
       @keyframes slide-in { to { transform: translateY(0); } }
@@ -269,7 +296,7 @@ const CATEGORIES = { 'All': 'fa-solid fa-store', 'Main Course': 'fa-solid fa-bow
 let cart = []; let activeFilter = 'All'; let uiState = { selectedVariants: {} };
 const productGrid = document.getElementById('product-grid'); const categoryNav = document.getElementById('category-nav'); const desktopCartContainer = document.getElementById('desktop-cart'); const mobileCartModalContainer = document.getElementById('mobile-cart-modal'); const mobileCartBtn = document.getElementById('mobile-cart-btn'); const productSearchDesktop = document.getElementById('productSearch'); const productSearchMobile = document.getElementById('productSearch-mobile'); const noResultsDiv = document.getElementById('no-results'); const categoryFilterBtn = document.getElementById('category-filter-btn'); const categoryModal = document.getElementById('category-modal'); const categoryModalList = document.getElementById('category-modal-list'); const customerInfoModal = document.getElementById('customer-info-modal'); const darkModeToggle = document.getElementById('darkModeToggle'); const audio = document.getElementById('bgAudio'); const audioBtn = document.getElementById('audioToggleBtn');
 const cardObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
-function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML = ''; let hasResults = false; const lowerCaseSearchTerm = searchTerm.toLowerCase(); ALL_PRODUCTS.forEach(product => { const categoryMatch = filter === 'All' || product.category === filter; const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm); if (categoryMatch && searchMatch) { hasResults = true; const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id; const hasVariants = product.variants && product.variants.length > 0; const selectedVariantIndex = uiState.selectedVariants[product.id] || 0; let displayedPrice = product.price || 0; if (hasVariants) { displayedPrice = product.variants[selectedVariantIndex].price; } const variantSelectorHTML = hasVariants ? `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">${product.variants.map((v, i) => `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`).join('')}</select>` : ''; const buttonHTML = getButtonHTML(product, selectedVariantIndex); const outOfStockOverlay = !product.inStock ? `<div class="out-of-stock-overlay"><span class="badge">OUT OF STOCK</span></div>` : ''; card.innerHTML = `<div class="product-image-container"><a href="#" class="category-badge" onclick="handleCategoryLinkClick(event, '${product.category}')">${product.category}</a><div class="carousel-track">${product.images.map(imgUrl => `<div class="carousel-slide"><img src="${imgUrl}" alt="${product.name}" loading="lazy"></div>`).join('')}</div>${product.images.length > 1 ? `<div class="carousel-dots">${product.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('')}</div>` : ''}${outOfStockOverlay}</div><div class="info"><p class="name">${product.name}</p>${variantSelectorHTML}<div class="footer"><span class="price">₹${displayedPrice.toFixed(2)}</span><div class="action-wrapper">${buttonHTML}</div></div></div>`; productGrid.appendChild(card); cardObserver.observe(card); if (product.images.length > 1) initProductCarousel(card); } }); noResultsDiv.classList.toggle('hidden', hasResults); }
+function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML = ''; let hasResults = false; const lowerCaseSearchTerm = searchTerm.toLowerCase(); ALL_PRODUCTS.forEach(product => { const categoryMatch = filter === 'All' || product.category === filter; const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm); if (categoryMatch && searchMatch) { hasResults = true; const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id; const hasVariants = product.variants && product.variants.length > 0; const selectedVariantIndex = uiState.selectedVariants[product.id] || 0; let displayedPrice = product.price || 0; if (hasVariants) { displayedPrice = product.variants[selectedVariantIndex].price; } const variantSelectorHTML = hasVariants ? `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">${product.variants.map((v, i) => `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`).join('')}</select>` : ''; const buttonHTML = getButtonHTML(product, selectedVariantIndex); const outOfStockOverlay = !product.inStock ? `<div class="out-of-stock-overlay"><span class="badge">OUT OF STOCK</span></div>` : ''; const categoryIconClass = CATEGORIES[product.category] || 'fa-solid fa-tag'; card.innerHTML = `<div class="product-image-container"><a href="#" class="category-icon-badge" title="${product.category}" onclick="handleCategoryLinkClick(event, '${product.category}')"><i class="${categoryIconClass}"></i></a><div class="carousel-track">${product.images.map(imgUrl => `<div class="carousel-slide"><img src="${imgUrl}" alt="${product.name}" loading="lazy"></div>`).join('')}</div>${product.images.length > 1 ? `<div class="carousel-dots">${product.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('')}</div>` : ''}${outOfStockOverlay}</div><div class="info"><p class="name">${product.name}</p>${variantSelectorHTML}<div class="footer"><span class="price">₹${displayedPrice.toFixed(2)}</span><div class="action-wrapper">${buttonHTML}</div></div></div>`; productGrid.appendChild(card); cardObserver.observe(card); if (product.images.length > 1) initProductCarousel(card); } }); noResultsDiv.classList.toggle('hidden', hasResults); }
 function getButtonHTML(product, selectedVariantIndex = 0) { if (!product.inStock) return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`; const cardElement = document.querySelector(`[data-product-id="${product.id}"]`) || document.createElement('div'); const { variantLabel } = getSelectedVariantInfo({ closest: () => cardElement }, product); const itemInCart = cart.find(item => item.id === product.id && item.variantLabel === variantLabel); if (itemInCart) { return `<div class="quantity-control"><button onclick="handleQuantityChange(this, '${product.id}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange(this, '${product.id}', 1)">+</button></div>`; } else { return `<button class="add-to-cart-btn" onclick="handleAddToCart(this, '${product.id}')">Add</button>`; } }
 function renderCategories() { const desktopList = document.createElement('ul'); categoryModalList.innerHTML = ''; Object.entries(CATEGORIES).forEach(([name, iconClass]) => { const isActive = name === activeFilter; const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`; const li = document.createElement('li'); li.innerHTML = linkHTML; desktopList.appendChild(li); categoryModalList.appendChild(li.cloneNode(true)); }); categoryNav.innerHTML = ''; categoryNav.appendChild(desktopList); }
 function renderCart() { const { items, total, count } = calculateCart(); const cartHTML = `<div class="cart-wrapper"><div class="cart-header">Your Order</div><div class="cart-items">${items.length === 0 ? `<div class="cart-empty-msg"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty.</p><span>Add items to get started!</span></div>` : items.map(item => `<div class="cart-item"><img src="${item.images[0]}" alt="${item.name}"><div class="details"><p class="name">${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}</p><p class="price">₹${item.price.toFixed(2)} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</p></div><div class="quantity-control"><button onclick="handleQuantityChange(this, '${item.id}', -1, '${item.variantLabel}')">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange(this, '${item.id}', 1, '${item.variantLabel}')">+</button></div></div>`).join('')}</div>${items.length > 0 ? `<div class="cart-footer"><div class="cart-total"><span>Grand Total</span><span>₹${total.toFixed(2)}</span></div><div class="cart-actions"><a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a><button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button><button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button></div></div>` : ''}</div>`; desktopCartContainer.innerHTML = cartHTML; mobileCartModalContainer.innerHTML = cartHTML; mobileCartBtn.innerHTML = `<span class="item-count"><i class="fa-solid fa-bag-shopping"></i> ${count}</span><span>View Your Order</span><span class="total">₹${total.toFixed(2)}</span>`; mobileCartBtn.classList.toggle('hidden', items.length === 0); if(items.length > 0) updateWhatsappLink(); }
