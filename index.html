@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lobster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Lobster&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -59,30 +59,32 @@
     .carousel-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 5;}
     .dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.6); backdrop-filter: blur(2px); cursor: pointer; transition: background-color 0.3s, transform 0.3s; }
     .dot.active { background-color: #fff; transform: scale(1.2); }
-    .out-of-stock-overlay { position: absolute; inset: 0; background-color: rgba(255, 248, 244, 0.3); backdrop-filter: blur(4px) grayscale(80%); display: grid; place-content: center; z-index: 10; pointer-events: none; }
-    body.dark .out-of-stock-overlay { background-color: rgba(74, 59, 56, 0.3); }
-    /* --- MODIFICATION 1: Category Icon Badge Style --- */
-    .category-icon-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      width: 36px;
-      height: 36px;
-      background-color: color-mix(in srgb, var(--primary) 85%, black 10%);
-      color: white;
-      border-radius: 50%;
-      font-size: 0.9rem;
-      z-index: 5;
-      text-decoration: none;
-      transition: transform 0.2s ease-in-out;
-      display: grid;
-      place-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
+    .out-of-stock-overlay { position: absolute; inset: 0; background-color: rgba(255, 248, 244, 0.5); backdrop-filter: blur(1px) grayscale(50%); display: grid; place-content: center; z-index: 10; pointer-events: none; }
+    body.dark .out-of-stock-overlay { background-color: rgba(74, 59, 56, 0.5); }
+    /* --- MODIFICATION 1: New "Out of Stock" Badge Style --- */
+    .out-of-stock-overlay .badge {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #d9534f;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 900;
+        font-size: .80rem;
+        line-height: 1.1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transform: rotate(-15deg);
+        border: 5px solid white;
+        box-shadow: 0 0 0 4px #d9534f;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     }
-    .category-icon-badge:hover {
-      transform: scale(1.1);
-    }
+    .category-icon-badge { position: absolute; top: 12px; left: 12px; width: 36px; height: 36px; background-color: color-mix(in srgb, var(--primary) 85%, black 10%); color: white; border-radius: 50%; font-size: 0.9rem; z-index: 5; text-decoration: none; transition: transform 0.2s ease-in-out; display: grid; place-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2); }
+    .category-icon-badge:hover { transform: scale(1.1); }
     .product-card .info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
     .product-card .name { font-weight: 600; font-size: 1.1rem; flex-grow: 1; margin-bottom: 12px; }
     .product-card .footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
@@ -122,18 +124,9 @@
     #no-results { text-align: center; padding: 40px; color: var(--text-secondary); }
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
     .modal.visible { opacity: 1; visibility: visible; display: flex; }
-    .modal-content { background: var(--surface-color); padding: 25px 30px; border-radius: 12px; max-width: 400px; width: 90%; box-shadow: 0 4px 20px var(--shadow-color); transform: scale(0.9); transition: transform 0.3s; }
-    .modal.visible .modal-content { transform: scale(1); }
-    /* --- MODIFICATION 2: Smooth Modal Animation --- */
-    #category-modal .modal-content {
-      transform: translateY(40px);
-      opacity: 0;
-      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out;
-    }
-    #category-modal.visible .modal-content {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    .modal-content { background: var(--surface-color); padding: 25px 30px; border-radius: 12px; max-width: 400px; width: 90%; box-shadow: 0 4px 20px var(--shadow-color); }
+    #category-modal .modal-content { transform: translateY(40px); opacity: 0; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out; }
+    #category-modal.visible .modal-content { transform: translateY(0); opacity: 1; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .modal-header h3 { font-size: 1.3rem; color: var(--text-primary); }
     #close-category-modal-btn { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 0 5px; }
@@ -163,45 +156,14 @@
       .mobile-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
       #category-filter-btn { flex-shrink: 0; width: 50px; height: 50px; padding: 0; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 50%; cursor: pointer; font-size: 1.1rem; color: var(--text-secondary); display: grid; place-content: center; transition: all 0.2s ease; }
       #product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-      
-      .product-card .info {
-        padding: 12px;
-      }
-      .product-card .name {
-        font-size: 0.9rem;
-        margin-bottom: 8px;
-        min-height: 2.7em; 
-      }
-      .product-card .price {
-        font-size: 1.2rem;
-      }
-      .add-to-cart-btn {
-        padding: 8px 14px;
-        font-size: 0.85rem;
-      }
-      .quantity-control {
-        gap: 4px;
-        border-radius: 8px;
-      }
-      .quantity-control button {
-        width: 30px;
-        height: 34px;
-        font-size: 1.1rem;
-      }
-      .quantity-control span {
-        font-size: 1rem;
-        min-width: 12px;
-        text-align: center;
-      }
-      .variant-selector {
-        padding: 8px 30px 8px 10px;
-        font-size: 0.9rem;
-        margin-bottom: 10px;
-        background-position: right 8px center, 0 0;
-        background-size: 16px 16px, 100%;
-        border-radius: 8px;
-      }
-
+      .product-card .info { padding: 12px; }
+      .product-card .name { font-size: 0.9rem; margin-bottom: 8px; min-height: 2.7em; }
+      .product-card .price { font-size: 1.2rem; }
+      .add-to-cart-btn { padding: 8px 14px; font-size: 0.85rem; }
+      .quantity-control { gap: 4px; border-radius: 8px; }
+      .quantity-control button { width: 30px; height: 34px; font-size: 1.1rem; }
+      .quantity-control span { font-size: 1rem; min-width: 12px; text-align: center; }
+      .variant-selector { padding: 8px 30px 8px 10px; font-size: 0.9rem; margin-bottom: 10px; background-position: right 8px center, 0 0; background-size: 16px 16px, 100%; border-radius: 8px; }
       #mobile-cart-btn { display: flex; justify-content: space-between; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px; background-color: var(--primary); color: #fff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); cursor: pointer; z-index: 1000; transform: translateY(200%); animation: slide-in 0.5s forwards ease-out; }
       @keyframes slide-in { to { transform: translateY(0); } }
       #mobile-cart-modal { display: flex; align-items: flex-end; }
@@ -256,47 +218,167 @@
 
 <script>
 // --- 1. DATA (EXPANDED) ---
+
 const ALL_PRODUCTS = [
-  { id: 'biriyani', name: 'Chicken Biriyani', variants: [ { label: 'Full Plate', price: 110 }, { label: 'Half Plate', price: 70 } ], inStock: true, images: ['https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', 'https://glebekitchen.com/wp-content/uploads/2019/12/chickenbiryanibowltop.jpg'], category: 'Main Course' },
-  { id: 'roll', name: 'Roll', variants: [ { label: 'Egg Roll', price: 40 }, { label: 'Chicken Roll', price: 55 } ], inStock: true, images: ['https://www.licious.in/blog/wp-content/uploads/2022/11/shutterstock_1244343517.jpg', 'https://orders.popskitchen.in/storage/2024/09/image-299.png'], category: 'Snacks' },
-  { id: 'moglai', name: 'Moglai Paratha', price: 60, inStock: false, images: ['https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg'], category: 'Main Course' },
-  { id: 'chicken_pakora', name: 'Chicken Pakora', variants: [ { label: '100 gm', price: 35 }, { label: '200 gm', price: 70 } ], inStock: true, images: ['https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1'], category: 'Snacks' },
-  { id: 'momo', name: 'Momo', variants: [ { label: 'Chicken Momo', price: 50 }, { label: 'Veg Momo', price: 35 } ], inStock: true, images: ['https://images.aws.nestle.recipes/resized/a93335272b53b9f3b584a784c6981adc_momo_944_531.jpg', 'https://www.thespruceeats.com/thmb/Un_4d2ABi-OF-0d-dKdvT51s_4k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/steamed-momos-w-spicy-tomato-chutney-2-1957383-a365405a415349319685a21235122f6d.jpg'], category: 'Snacks' },
-  { id: 'chowmein', name: 'Chowmein', variants: [ { label: 'Egg Chowmein(Full)', price: 45 }, { label: 'Egg Chowmein(Half)', price: 25 }, { label: 'Egg Chicken Chowmein(Full)', price: 60 }, { label: 'Egg Chicken Chowmein(Half)', price: 40 } ], inStock: true, images: ['https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg'], category: 'Snacks' },
-  { id: 'singara', name: 'Singara (Samosa)', price: 10, inStock: true, images: ['https://www.sharmispassions.com/wp-content/uploads/2023/09/BengaliSamosa3.jpg'], category: 'Snacks' },
-  { id: 'lays_magic', name: "Lay's India's Magic Masala", price: 10, inStock: true, images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75'], category: 'Packaged Snacks' },
-  { id: 'lays_classic', name: "Lay's Classic Salted", price: 10, inStock: true, images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75'], category: 'Packaged Snacks' },
-  { id: 'bingo_mad_angles', name: 'Bingo! Mad Angles (Masala)', price: 10, inStock: true, images: ['https://www.jiomart.com/images/product/original/491334698/bingo-mad-angles-masti-masala-66-g-product-images-o491334698-p491334698-0-202307251147.jpg?im=Resize=(1000,1000)'], category: 'Packaged Snacks' },
-  { id: 'haldirams_bhujia', name: "Haldiram's Bhujia Sev", price: 45, inStock: true, images: ['https://m.media-amazon.com/images/I/81GyZp6iA7L.jpg'], category: 'Packaged Snacks' },
-  { id: 'goodday_cashew', name: 'Britannia Good Day (Cashew)', price: 10, inStock: true, images: ['https://rukminim2.flixcart.com/image/850/1000/xif0q/cookie-biscuit/s/e/v/-original-imagnvfb5z93zchz.jpeg?q=90&crop=false'], category: 'Packaged Snacks' },
+  
+  { id: 'biriyani', 
+    name: 'Chicken Biriyani', 
+    variants: [ { label: 'Full Plate', price: 110 }, 
+                { label: 'Half Plate', price: 70 } ], 
+    inStock: true, 
+    images: ['https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', 
+             'https://glebekitchen.com/wp-content/uploads/2019/12/chickenbiryanibowltop.jpg'], 
+    category: 'Main Course' 
+  },
+  
+  { id: 'roll', 
+    name: 'Roll', 
+    variants: [ { label: 'Egg Roll', price: 40 }, 
+                { label: 'Chicken Roll', price: 55 } ], 
+    inStock: true, 
+    images: ['https://reetikamitra.com/wp-content/uploads/2020/07/Kolkata-Kathi-Rolls-scaled.jpg', 
+             'https://orders.popskitchen.in/storage/2024/09/image-299.png'], 
+    category: 'Snacks' 
+  },
+  
+  { id: 'moglai', 
+    name: 'Moglai Paratha', 
+    price: 60, 
+    inStock: true, 
+    images: ['https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg'], 
+    category: 'Main Course'
+  },
+  
+  { id: 'chicken_pakora', 
+  name: 'Chicken Pakora', 
+  variants: [ { label: '100 gm', price: 35 }, 
+              { label: '200 gm', price: 70 } ], 
+  inStock: true, 
+  images: ['https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1'], 
+  category: 'Snacks'
+  },
+  
+  { id: 'momo', 
+    name: 'Momo', 
+    variants: [ { label: 'Chicken Momo', price: 50 }, 
+                { label: 'Veg Momo', price: 35 } ], 
+    inStock: true, 
+    images: ['https://5.imimg.com/data5/SELLER/Default/2023/12/371872039/SR/CI/OR/40254112/chicken-wow-momo.jpg', 
+             'https://junifoods.com/wp-content/uploads/2023/03/Chicken-Momo-Restaurant-Style-Kukhura-ko-Momo-%E0%A4%95%E0%A5%81%E0%A4%96%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%95%E0%A5%8B-%E0%A4%AE%E0%A4%AE-2-300x300.jpg'], 
+    category: 'Snacks' 
+  },
+  
+  { id: 'chowmein', 
+    name: 'Chowmein', 
+    variants: [ { label: 'Egg Chowmein(Full)', price: 45 }, 
+                { label: 'Egg Chowmein(Half)', price: 25 }, 
+                { label: 'Egg Chicken Chowmein(Full)', price: 60 }, 
+                { label: 'Egg Chicken Chowmein(Half)', price: 40 } ], 
+    inStock: true, 
+    images: ['https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg'], 
+    category: 'Snacks'
+  },
+  
+  { id: 'singara', 
+    name: 'Singara (Samosa)', 
+    price: 10, 
+    inStock: true, 
+    images: ['https://www.vegrecipesofindia.com/wp-content/uploads/2017/12/singara-recipe-1a.jpg'], 
+    category: 'Snacks' 
+  },
+  
+  { id: 'lays_magic', 
+    name: "Lay's India's Magic Masala", 
+    price: 10, 
+    inStock: true, 
+    images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75'], 
+    category: 'Packaged Snacks'
+  },
+  
+  { id: 'lays_classic', 
+    name: "Lay's Classic Salted", 
+    price: 10, 
+    inStock: true, 
+    images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75'], 
+    category: 'Packaged Snacks'
+  },
+  
+  { id: 'bingo_mad_angles', 
+    name: 'Bingo! Mad Angles (Masala)', 
+    price: 10, 
+    inStock: true, 
+    images: ['https://m.media-amazon.com/images/I/81o3GOapL2L.jpg'], 
+    category: 'Packaged Snacks' 
+  },
+  
+  { id: 'haldirams_bhujia', 
+    name: "Haldiram's Bhujia Sev", 
+    price: 45, 
+    inStock: false, 
+    images: ['https://m.media-amazon.com/images/I/9166IHTX1WL.jpg'], 
+    category: 'Packaged Snacks' 
+  },
+  
+  { id: 'goodday_cashew', 
+    name: 'Britannia Good Day (Cashew)', 
+    price: 10, 
+    inStock: true, 
+    images: ['https://m.media-amazon.com/images/I/61CzyMAMoHL._UF894,1000_QL80_.jpg'], 
+    category: 'Packaged Snacks'
+  },
+  
   { id: 'thums_up', name: 'Thums Up', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7'], category: 'Cold Drinks' },
   { id: 'sprite', name: 'Sprite Soft Drink', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg'], category: 'Cold Drinks' },
-  { id: 'coca_cola', name: 'Coca-Cola', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://www.jiomart.com/images/product/original/490809295/coca-cola-750-ml-product-images-o490809295-p490809295-0-202203151921.jpg?im=Resize=(1000,1000)'], category: 'Cold Drinks' },
-  { id: 'daab', name: 'Daab (Tender Coconut)', price: 55, inStock: true, images: ['https://blog.gourmetdelight.in/wp-content/uploads/2019/12/shutterstock_1184399770-1.jpg'], category: 'Cold Drinks' },
+  
+  { id: 'coca_cola', 
+    name: 'Coca-Cola', 
+    variants: [ { label: '250 ml', price: 20 }, 
+                { label: '750 ml', price: 40 } ], 
+    inStock: true, 
+    images: ['https://m.media-amazon.com/images/I/81kx2IPueEL._UF1000,1000_QL80_.jpg'], 
+    category: 'Cold Drinks'
+  },
+  
+  { id: 'daab', 
+    name: 'Daab (Tender Coconut)', 
+    price: 55, 
+    inStock: true, 
+    images: ['https://sabziadda.com/wp-content/uploads/2014/07/Tender-Coconut.jpg'], 
+    category: 'Cold Drinks'  
+  },
+  
   { id: 'rasgulla', name: 'Rasgulla (1 pc)', price: 10, inStock: true, images: ['https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447'], category: 'Sweets & Desserts'},
-  { id: 'mishti_doi', name: 'Mishti Doi (100g Cup)', price: 35, inStock: true, images: ['https://www.bigbasket.com/media/uploads/p/l/40073557_2-mother-dairy-mishti-doi.jpg'], category: 'Sweets & Desserts' },
-  { id: 'dairy_milk', name: 'Cadbury Dairy Milk', price: 20, inStock: true, images: ['https://www.jiomart.com/images/product/original/490003923/cadbury-dairy-milk-chocolate-bar-24-g-product-images-o490003923-p490003923-0-202309251803.jpg'], category: 'Sweets & Desserts' },
-  { id: 'sugar', name: 'Sugar (Chini)', price: 45, inStock: true, images: ['https://m.media-amazon.com/images/I/61aG3yerFzL.jpg', 'https://media.istockphoto.com/id/1287871932/photo/granulated-white-cane-sugar-in-a-sack-with-a-scoop.jpg?s=612x612&w=0&k=20&c=BTRAQen1dZVsLhOjSZV50mMCyGM1xz9y2nVHCmpWlhg='], category: 'Grocery' },
+  
+  { id: 'mishti_doi', 
+    name: 'Mishti Doi (100g Cup)', 
+    price: 35, 
+    inStock: true, 
+    images: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Mishti_Doi.jpg/640px-Mishti_Doi.jpg'], 
+    category: 'Sweets & Desserts'
+  },
+  
+  { id: 'dairy_milk', name: 'Cadbury Dairy Milk', price: 20, inStock: true, images: ['https://rukminim2.flixcart.com/image/850/1000/xif0q/chocolate/k/l/g/-original-imahyuhmfhq79whg.jpeg?q=90&crop=false'], category: 'Sweets & Desserts' },
+  { id: 'sugar', name: 'Sugar (Chini)', price: 45, inStock: true, images: ['https://www.jiomart.com/images/product/original/rvpssvmtrz/premium-quality-double-refined-white-sugar-sulphurless-chini-crystal-white-sugar-500-gm-product-images-orvpssvmtrz-p593449061-1-202208261729.jpg?im=Resize=(420,420)', 'https://eng.ruralvoice.in/uploads/images/2022/10/image_750x_634d6e0326ce0.jpg'], category: 'Grocery' },
   { id: 'fortune_mustard_oil', name: 'Fortune Mustard Oil (Kachi Ghani)', variants: [ { label: '500 ml', price: 95 }, { label: '1 Ltr', price: 180 } ], inStock: true, images: ['https://m.media-amazon.com/images/I/71wVU7pgwAL._UF894,1000_QL80_.jpg'], category: 'Grocery' },
-  { id: 'aashirvaad_atta', name: 'Aashirvaad Shudh Chakki Atta', variants: [ { label: '1 kg', price: 58 }, { label: '5 kg', price: 275 } ], inStock: true, images: ['https://www.jiomart.com/images/product/original/490001441/aashirvaad-shudh-chakki-atta-1-kg-product-images-o490001441-p490001441-0-202306031732.jpg'], category: 'Grocery' },
-  { id: 'tata_salt', name: 'Tata Salt (Iodized)', price: 28, inStock: true, images: ['https://www.jiomart.com/images/product/original/490000041/tata-salt-iodized-1-kg-product-images-o490000041-p490000041-0-202307241240.jpg'], category: 'Grocery' },
-  { id: 'red_label_tea', name: 'Brooke Bond Red Label Tea (250g)', price: 140, inStock: true, images: ['https://m.media-amazon.com/images/I/71D05o2F07L.jpg'], category: 'Grocery' },
-  { id: 'amul_ghee', name: 'Amul Pure Ghee', variants: [ { label: '200 ml', price: 140 }, { label: '500 ml', price: 335 } ], inStock: true, images: ['https://www.amul.com/files/products/cow-ghee-1-litre-pack.png'], category: 'Grocery' },
-  { id: 'amul_taaza_milk', name: 'Amul Taaza Toned Milk (500ml)', price: 34, inStock: true, images: ['https://www.jiomart.com/images/product/original/490000062/amul-taaza-toned-milk-500-ml-carton-product-images-o490000062-p490000062-0-202203151918.jpg'], category: 'Grocery' },
-  { id: 'paneer', name: 'Fresh Paneer (200g)', price: 90, inStock: true, images: ['https://static.grocist.com/images/products/full/229.2.jpg'], category: 'Grocery' },
-  { id: 'eggs', name: 'Eggs (6 pcs)', price: 42, inStock: true, images: ['https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=1080/app/images/products/sliding_image/438781a.jpg'], category: 'Grocery' },
+  { id: 'aashirvaad_atta', name: 'Aashirvaad Shudh Chakki Atta', variants: [ { label: '1 kg', price: 58 }, { label: '5 kg', price: 275 } ], inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/126906_10-aashirvaad-atta-whole-wheat.jpg'], category: 'Grocery' },
+  { id: 'tata_salt', name: 'Tata Salt (Iodized)', price: 28, inStock: true, images: ['https://m.media-amazon.com/images/I/614mm2hYHyL._UF894,1000_QL80_.jpg'], category: 'Grocery' },
+  { id: 'red_label_tea', name: 'Brooke Bond Red Label Tea (250g)', price: 140, inStock: true, images: ['https://m.media-amazon.com/images/I/61VymAnsxyL.jpg'], category: 'Grocery' },
+  { id: 'amul_ghee', name: 'Amul Pure Ghee', variants: [ { label: '200 ml', price: 140 }, { label: '500 ml', price: 335 } ], inStock: true, images: ['https://cdn.grofers.com/app/images/products/sliding_image/15520a.jpg?ts=1698063512'], category: 'Grocery' },
+  { id: 'amul_taaza_milk', name: 'Amul Taaza Toned Milk (500ml)', price: 34, inStock: true, images: ['https://www.bbassets.com/media/uploads/p/xl/40090894_6-amul-taaza.jpg'], category: 'Grocery' },
+  { id: 'paneer', name: 'Fresh Paneer (200g)', price: 90, inStock: true, images: ['https://www.oifood.in/files/products/1991dc0cf269d5ec62f45406ce7f7cf0.jpg'], category: 'Grocery' },
+  { id: 'eggs', name: 'Eggs (6 pcs)', price: 42, inStock: true, images: ['https://derafarms.com/cdn/shop/files/deraproducts_12.png?v=1719207103'], category: 'Grocery' },
   { id: 'onions', name: 'Onion (Pyaj) 1kg', price: 40, inStock: true, images: ['https://www.bigbasket.com/media/uploads/p/l/10000148_30-fresho-onion.jpg'], category: 'Grocery' },
   { id: 'potatoes', name: 'Potato (Aloo) 1kg', price: 30, inStock: true, images: ['https://www.bigbasket.com/media/uploads/p/l/10000159_27-fresho-potato.jpg'], category: 'Grocery' },
-  { id: 'tomatoes', name: 'Tomato (1kg)', price: 50, inStock: true, images: ['https://www.bigbasket.com/media/uploads/p/l/10000200_17-fresho-tomato-hybrid.jpg'], category: 'Grocery' },
+  { id: 'tomatoes', name: 'Tomato (1kg)', price: 50, inStock: true, images: ['https://cdn.img.gen.in/farm-n-fresh-family/24536/portfolio.jpg?height=200&biz=5587&meta=true'], category: 'Grocery' },
   { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2, inStock: true, images: ['https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg'], category: 'Puja Items' },
-  { id: 'agarbatti', name: 'Mangaldeep Agarbatti', price: 20, inStock: true, images: ['https://www.itcportal.com/brands-microsite/images/mangaldeep/mangaldeep-large.png'], category: 'Puja Items' },
-  { id: 'camphor', name: 'Camphor (Kapur)', price: 30, inStock: true, images: ['https://4.imimg.com/data4/GT/WE/MY-1077699/camphor-tablets-500x500.jpg'], category: 'Puja Items' },
+  { id: 'agarbatti', name: 'Mangaldeep Agarbatti', price: 20, inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/264972_9-mangaldeep-sandal-agarbatti.jpg'], category: 'Puja Items' },
+  { id: 'camphor', name: 'Camphor (Kapur)', price: 30, inStock: true, images: ['https://giri.in/cdn/shop/files/42500240_Camphor_cubes_3_700x700.webp?v=1747916971'], category: 'Puja Items' },
 ];
 const CATEGORIES = { 'All': 'fa-solid fa-store', 'Main Course': 'fa-solid fa-bowl-food', 'Snacks': 'fa-solid fa-cookie-bite', 'Sweets & Desserts': 'fa-solid fa-ice-cream', 'Cold Drinks': 'fa-solid fa-martini-glass', 'Packaged Snacks': 'fa-solid fa-bag-shopping', 'Grocery': 'fa-solid fa-carrot', 'Puja Items': 'fa-solid fa-om' };
 let cart = []; let activeFilter = 'All'; let uiState = { selectedVariants: {} };
 const productGrid = document.getElementById('product-grid'); const categoryNav = document.getElementById('category-nav'); const desktopCartContainer = document.getElementById('desktop-cart'); const mobileCartModalContainer = document.getElementById('mobile-cart-modal'); const mobileCartBtn = document.getElementById('mobile-cart-btn'); const productSearchDesktop = document.getElementById('productSearch'); const productSearchMobile = document.getElementById('productSearch-mobile'); const noResultsDiv = document.getElementById('no-results'); const categoryFilterBtn = document.getElementById('category-filter-btn'); const categoryModal = document.getElementById('category-modal'); const categoryModalList = document.getElementById('category-modal-list'); const customerInfoModal = document.getElementById('customer-info-modal'); const darkModeToggle = document.getElementById('darkModeToggle'); const audio = document.getElementById('bgAudio'); const audioBtn = document.getElementById('audioToggleBtn');
 const cardObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
-function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML = ''; let hasResults = false; const lowerCaseSearchTerm = searchTerm.toLowerCase(); ALL_PRODUCTS.forEach(product => { const categoryMatch = filter === 'All' || product.category === filter; const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm); if (categoryMatch && searchMatch) { hasResults = true; const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id; const hasVariants = product.variants && product.variants.length > 0; const selectedVariantIndex = uiState.selectedVariants[product.id] || 0; let displayedPrice = product.price || 0; if (hasVariants) { displayedPrice = product.variants[selectedVariantIndex].price; } const variantSelectorHTML = hasVariants ? `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">${product.variants.map((v, i) => `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`).join('')}</select>` : ''; const buttonHTML = getButtonHTML(product, selectedVariantIndex); const outOfStockOverlay = !product.inStock ? `<div class="out-of-stock-overlay"><span class="badge">OUT OF STOCK</span></div>` : ''; const categoryIconClass = CATEGORIES[product.category] || 'fa-solid fa-tag'; card.innerHTML = `<div class="product-image-container"><a href="#" class="category-icon-badge" title="${product.category}" onclick="handleCategoryLinkClick(event, '${product.category}')"><i class="${categoryIconClass}"></i></a><div class="carousel-track">${product.images.map(imgUrl => `<div class="carousel-slide"><img src="${imgUrl}" alt="${product.name}" loading="lazy"></div>`).join('')}</div>${product.images.length > 1 ? `<div class="carousel-dots">${product.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('')}</div>` : ''}${outOfStockOverlay}</div><div class="info"><p class="name">${product.name}</p>${variantSelectorHTML}<div class="footer"><span class="price">₹${displayedPrice.toFixed(2)}</span><div class="action-wrapper">${buttonHTML}</div></div></div>`; productGrid.appendChild(card); cardObserver.observe(card); if (product.images.length > 1) initProductCarousel(card); } }); noResultsDiv.classList.toggle('hidden', hasResults); }
+function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML = ''; let hasResults = false; const lowerCaseSearchTerm = searchTerm.toLowerCase(); ALL_PRODUCTS.forEach(product => { const categoryMatch = filter === 'All' || product.category === filter; const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm); if (categoryMatch && searchMatch) { hasResults = true; const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id; const hasVariants = product.variants && product.variants.length > 0; const selectedVariantIndex = uiState.selectedVariants[product.id] || 0; let displayedPrice = product.price || 0; if (hasVariants) { displayedPrice = product.variants[selectedVariantIndex].price; } const variantSelectorHTML = hasVariants ? `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">${product.variants.map((v, i) => `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`).join('')}</select>` : ''; const buttonHTML = getButtonHTML(product, selectedVariantIndex); const outOfStockOverlay = !product.inStock ? `<div class="out-of-stock-overlay"><span class="badge">Out Of<br>Stock</span></div>` : ''; const categoryIconClass = CATEGORIES[product.category] || 'fa-solid fa-tag'; card.innerHTML = `<div class="product-image-container"><a href="#" class="category-icon-badge" title="${product.category}" onclick="handleCategoryLinkClick(event, '${product.category}')"><i class="${categoryIconClass}"></i></a><div class="carousel-track">${product.images.map(imgUrl => `<div class="carousel-slide"><img src="${imgUrl}" alt="${product.name}" loading="lazy"></div>`).join('')}</div>${product.images.length > 1 ? `<div class="carousel-dots">${product.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('')}</div>` : ''}${outOfStockOverlay}</div><div class="info"><p class="name">${product.name}</p>${variantSelectorHTML}<div class="footer"><span class="price">₹${displayedPrice.toFixed(2)}</span><div class="action-wrapper">${buttonHTML}</div></div></div>`; productGrid.appendChild(card); cardObserver.observe(card); if (product.images.length > 1) initProductCarousel(card); } }); noResultsDiv.classList.toggle('hidden', hasResults); }
 function getButtonHTML(product, selectedVariantIndex = 0) { if (!product.inStock) return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`; const cardElement = document.querySelector(`[data-product-id="${product.id}"]`) || document.createElement('div'); const { variantLabel } = getSelectedVariantInfo({ closest: () => cardElement }, product); const itemInCart = cart.find(item => item.id === product.id && item.variantLabel === variantLabel); if (itemInCart) { return `<div class="quantity-control"><button onclick="handleQuantityChange(this, '${product.id}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange(this, '${product.id}', 1)">+</button></div>`; } else { return `<button class="add-to-cart-btn" onclick="handleAddToCart(this, '${product.id}')">Add</button>`; } }
 function renderCategories() { const desktopList = document.createElement('ul'); categoryModalList.innerHTML = ''; Object.entries(CATEGORIES).forEach(([name, iconClass]) => { const isActive = name === activeFilter; const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`; const li = document.createElement('li'); li.innerHTML = linkHTML; desktopList.appendChild(li); categoryModalList.appendChild(li.cloneNode(true)); }); categoryNav.innerHTML = ''; categoryNav.appendChild(desktopList); }
 function renderCart() { const { items, total, count } = calculateCart(); const cartHTML = `<div class="cart-wrapper"><div class="cart-header">Your Order</div><div class="cart-items">${items.length === 0 ? `<div class="cart-empty-msg"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty.</p><span>Add items to get started!</span></div>` : items.map(item => `<div class="cart-item"><img src="${item.images[0]}" alt="${item.name}"><div class="details"><p class="name">${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}</p><p class="price">₹${item.price.toFixed(2)} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</p></div><div class="quantity-control"><button onclick="handleQuantityChange(this, '${item.id}', -1, '${item.variantLabel}')">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange(this, '${item.id}', 1, '${item.variantLabel}')">+</button></div></div>`).join('')}</div>${items.length > 0 ? `<div class="cart-footer"><div class="cart-total"><span>Grand Total</span><span>₹${total.toFixed(2)}</span></div><div class="cart-actions"><a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a><button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button><button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button></div></div>` : ''}</div>`; desktopCartContainer.innerHTML = cartHTML; mobileCartModalContainer.innerHTML = cartHTML; mobileCartBtn.innerHTML = `<span class="item-count"><i class="fa-solid fa-bag-shopping"></i> ${count}</span><span>View Your Order</span><span class="total">₹${total.toFixed(2)}</span>`; mobileCartBtn.classList.toggle('hidden', items.length === 0); if(items.length > 0) updateWhatsappLink(); }
@@ -328,10 +410,49 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileCartBtn.addEventListener('click', openMobileCart);
     mobileCartModalContainer.addEventListener('click', e => { if (e.target.id === 'mobile-cart-modal') closeMobileCart(); });
     window.addEventListener('popstate', () => { if (mobileCartModalContainer.classList.contains('visible')) closeMobileCart(false); });
+    
+    // --- MODIFICATION 2: Swipe Down to Close Logic ---
     let touchStartY = 0; let currentY = 0; const SWIPE_THRESHOLD = 100;
-    mobileCartModalContainer.addEventListener('touchstart', e => { const cartWrapper = e.target.closest('.cart-wrapper'); if (!cartWrapper) return; const cartItemsScroller = cartWrapper.querySelector('.cart-items'); if ((cartItemsScroller && cartItemsScroller.scrollTop === 0) || !cartItemsScroller.contains(e.target)) { touchStartY = e.touches[0].clientY; currentY = 0; cartWrapper.classList.add('swiping'); } else { touchStartY = 0; } }, { passive: true });
-    mobileCartModalContainer.addEventListener('touchmove', e => { if (touchStartY === 0) return; const cartWrapper = e.target.closest('.cart-wrapper.swiping'); if (cartWrapper) { const touchY = e.touches[0].clientY; currentY = touchY - startY; if (currentY > 0) { e.preventDefault(); cartWrapper.style.transform = `translateY(${currentY}px)`; } } }, { passive: false });
-    mobileCartModalContainer.addEventListener('touchend', e => { if (touchStartY === 0) return; const cartWrapper = e.target.closest('.cart-wrapper.swiping'); if (cartWrapper) { cartWrapper.classList.remove('swiping'); cartWrapper.style.transform = ''; if (currentY > SWIPE_THRESHOLD) closeMobileCart(); touchStartY = 0; } });
+    mobileCartModalContainer.addEventListener('touchstart', e => {
+        const cartWrapper = e.target.closest('.cart-wrapper');
+        if (!cartWrapper) return;
+        const cartItemsScroller = cartWrapper.querySelector('.cart-items');
+        // Enable swipe only if scrolled to top, or if touching header/footer
+        if ((cartItemsScroller && cartItemsScroller.scrollTop === 0) || !cartItemsScroller.contains(e.target)) {
+            touchStartY = e.touches[0].clientY;
+            currentY = 0;
+            cartWrapper.classList.add('swiping');
+        } else {
+            touchStartY = 0; // Reset if trying to scroll content
+        }
+    }, { passive: true });
+
+    mobileCartModalContainer.addEventListener('touchmove', e => {
+        if (touchStartY === 0) return; // Don't do anything if swipe didn't start correctly
+        const cartWrapper = e.target.closest('.cart-wrapper.swiping');
+        if (cartWrapper) {
+            const touchY = e.touches[0].clientY;
+            currentY = touchY - touchStartY; // Correctly calculate swipe distance
+            if (currentY > 0) { // Only track downward swipes
+                e.preventDefault(); 
+                cartWrapper.style.transform = `translateY(${currentY}px)`;
+            }
+        }
+    }, { passive: false });
+
+    mobileCartModalContainer.addEventListener('touchend', e => {
+        if (touchStartY === 0) return;
+        const cartWrapper = e.target.closest('.cart-wrapper.swiping');
+        if (cartWrapper) {
+            cartWrapper.classList.remove('swiping');
+            cartWrapper.style.transform = ''; // Reset transform
+            if (currentY > SWIPE_THRESHOLD) { // If swiped far enough
+                closeMobileCart();
+            }
+            touchStartY = 0; // Reset for next touch
+        }
+    });
+    
     darkModeToggle.addEventListener('click', () => { document.body.classList.toggle('dark'); darkModeToggle.innerHTML = document.body.classList.contains('dark') ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>'; });
     audioBtn.addEventListener('click', () => { if(audio.paused) { audio.play().catch(e => console.log("Audio play blocked.")); audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>'; } else { audio.pause(); audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'; } });
     const customerInfoForm = document.getElementById('customerInfoForm');
