@@ -226,34 +226,30 @@
   document.addEventListener('DOMContentLoaded', () => {
     const CATEGORIES = ['All', 'Main Course', 'Snacks', 'Cold Drinks', 'Packaged Snacks', 'Puja Items'];
 
-    // Show customer name from localStorage or fallback
     const customerName = localStorage.getItem('customerName') || 'Customer';
     document.getElementById('customerNameDisplay').textContent = customerName;
 
     const nav = document.querySelector('nav.categories');
-
-    // Clear existing content just in case
     nav.innerHTML = '';
 
-    // Create buttons for categories
     CATEGORIES.forEach(category => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = category;
       btn.setAttribute('aria-label', `Browse category ${category}`);
       btn.addEventListener('click', () => {
-        const url = new URL(window.location.origin + '/food-order-calculator');
-        if(category !== 'All') url.searchParams.set('category', category);
+        // --- UPDATED: Construct URL to index.html with query parameter ---
+        const url = new URL('index.html', window.location.href);
+        if (category !== 'All') {
+          url.searchParams.set('category', category);
+        }
         window.location.href = url.toString();
       });
       nav.appendChild(btn);
     });
 
-    // Dark mode toggle logic
     const darkModeToggle = document.getElementById('darkModeToggle');
-
-    // Load saved mode
-    if(localStorage.getItem('darkMode') === 'enabled') {
+    if (localStorage.getItem('darkMode') === 'enabled') {
       document.body.classList.add('dark');
       darkModeToggle.textContent = '☀️';
     }
