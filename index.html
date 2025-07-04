@@ -139,7 +139,6 @@
       .product-card .name { font-size: 0.9rem; margin-bottom: 8px; min-height: 2.7em; }
       .product-card .price { font-size: 1.2rem; }
       
-      /* --- FIX: Cropped Quantity Button --- */
       .add-to-cart-btn {
         height: 32px;
         padding: 0 14px;
@@ -221,6 +220,12 @@
   <audio id="bgAudio" loop><source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" /></audio>
 
 <script>
+// --- START OF UPGRADE: Google Sheet Integration ---
+// IMPORTANT: Replace the placeholder URL below with your actual Google Apps Script Web App URL.
+// See the instructions at the bottom of this file to learn how to create it.
+const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+// --- END OF UPGRADE ---
+
 // --- 1. DATA (EXPANDED) ---
 const ALL_PRODUCTS = [
   
@@ -406,7 +411,6 @@ function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML
 function getButtonHTML(product, selectedVariantIndex = 0) { if (!product.inStock) return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`; const cardElement = document.querySelector(`[data-product-id="${product.id}"]`) || document.createElement('div'); const { variantLabel } = getSelectedVariantInfo({ closest: () => cardElement }, product); const itemInCart = cart.find(item => item.id === product.id && item.variantLabel === variantLabel); if (itemInCart) { return `<div class="quantity-control"><button onclick="handleQuantityChange(this, '${product.id}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange(this, '${product.id}', 1)">+</button></div>`; } else { return `<button class="add-to-cart-btn" onclick="handleAddToCart(this, '${product.id}')">Add</button>`; } }
 function renderCategories() { const desktopList = document.createElement('ul'); categoryModalList.innerHTML = ''; Object.entries(CATEGORIES).forEach(([name, iconClass]) => { const isActive = name === activeFilter; const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`; const li = document.createElement('li'); li.innerHTML = linkHTML; desktopList.appendChild(li); categoryModalList.appendChild(li.cloneNode(true)); }); categoryNav.innerHTML = ''; categoryNav.appendChild(desktopList); }
 
-// --- FIX: Stop page flashing and cart scroll-to-top ---
 function renderCart() {
     const desktopCartItems = desktopCartContainer.querySelector('.cart-items');
     const mobileCartItems = mobileCartModalContainer.querySelector('.cart-items');
@@ -472,7 +476,82 @@ function getSelectedVariantInfo(buttonElement, product) { let price = product.pr
 function handleCategoryChange(newCategory) { activeFilter = newCategory; renderProducts(activeFilter, productSearchDesktop.value); renderCategories(); categoryModal.classList.remove('visible'); }
 function handleCategoryLinkClick(event, category) { event.preventDefault(); handleCategoryChange(category); }
 function calculateCart() { const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0); const count = cart.reduce((sum, item) => sum + item.quantity, 0); return { items: cart, total, count }; }
-function updateWhatsappLink() { const { items, total } = calculateCart(); const name = localStorage.getItem('customerName') || 'N/A'; const phone = localStorage.getItem('customerPhone') || 'N/A'; const address = localStorage.getItem('customerAddress') || 'N/A'; const pincode = localStorage.getItem('customerPincode') || 'N/A'; const landmark = localStorage.getItem('customerLandmark') || ''; const orderDetails = items.map(item => `${item.quantity} x ${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}`).join('\n'); document.querySelectorAll('#whatsapp-order-btn').forEach(btn => { btn.onclick = (e) => { e.preventDefault(); if (!navigator.geolocation) { alert('Geolocation is not supported by your browser.'); return; } btn.disabled = true; navigator.geolocation.getCurrentPosition( position => { const { latitude, longitude } = position.coords; const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total.toFixed(2)}*\n\nMy current location:\nhttps://maps.google.com/?q=${latitude},${longitude}\n\nThank you!`; window.open(`https://wa.me/917431059519?text=${encodeURIComponent(message)}`, '_blank'); btn.disabled = false; }, () => { alert('Location permission denied or unavailable.'); btn.disabled = false; }, { timeout: 10000 } ); }; }); }
+
+// --- START: MODIFIED FUNCTION FOR GOOGLE SHEET INTEGRATION ---
+function updateWhatsappLink() {
+    const { items, total } = calculateCart();
+    if (items.length === 0) return;
+
+    document.querySelectorAll('#whatsapp-order-btn').forEach(btn => {
+        btn.onclick = async (e) => {
+            e.preventDefault();
+
+            // 1. Show loading state
+            const originalBtnContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Placing...';
+
+            // 2. Get customer info from localStorage
+            const name = localStorage.getItem('customerName') || 'N/A';
+            const phone = localStorage.getItem('customerPhone') || 'N/A';
+            const address = localStorage.getItem('customerAddress') || 'N/A';
+            const pincode = localStorage.getItem('customerPincode') || 'N/A';
+            const landmark = localStorage.getItem('customerLandmark') || '';
+
+            // 3. Get Geolocation
+            let locationURL = 'Location not provided or denied.';
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    if (!navigator.geolocation) return reject(new Error('Geolocation not supported.'));
+                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
+                });
+                const { latitude, longitude } = position.coords;
+                locationURL = `https://maps.google.com/?q=${latitude},${longitude}`;
+            } catch (err) {
+                console.warn(`Geolocation failed: ${err.message}`);
+                alert('Could not get your location, but you can still proceed with the order.');
+            }
+
+            // 4. Send data to Google Sheet
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                const sheetData = {
+                    timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+                    name, phone, address, pincode, landmark,
+                    items: items.map(item => `${item.quantity} x ${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''} @ ₹${item.price.toFixed(2)}`).join('\n'),
+                    totalAmount: total.toFixed(2),
+                    location: locationURL
+                };
+
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST', mode: 'cors', cache: 'no-cache',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(sheetData)
+                    });
+                    if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+                    const result = await response.json();
+                    if (result.status !== 'success') throw new Error(`Script error: ${result.message}`);
+                    console.log('Order successfully saved to Google Sheet.');
+                } catch (error) {
+                    console.error('Error saving order to Google Sheet:', error);
+                    alert('There was an error saving your order details automatically. Please continue on WhatsApp to complete your order.');
+                }
+            } else {
+                console.warn('Google Script URL is not configured. Skipping sheet integration.');
+            }
+
+            // 5. Proceed to WhatsApp with all collected data
+            const orderDetails = items.map(item => `${item.quantity} x ${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}`).join('\n');
+            const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total.toFixed(2)}*\n\nMy current location:\n${locationURL}\n\nThank you!`;
+            window.open(`https://wa.me/917431059519?text=${encodeURIComponent(message)}`, '_blank');
+            
+            // 6. Reset button state
+            btn.disabled = false;
+            btn.innerHTML = originalBtnContent;
+        };
+    });
+}
+// --- END: MODIFIED FUNCTION ---
 
 function downloadPDF() { const { items, total } = calculateCart(); if(items.length === 0) { alert("Your cart is empty."); return; } const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(22).setFont("helvetica", "bold").text("FreshBites", 105, 20, null, null, "center"); doc.setFontSize(12).setFont("helvetica", "normal").text("Your Local Order Hub", 105, 28, null, null, "center"); doc.setDrawColor(0).setLineWidth(0.5).line(14, 32, 196, 32); const name = localStorage.getItem('customerName') || 'N/A', phone = localStorage.getItem('customerPhone') || 'N/A', address = localStorage.getItem('customerAddress') || 'N/A', pincode = localStorage.getItem('customerPincode') || 'N/A', landmark = localStorage.getItem('customerLandmark') || ''; doc.setFontSize(12).text([`Name: ${name}`, `Phone: ${phone}`, `Address: ${address}`, `Pincode: ${pincode}`], 14, 40); if(landmark) doc.text(`Landmark: ${landmark}`, 14, 68); doc.text(`Date: ${new Date().toLocaleString()}`, 150, 40); const startY = landmark ? 80 : 74; doc.autoTable({ startY, head: [['Item', 'Qty', 'Price', 'Total']], body: items.map(i => [`${i.name} ${i.variantLabel ? `(${i.variantLabel})` : ''}`, i.quantity, `Rs.${i.price.toFixed(2)}`, `Rs.${(i.price * i.quantity).toFixed(2)}`]), theme: 'grid' }); const finalY = doc.lastAutoTable.finalY; doc.setFont("helvetica", "bold").text("Grand Total:", 140, finalY + 10, null, null, "right").text(`Rs.${total.toFixed(2)}`, 190, finalY + 10, null, null, "right"); doc.setFontSize(10).setFont("helvetica", "italic").text("Thank you for ordering with FreshBites!", 105, finalY + 25, null, null, "center"); doc.save(`FreshBites_Bill_${Date.now()}.pdf`); }
 function showCustomerInfoModal() { ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => { document.getElementById(id).value = localStorage.getItem(id) || ''; }); customerInfoModal.classList.add('visible'); }
@@ -561,7 +640,6 @@ document.addEventListener('DOMContentLoaded', () => {
     customerInfoForm.addEventListener('submit', (e) => { e.preventDefault(); const formData = new FormData(customerInfoForm); const name = formData.get('customerName').trim(); const phone = formData.get('customerPhone').trim(); const address = formData.get('customerAddress').trim(); const pincode = formData.get('customerPincode').trim(); if(!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) { alert('Please enter valid details for all required fields.'); return; } ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => localStorage.setItem(id, formData.get(id).trim())); alert('Your info has been saved!'); hideCustomerInfoModal(); updateWhatsappLink(); });
     document.getElementById('cancelCustomerInfoBtn').addEventListener('click', hideCustomerInfoModal);
 });
-</script>
-
-</body>
-</html>
+                </script>
+         </body>
+  </html>
