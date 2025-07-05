@@ -12,9 +12,11 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+  
+  <!-- MODIFIED: Enabled redirection for new users -->
   <script>
     if (!localStorage.getItem('customerName') || !localStorage.getItem('customerPhone')) {
-      // window.location.href = 'login.html';
+      window.location.href = 'login.html';
     }
   </script>
 
@@ -84,7 +86,6 @@
     .cart-area { position: sticky; top: 20px; height: calc(100vh - 40px); display: flex; flex-direction: column; }
     .cart-wrapper { background-color: var(--surface-color); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); display: flex; flex-direction: column; height: 100%; }
     
-    /* --- MODIFIED STYLE --- */
     .cart-header {
       display: flex;
       justify-content: space-between;
@@ -111,7 +112,6 @@
     .whatsapp-btn { background-color: #25D366; color: #fff; }
     .secondary-btn { background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); }
     
-    /* --- NEW STYLES START --- */
     .location-btn {
       width: 44px;
       height: 44px;
@@ -159,7 +159,7 @@
       70% { transform: scale(1.3); opacity: 0; }
       100% { transform: scale(0.9); opacity: 0; }
     }
-    .location-status-msg {
+    .location-status-msg, .pincode-status-msg {
       padding: 10px;
       margin-bottom: 15px;
       border-radius: 8px;
@@ -173,12 +173,12 @@
       color: var(--text-primary);
       border: 1px solid var(--primary);
     }
-    .location-status-msg.success {
+    .location-status-msg.success, .pincode-status-msg.success {
       background-color: color-mix(in srgb, #25D366 20%, transparent);
       color: var(--text-primary);
       border: 1px solid #25D366;
     }
-    .location-status-msg.error {
+    .location-status-msg.error, .pincode-status-msg.error {
       background-color: color-mix(in srgb, #d9534f 20%, transparent);
       color: #d9534f;
       border: 1px solid #d9534f;
@@ -194,7 +194,6 @@
       opacity: 0.7;
       cursor: not-allowed;
     }
-    /* --- NEW STYLES END --- */
     
     .hidden { display: none !important; }
     #no-results { text-align: center; padding: 40px; color: var(--text-secondary); }
@@ -360,13 +359,27 @@ const ALL_PRODUCTS = [
 ];
 const CATEGORIES = { 'All': 'fa-solid fa-store', 'Main Course': 'fa-solid fa-bowl-food', 'Snacks': 'fa-solid fa-cookie-bite', 'Sweets & Desserts': 'fa-solid fa-ice-cream', 'Cold Drinks': 'fa-solid fa-martini-glass', 'Packaged Snacks': 'fa-solid fa-bag-shopping', 'Grocery': 'fa-solid fa-carrot', 'Puja Items': 'fa-solid fa-om' };
 let cart = []; let activeFilter = 'All'; let uiState = { selectedVariants: {} };
-// --- NEW: Global state for location ---
+
+// --- NEW/MODIFIED: Global state variables ---
+const VALID_PINCODES = ['743391', '743372'];
 let locationState = { status: 'idle', data: null }; // status can be: idle, loading, success, error
+let pincodeState = { isValid: false, message: '' }; // New state for pincode validation
 
 const productGrid = document.getElementById('product-grid'); const categoryNav = document.getElementById('category-nav'); const desktopCartContainer = document.getElementById('desktop-cart'); const mobileCartModalContainer = document.getElementById('mobile-cart-modal'); const mobileCartBtn = document.getElementById('mobile-cart-btn'); const productSearchDesktop = document.getElementById('productSearch'); const productSearchMobile = document.getElementById('productSearch-mobile'); const noResultsDiv = document.getElementById('no-results'); const categoryFilterBtn = document.getElementById('category-filter-btn'); const categoryModal = document.getElementById('category-modal'); const categoryModalList = document.getElementById('category-modal-list'); const customerInfoModal = document.getElementById('customer-info-modal'); const darkModeToggle = document.getElementById('darkModeToggle'); const audio = document.getElementById('bgAudio'); const audioBtn = document.getElementById('audioToggleBtn');
 const cardObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
 
-// --- NEW: Function to request user location ---
+// --- NEW: Function to validate pincode ---
+function validatePincode() {
+    const customerPincode = localStorage.getItem('customerPincode');
+    if (customerPincode && VALID_PINCODES.includes(customerPincode)) {
+        pincodeState = { isValid: true, message: 'Your area is serviceable!' };
+    } else if (customerPincode) {
+        pincodeState = { isValid: false, message: `Sorry, we currently do not deliver to pincode ${customerPincode}.` };
+    } else {
+        pincodeState = { isValid: false, message: 'Please add your pincode in "Edit My Info" to check serviceability.' };
+    }
+}
+
 function requestLocation() {
     if (!navigator.geolocation) {
         locationState = { status: 'error', data: 'Geolocation is not supported by your browser.' };
@@ -374,7 +387,7 @@ function requestLocation() {
         return;
     }
     locationState.status = 'loading';
-    renderCart(); // Re-render to show loading state
+    renderCart();
     navigator.geolocation.getCurrentPosition(
         (position) => {
             const { latitude, longitude } = position.coords;
@@ -382,7 +395,7 @@ function requestLocation() {
                 status: 'success',
                 data: { latitude, longitude, url: `https://maps.google.com/?q=${latitude},${longitude}` }
             };
-            renderCart(); // Re-render with success state
+            renderCart();
         },
         (error) => {
             let message = 'An unknown error occurred.';
@@ -392,7 +405,7 @@ function requestLocation() {
                 case error.TIMEOUT: message = "The request to get user location timed out."; break;
             }
             locationState = { status: 'error', data: message };
-            renderCart(); // Re-render with error state
+            renderCart();
         },
         { timeout: 10000 }
     );
@@ -402,7 +415,7 @@ function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML
 function getButtonHTML(product, selectedVariantIndex = 0) { if (!product.inStock) return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`; const cardElement = document.querySelector(`[data-product-id="${product.id}"]`) || document.createElement('div'); const { variantLabel } = getSelectedVariantInfo({ closest: () => cardElement }, product); const itemInCart = cart.find(item => item.id === product.id && item.variantLabel === variantLabel); if (itemInCart) { return `<div class="quantity-control"><button onclick="handleQuantityChange(this, '${product.id}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange(this, '${product.id}', 1)">+</button></div>`; } else { return `<button class="add-to-cart-btn" onclick="handleAddToCart(this, '${product.id}')">Add</button>`; } }
 function renderCategories() { const desktopList = document.createElement('ul'); categoryModalList.innerHTML = ''; Object.entries(CATEGORIES).forEach(([name, iconClass]) => { const isActive = name === activeFilter; const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`; const li = document.createElement('li'); li.innerHTML = linkHTML; desktopList.appendChild(li); categoryModalList.appendChild(li.cloneNode(true)); }); categoryNav.innerHTML = ''; categoryNav.appendChild(desktopList); }
 
-// --- MODIFIED: renderCart function with location logic ---
+// --- MODIFIED: renderCart function with pincode and location logic ---
 function renderCart() {
     const desktopCartItems = desktopCartContainer.querySelector('.cart-items');
     const mobileCartItems = mobileCartModalContainer.querySelector('.cart-items');
@@ -410,28 +423,37 @@ function renderCart() {
     const mobileScroll = mobileCartItems ? mobileCartItems.scrollTop : 0;
     
     const { items, total, count } = calculateCart();
+    
+    // Validate pincode every time cart is rendered
+    validatePincode();
 
     let locationButtonHTML = '';
-    switch(locationState.status) {
-        case 'loading': locationButtonHTML = `<button class="location-btn loading" title="Fetching location..."><i class="fa-solid fa-spinner"></i></button>`; break;
-        case 'success': locationButtonHTML = `<button class="location-btn success" title="Location captured!"><i class="fa-solid fa-check"></i></button>`; break;
-        case 'error': locationButtonHTML = `<button class="location-btn error" title="Location error. Tap to retry." onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`; break;
-        default: locationButtonHTML = `<button class="location-btn idle" title="Turn on Location" onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`;
-    }
-
-    let locationStatusMsgHTML = '';
-    if (items.length > 0) {
-        let msg = '', className = '';
+    if (pincodeState.isValid) { // Only show location button if pincode is valid
         switch(locationState.status) {
-            case 'loading': msg = 'Fetching your location, please wait...'; className = 'loading'; break;
-            case 'success': msg = 'Location captured! You can now proceed to order.'; className = 'success'; break;
-            case 'error': msg = `Location Error: ${locationState.data}. Please retry.`; className = 'error'; break;
-            default: msg = 'Please turn on location to complete the order.'; className = 'idle';
+            case 'loading': locationButtonHTML = `<button class="location-btn loading" title="Fetching location..."><i class="fa-solid fa-spinner"></i></button>`; break;
+            case 'success': locationButtonHTML = `<button class="location-btn success" title="Location captured!"><i class="fa-solid fa-check"></i></button>`; break;
+            case 'error': locationButtonHTML = `<button class="location-btn error" title="Location error. Tap to retry." onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`; break;
+            default: locationButtonHTML = `<button class="location-btn idle" title="Turn on Location" onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`;
         }
-        locationStatusMsgHTML = `<div class="location-status-msg ${className}">${msg}</div>`;
     }
 
-    const isWhatsAppDisabled = locationState.status !== 'success';
+    let pincodeStatusMsgHTML = '', locationStatusMsgHTML = '';
+    if (items.length > 0) {
+        if (!pincodeState.isValid) {
+            pincodeStatusMsgHTML = `<div class="pincode-status-msg error">${pincodeState.message}</div>`;
+        } else {
+            let msg, className;
+            switch(locationState.status) {
+                case 'loading': msg = 'Fetching your location, please wait...'; className = 'loading'; break;
+                case 'success': msg = 'Location captured! You can now proceed to order.'; className = 'success'; break;
+                case 'error': msg = `Location Error: ${locationState.data}. Please retry.`; className = 'error'; break;
+                default: msg = 'Please turn on location to complete the order.'; className = 'idle';
+            }
+            locationStatusMsgHTML = `<div class="location-status-msg ${className}">${msg}</div>`;
+        }
+    }
+
+    const isWhatsAppDisabled = !pincodeState.isValid || locationState.status !== 'success';
     
     const cartHTML = `<div class="cart-wrapper">
         <div class="cart-header">
@@ -441,6 +463,7 @@ function renderCart() {
         <div class="cart-items">${items.length === 0 ? `<div class="cart-empty-msg"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty.</p><span>Add items to get started!</span></div>` : items.map(item => `<div class="cart-item"><img src="${item.images[0]}" alt="${item.name}"><div class="details"><p class="name">${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}</p><p class="price">₹${item.price.toFixed(2)} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</p></div><div class="quantity-control"><button onclick="handleQuantityChange(this, '${item.id}', -1, '${item.variantLabel}')">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange(this, '${item.id}', 1, '${item.variantLabel}')">+</button></div></div>`).join('')}</div>
         ${items.length > 0 ? `<div class="cart-footer">
             <div class="cart-total"><span>Grand Total</span><span>₹${total.toFixed(2)}</span></div>
+            ${pincodeStatusMsgHTML}
             ${locationStatusMsgHTML}
             <div class="cart-actions">
                 <a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn" ${isWhatsAppDisabled ? 'disabled' : ''}><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
@@ -487,7 +510,6 @@ function handleAddToCart(buttonElement, productId) {
     renderCart();
 }
 
-// --- MODIFIED: handleQuantityChange to reset location state ---
 function handleQuantityChange(buttonElement, productId, change, variantLabelFromCart = null) {
     let variantLabel = variantLabelFromCart;
     if (variantLabel === null) {
@@ -511,7 +533,6 @@ function handleCategoryChange(newCategory) { activeFilter = newCategory; renderP
 function handleCategoryLinkClick(event, category) { event.preventDefault(); handleCategoryChange(category); }
 function calculateCart() { const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0); const count = cart.reduce((sum, item) => sum + item.quantity, 0); return { items: cart, total, count }; }
 
-// --- MODIFIED: updateWhatsappLink to use location state ---
 function updateWhatsappLink() {
     const { items, total } = calculateCart();
     if (items.length === 0) return;
@@ -659,7 +680,23 @@ document.addEventListener('DOMContentLoaded', () => {
     audioBtn.addEventListener('click', () => { if(audio.paused) { audio.play().catch(e => console.log("Audio play blocked.")); audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>'; } else { audio.pause(); audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'; } });
     
     const customerInfoForm = document.getElementById('customerInfoForm');
-    customerInfoForm.addEventListener('submit', (e) => { e.preventDefault(); const formData = new FormData(customerInfoForm); const name = formData.get('customerName').trim(); const phone = formData.get('customerPhone').trim(); const address = formData.get('customerAddress').trim(); const pincode = formData.get('customerPincode').trim(); if(!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) { alert('Please enter valid details for all required fields.'); return; } ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => localStorage.setItem(id, formData.get(id).trim())); alert('Your info has been saved!'); hideCustomerInfoModal(); updateWhatsappLink(); });
+    // MODIFIED: Re-render cart on form submission to check new pincode
+    customerInfoForm.addEventListener('submit', (e) => { 
+        e.preventDefault(); 
+        const formData = new FormData(customerInfoForm); 
+        const name = formData.get('customerName').trim(); 
+        const phone = formData.get('customerPhone').trim(); 
+        const address = formData.get('customerAddress').trim(); 
+        const pincode = formData.get('customerPincode').trim(); 
+        if(!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) { 
+            alert('Please enter valid details for all required fields.'); 
+            return; 
+        } 
+        ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => localStorage.setItem(id, formData.get(id).trim())); 
+        alert('Your info has been saved!'); 
+        hideCustomerInfoModal();
+        renderCart(); // Re-render cart to immediately validate the new pincode
+    });
     document.getElementById('cancelCustomerInfoBtn').addEventListener('click', hideCustomerInfoModal);
 });
 </script>
