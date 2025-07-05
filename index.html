@@ -83,7 +83,18 @@
     }
     .cart-area { position: sticky; top: 20px; height: calc(100vh - 40px); display: flex; flex-direction: column; }
     .cart-wrapper { background-color: var(--surface-color); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); display: flex; flex-direction: column; height: 100%; }
-    .cart-header { padding: 20px; border-bottom: 1px solid var(--border-color); font-size: 1.2rem; font-weight: 600; }
+    
+    /* --- MODIFIED STYLE --- */
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
     .cart-items { flex-grow: 1; overflow-y: auto; padding: 10px 20px; }
     .cart-empty-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 50px 20px; height: 100%; color: var(--text-secondary); }
     .cart-empty-msg i { font-size: 3.5rem; margin-bottom: 25px; color: var(--border-color); }
@@ -99,6 +110,92 @@
     .action-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
     .whatsapp-btn { background-color: #25D366; color: #fff; }
     .secondary-btn { background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); }
+    
+    /* --- NEW STYLES START --- */
+    .location-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      background-color: transparent;
+      color: var(--primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .location-btn:hover {
+      background-color: var(--primary);
+      color: #fff;
+      transform: scale(1.05);
+    }
+    .location-btn.loading i {
+      animation: fa-spin 1.5s infinite linear;
+    }
+    .location-btn.success {
+      background-color: #25D366;
+      border-color: #25D366;
+      color: #fff;
+      cursor: default;
+    }
+    .location-btn.error {
+      border-color: #d9534f;
+      color: #d9534f;
+    }
+    .location-btn.idle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background-color: var(--primary);
+      animation: pulse 2s infinite;
+      z-index: -1;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      70% { transform: scale(1.3); opacity: 0; }
+      100% { transform: scale(0.9); opacity: 0; }
+    }
+    .location-status-msg {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .location-status-msg.idle {
+      background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+      color: var(--text-primary);
+      border: 1px solid var(--primary);
+    }
+    .location-status-msg.success {
+      background-color: color-mix(in srgb, #25D366 20%, transparent);
+      color: var(--text-primary);
+      border: 1px solid #25D366;
+    }
+    .location-status-msg.error {
+      background-color: color-mix(in srgb, #d9534f 20%, transparent);
+      color: #d9534f;
+      border: 1px solid #d9534f;
+    }
+    .action-btn[disabled] {
+      background-color: #ccc;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .whatsapp-btn[disabled] {
+      background-color: #90E0A9;
+      color: #fff;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    /* --- NEW STYLES END --- */
+    
     .hidden { display: none !important; }
     #no-results { text-align: center; padding: 40px; color: var(--text-secondary); }
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
@@ -221,172 +318,31 @@
 
 <script>
 // --- START OF UPGRADE: Google Sheet Integration ---
-// IMPORTANT: Replace the placeholder URL below with your actual Google Apps Script Web App URL.
-// See the instructions at the bottom of this file to learn how to create it.
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNP0Db-9V5aI8E9D5bJ08wRyN-b1v58IkMWCZOC7APlfJM9IBD9MAObDIZeWUy5Oia2g/exec';
 // --- END OF UPGRADE ---
 
 // --- 1. DATA (EXPANDED) ---
 const ALL_PRODUCTS = [
-  
-  { id: 'biriyani', 
-    name: 'Chicken Biriyani', 
-    variants: [ { label: 'Full Plate', price: 110 }, 
-                { label: 'Half Plate', price: 70 } ], 
-    inStock: true, 
-    images: ['https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', 
-             'https://glebekitchen.com/wp-content/uploads/2019/12/chickenbiryanibowltop.jpg'], 
-    category: 'Main Course' 
-  },
-  
-  { id: 'roll', 
-    name: 'Roll', 
-    variants: [ { label: 'Egg Roll', price: 40 }, 
-                { label: 'Chicken Roll', price: 55 } ], 
-    inStock: true, 
-    images: ['https://reetikamitra.com/wp-content/uploads/2020/07/Kolkata-Kathi-Rolls-scaled.jpg', 
-             'https://orders.popskitchen.in/storage/2024/09/image-299.png'], 
-    category: 'Snacks' 
-  },
-  
-  { id: 'moglai', 
-    name: 'Moglai Paratha', 
-    price: 60, 
-    inStock: true, 
-    images: ['https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg'], 
-    category: 'Main Course'
-  },
-  
-  { id: 'chicken_pakora', 
-  name: 'Chicken Pakora', 
-  variants: [ { label: '100 gm', price: 35 }, 
-              { label: '200 gm', price: 70 } ], 
-  inStock: true, 
-  images: ['https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1'], 
-  category: 'Snacks'
-  },
-  
-  { id: 'momo', 
-    name: 'Momo', 
-    variants: [ { label: 'Chicken Momo', price: 50 }, 
-                { label: 'Veg Momo', price: 35 } ], 
-    inStock: true, 
-    images: ['https://5.imimg.com/data5/SELLER/Default/2023/12/371872039/SR/CI/OR/40254112/chicken-wow-momo.jpg', 
-             'https://junifoods.com/wp-content/uploads/2023/03/Chicken-Momo-Restaurant-Style-Kukhura-ko-Momo-%E0%A4%95%E0%A5%81%E0%A4%96%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%95%E0%A5%8B-%E0%A4%AE%E0%A4%AE-2-300x300.jpg'], 
-    category: 'Snacks' 
-  },
-  
-  { id: 'chowmein', 
-    name: 'Chowmein', 
-    variants: [ { label: 'Egg Chowmein(Full)', price: 45 }, 
-                { label: 'Egg Chowmein(Half)', price: 25 }, 
-                { label: 'Egg Chicken Chowmein(Full)', price: 60 }, 
-                { label: 'Egg Chicken Chowmein(Half)', price: 40 } ], 
-    inStock: true, 
-    images: ['https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg'], 
-    category: 'Snacks'
-  },
-  
-  { id: 'singara', 
-    name: 'Singara (Samosa)', 
-    price: 10, 
-    inStock: true, 
-    images: ['https://www.vegrecipesofindia.com/wp-content/uploads/2017/12/singara-recipe-1a.jpg'], 
-    category: 'Snacks' 
-  },
-  
-  { id: 'lays_magic', 
-    name: "Lay's India's Magic Masala", 
-    price: 10, 
-    inStock: true, 
-    images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75'], 
-    category: 'Packaged Snacks'
-  },
-  
-  { id: 'lays_classic', 
-    name: "Lay's Classic Salted", 
-    price: 10, 
-    inStock: true, 
-    images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75'], 
-    category: 'Packaged Snacks'
-  },
-  
-  { id: 'bingo_mad_angles', 
-    name: 'Bingo! Mad Angles (Masala)', 
-    price: 10, 
-    inStock: true, 
-    images: ['https://m.media-amazon.com/images/I/81o3GOapL2L.jpg'], 
-    category: 'Packaged Snacks' 
-  },
-  
-  { id: 'haldirams_bhujia', 
-    name: "Haldiram's Bhujia Sev", 
-    price: 45, 
-    inStock: false, 
-    images: ['https://m.media-amazon.com/images/I/9166IHTX1WL.jpg'], 
-    category: 'Packaged Snacks' 
-  },
-  
-  { id: 'goodday_cashew', 
-    name: 'Britannia Good Day (Cashew)', 
-    price: 10, 
-    inStock: true, 
-    images: ['https://m.media-amazon.com/images/I/61CzyMAMoHL._UF894,1000_QL80_.jpg'], 
-    category: 'Packaged Snacks'
-  },
-  
+  { id: 'biriyani', name: 'Chicken Biriyani', variants: [ { label: 'Full Plate', price: 110 }, { label: 'Half Plate', price: 70 } ], inStock: true, images: ['https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', 'https://glebekitchen.com/wp-content/uploads/2019/12/chickenbiryanibowltop.jpg'], category: 'Main Course' },
+  { id: 'roll', name: 'Roll', variants: [ { label: 'Egg Roll', price: 40 }, { label: 'Chicken Roll', price: 55 } ], inStock: true, images: ['https://reetikamitra.com/wp-content/uploads/2020/07/Kolkata-Kathi-Rolls-scaled.jpg', 'https://orders.popskitchen.in/storage/2024/09/image-299.png'], category: 'Snacks' },
+  { id: 'moglai', name: 'Moglai Paratha', price: 60, inStock: true, images: ['https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg'], category: 'Main Course'},
+  { id: 'chicken_pakora', name: 'Chicken Pakora', variants: [ { label: '100 gm', price: 35 }, { label: '200 gm', price: 70 } ], inStock: true, images: ['https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1'], category: 'Snacks'},
+  { id: 'momo', name: 'Momo', variants: [ { label: 'Chicken Momo', price: 50 }, { label: 'Veg Momo', price: 35 } ], inStock: true, images: ['https://5.imimg.com/data5/SELLER/Default/2023/12/371872039/SR/CI/OR/40254112/chicken-wow-momo.jpg', 'https://junifoods.com/wp-content/uploads/2023/03/Chicken-Momo-Restaurant-Style-Kukhura-ko-Momo-%E0%A4%95%E0%A5%81%E0%A4%96%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%95%E0%A5%8B-%E0%A4%AE%E0%A4%AE-2-300x300.jpg'], category: 'Snacks' },
+  { id: 'chowmein', name: 'Chowmein', variants: [ { label: 'Egg Chowmein(Full)', price: 45 }, { label: 'Egg Chowmein(Half)', price: 25 }, { label: 'Egg Chicken Chowmein(Full)', price: 60 }, { label: 'Egg Chicken Chowmein(Half)', price: 40 } ], inStock: true, images: ['https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg'], category: 'Snacks'},
+  { id: 'singara', name: 'Singara (Samosa)', price: 10, inStock: true, images: ['https://www.vegrecipesofindia.com/wp-content/uploads/2017/12/singara-recipe-1a.jpg'], category: 'Snacks' },
+  { id: 'lays_magic', name: "Lay's India's Magic Masala", price: 10, inStock: true, images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75'], category: 'Packaged Snacks'},
+  { id: 'lays_classic', name: "Lay's Classic Salted", price: 10, inStock: true, images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75'], category: 'Packaged Snacks'},
+  { id: 'bingo_mad_angles', name: 'Bingo! Mad Angles (Masala)', price: 10, inStock: true, images: ['https://m.media-amazon.com/images/I/81o3GOapL2L.jpg'], category: 'Packaged Snacks' },
+  { id: 'haldirams_bhujia', name: "Haldiram's Bhujia Sev", price: 45, inStock: false, images: ['https://m.media-amazon.com/images/I/9166IHTX1WL.jpg'], category: 'Packaged Snacks' },
+  { id: 'goodday_cashew', name: 'Britannia Good Day (Cashew)', price: 10, inStock: true, images: ['https://m.media-amazon.com/images/I/61CzyMAMoHL._UF894,1000_QL80_.jpg'], category: 'Packaged Snacks'},
   { id: 'thums_up', name: 'Thums Up', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7'], category: 'Cold Drinks' },
   { id: 'sprite', name: 'Sprite Soft Drink', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg'], category: 'Cold Drinks' },
-  
-  { id: 'coca_cola', 
-    name: 'Coca-Cola', 
-    variants: [ { label: '250 ml', price: 20 }, 
-                { label: '750 ml', price: 40 } ], 
-    inStock: true, 
-    images: ['https://m.media-amazon.com/images/I/81kx2IPueEL._UF1000,1000_QL80_.jpg'], 
-    category: 'Cold Drinks'
-  },
-  
-  { id: 'daab', 
-    name: 'Daab (Tender Coconut)', 
-    price: 55, 
-    inStock: true, 
-    images: ['https://sabziadda.com/wp-content/uploads/2014/07/Tender-Coconut.jpg'], 
-    category: 'Cold Drinks'  
-  },
-  
-  { id: 'rasgulla', 
-    name: 'Rasgulla (1 pc)', 
-    price: 10, 
-    inStock: true, 
-    images: ['https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447'], 
-    category: 'Sweets & Desserts'
-  },
-  
-  { id: 'mishti_doi', 
-    name: 'Mishti Doi (100g Cup)', 
-    price: 35, 
-    inStock: true, 
-    images: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Mishti_Doi.jpg/640px-Mishti_Doi.jpg'], 
-    category: 'Sweets & Desserts'
-  },
-  
-  { id: 'dairy_milk', 
-    name: 'Cadbury Dairy Milk', 
-    price: 20, 
-    inStock: true, 
-    images: ['https://rukminim2.flixcart.com/image/850/1000/xif0q/chocolate/k/l/g/-original-imahyuhmfhq79whg.jpeg?q=90&crop=false'], 
-    category: 'Sweets & Desserts'
-  },
-    
-  { id: 'sugar', 
-    name: 'Sugar (Chini)', 
-    price: 45, 
-    inStock: true, 
-    images: ['https://www.jiomart.com/images/product/original/rvpssvmtrz/premium-quality-double-refined-white-sugar-sulphurless-chini-crystal-white-sugar-500-gm-product-images-orvpssvmtrz-p593449061-1-202208261729.jpg?im=Resize=(420,420)', 'https://eng.ruralvoice.in/uploads/images/2022/10/image_750x_634d6e0326ce0.jpg'], 
-    category: 'Grocery'
-  },
-  
+  { id: 'coca_cola', name: 'Coca-Cola', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://m.media-amazon.com/images/I/81kx2IPueEL._UF1000,1000_QL80_.jpg'], category: 'Cold Drinks'},
+  { id: 'daab', name: 'Daab (Tender Coconut)', price: 55, inStock: true, images: ['https://sabziadda.com/wp-content/uploads/2014/07/Tender-Coconut.jpg'], category: 'Cold Drinks'  },
+  { id: 'rasgulla', name: 'Rasgulla (1 pc)', price: 10, inStock: true, images: ['https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447'], category: 'Sweets & Desserts'},
+  { id: 'mishti_doi', name: 'Mishti Doi (100g Cup)', price: 35, inStock: true, images: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Mishti_Doi.jpg/640px-Mishti_Doi.jpg'], category: 'Sweets & Desserts'},
+  { id: 'dairy_milk', name: 'Cadbury Dairy Milk', price: 20, inStock: true, images: ['https://rukminim2.flixcart.com/image/850/1000/xif0q/chocolate/k/l/g/-original-imahyuhmfhq79whg.jpeg?q=90&crop=false'], category: 'Sweets & Desserts'},
+  { id: 'sugar', name: 'Sugar (Chini)', price: 45, inStock: true, images: ['https://www.jiomart.com/images/product/original/rvpssvmtrz/premium-quality-double-refined-white-sugar-sulphurless-chini-crystal-white-sugar-500-gm-product-images-orvpssvmtrz-p593449061-1-202208261729.jpg?im=Resize=(420,420)', 'https://eng.ruralvoice.in/uploads/images/2022/10/image_750x_634d6e0326ce0.jpg'], category: 'Grocery'},
   { id: 'fortune_mustard_oil', name: 'Fortune Mustard Oil (Kachi Ghani)', variants: [ { label: '500 ml', price: 95 }, { label: '1 Ltr', price: 180 } ], inStock: true, images: ['https://m.media-amazon.com/images/I/71wVU7pgwAL._UF894,1000_QL80_.jpg'], category: 'Grocery' },
   { id: 'aashirvaad_atta', name: 'Aashirvaad Shudh Chakki Atta', variants: [ { label: '1 kg', price: 58 }, { label: '5 kg', price: 275 } ], inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/126906_10-aashirvaad-atta-whole-wheat.jpg'], category: 'Grocery' },
   { id: 'tata_salt', name: 'Tata Salt (Iodized)', price: 28, inStock: true, images: ['https://m.media-amazon.com/images/I/614mm2hYHyL._UF894,1000_QL80_.jpg'], category: 'Grocery' },
@@ -404,13 +360,49 @@ const ALL_PRODUCTS = [
 ];
 const CATEGORIES = { 'All': 'fa-solid fa-store', 'Main Course': 'fa-solid fa-bowl-food', 'Snacks': 'fa-solid fa-cookie-bite', 'Sweets & Desserts': 'fa-solid fa-ice-cream', 'Cold Drinks': 'fa-solid fa-martini-glass', 'Packaged Snacks': 'fa-solid fa-bag-shopping', 'Grocery': 'fa-solid fa-carrot', 'Puja Items': 'fa-solid fa-om' };
 let cart = []; let activeFilter = 'All'; let uiState = { selectedVariants: {} };
+// --- NEW: Global state for location ---
+let locationState = { status: 'idle', data: null }; // status can be: idle, loading, success, error
+
 const productGrid = document.getElementById('product-grid'); const categoryNav = document.getElementById('category-nav'); const desktopCartContainer = document.getElementById('desktop-cart'); const mobileCartModalContainer = document.getElementById('mobile-cart-modal'); const mobileCartBtn = document.getElementById('mobile-cart-btn'); const productSearchDesktop = document.getElementById('productSearch'); const productSearchMobile = document.getElementById('productSearch-mobile'); const noResultsDiv = document.getElementById('no-results'); const categoryFilterBtn = document.getElementById('category-filter-btn'); const categoryModal = document.getElementById('category-modal'); const categoryModalList = document.getElementById('category-modal-list'); const customerInfoModal = document.getElementById('customer-info-modal'); const darkModeToggle = document.getElementById('darkModeToggle'); const audio = document.getElementById('bgAudio'); const audioBtn = document.getElementById('audioToggleBtn');
 const cardObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
+
+// --- NEW: Function to request user location ---
+function requestLocation() {
+    if (!navigator.geolocation) {
+        locationState = { status: 'error', data: 'Geolocation is not supported by your browser.' };
+        renderCart();
+        return;
+    }
+    locationState.status = 'loading';
+    renderCart(); // Re-render to show loading state
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            locationState = {
+                status: 'success',
+                data: { latitude, longitude, url: `https://maps.google.com/?q=${latitude},${longitude}` }
+            };
+            renderCart(); // Re-render with success state
+        },
+        (error) => {
+            let message = 'An unknown error occurred.';
+            switch(error.code) {
+                case error.PERMISSION_DENIED: message = "You denied the request for Geolocation."; break;
+                case error.POSITION_UNAVAILABLE: message = "Location information is unavailable."; break;
+                case error.TIMEOUT: message = "The request to get user location timed out."; break;
+            }
+            locationState = { status: 'error', data: message };
+            renderCart(); // Re-render with error state
+        },
+        { timeout: 10000 }
+    );
+}
 
 function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML = ''; let hasResults = false; const lowerCaseSearchTerm = searchTerm.toLowerCase(); ALL_PRODUCTS.forEach(product => { const categoryMatch = filter === 'All' || product.category === filter; const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm); if (categoryMatch && searchMatch) { hasResults = true; const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id; const hasVariants = product.variants && product.variants.length > 0; const selectedVariantIndex = uiState.selectedVariants[product.id] || 0; let displayedPrice = product.price || 0; if (hasVariants) { displayedPrice = product.variants[selectedVariantIndex].price; } const variantSelectorHTML = hasVariants ? `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">${product.variants.map((v, i) => `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`).join('')}</select>` : ''; const buttonHTML = getButtonHTML(product, selectedVariantIndex); const outOfStockOverlay = !product.inStock ? `<div class="out-of-stock-overlay"><span class="badge">Out Of<br>Stock</span></div>` : ''; const categoryIconClass = CATEGORIES[product.category] || 'fa-solid fa-tag'; card.innerHTML = `<div class="product-image-container"><a href="#" class="category-icon-badge" title="${product.category}" onclick="handleCategoryLinkClick(event, '${product.category}')"><i class="${categoryIconClass}"></i></a><div class="carousel-track">${product.images.map(imgUrl => `<div class="carousel-slide"><img src="${imgUrl}" alt="${product.name}" loading="lazy"></div>`).join('')}</div>${product.images.length > 1 ? `<div class="carousel-dots">${product.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('')}</div>` : ''}${outOfStockOverlay}</div><div class="info"><p class="name">${product.name}</p>${variantSelectorHTML}<div class="footer"><span class="price">₹${displayedPrice.toFixed(2)}</span><div class="action-wrapper">${buttonHTML}</div></div></div>`; productGrid.appendChild(card); cardObserver.observe(card); if (product.images.length > 1) initProductCarousel(card); } }); noResultsDiv.classList.toggle('hidden', hasResults); }
 function getButtonHTML(product, selectedVariantIndex = 0) { if (!product.inStock) return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`; const cardElement = document.querySelector(`[data-product-id="${product.id}"]`) || document.createElement('div'); const { variantLabel } = getSelectedVariantInfo({ closest: () => cardElement }, product); const itemInCart = cart.find(item => item.id === product.id && item.variantLabel === variantLabel); if (itemInCart) { return `<div class="quantity-control"><button onclick="handleQuantityChange(this, '${product.id}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange(this, '${product.id}', 1)">+</button></div>`; } else { return `<button class="add-to-cart-btn" onclick="handleAddToCart(this, '${product.id}')">Add</button>`; } }
 function renderCategories() { const desktopList = document.createElement('ul'); categoryModalList.innerHTML = ''; Object.entries(CATEGORIES).forEach(([name, iconClass]) => { const isActive = name === activeFilter; const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`; const li = document.createElement('li'); li.innerHTML = linkHTML; desktopList.appendChild(li); categoryModalList.appendChild(li.cloneNode(true)); }); categoryNav.innerHTML = ''; categoryNav.appendChild(desktopList); }
 
+// --- MODIFIED: renderCart function with location logic ---
 function renderCart() {
     const desktopCartItems = desktopCartContainer.querySelector('.cart-items');
     const mobileCartItems = mobileCartModalContainer.querySelector('.cart-items');
@@ -418,7 +410,45 @@ function renderCart() {
     const mobileScroll = mobileCartItems ? mobileCartItems.scrollTop : 0;
     
     const { items, total, count } = calculateCart();
-    const cartHTML = `<div class="cart-wrapper"><div class="cart-header">Your Order</div><div class="cart-items">${items.length === 0 ? `<div class="cart-empty-msg"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty.</p><span>Add items to get started!</span></div>` : items.map(item => `<div class="cart-item"><img src="${item.images[0]}" alt="${item.name}"><div class="details"><p class="name">${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}</p><p class="price">₹${item.price.toFixed(2)} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</p></div><div class="quantity-control"><button onclick="handleQuantityChange(this, '${item.id}', -1, '${item.variantLabel}')">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange(this, '${item.id}', 1, '${item.variantLabel}')">+</button></div></div>`).join('')}</div>${items.length > 0 ? `<div class="cart-footer"><div class="cart-total"><span>Grand Total</span><span>₹${total.toFixed(2)}</span></div><div class="cart-actions"><a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a><button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button><button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button></div></div>` : ''}</div>`;
+
+    let locationButtonHTML = '';
+    switch(locationState.status) {
+        case 'loading': locationButtonHTML = `<button class="location-btn loading" title="Fetching location..."><i class="fa-solid fa-spinner"></i></button>`; break;
+        case 'success': locationButtonHTML = `<button class="location-btn success" title="Location captured!"><i class="fa-solid fa-check"></i></button>`; break;
+        case 'error': locationButtonHTML = `<button class="location-btn error" title="Location error. Tap to retry." onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`; break;
+        default: locationButtonHTML = `<button class="location-btn idle" title="Turn on Location" onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`;
+    }
+
+    let locationStatusMsgHTML = '';
+    if (items.length > 0) {
+        let msg = '', className = '';
+        switch(locationState.status) {
+            case 'loading': msg = 'Fetching your location, please wait...'; className = 'loading'; break;
+            case 'success': msg = 'Location captured! You can now proceed to order.'; className = 'success'; break;
+            case 'error': msg = `Location Error: ${locationState.data}. Please retry.`; className = 'error'; break;
+            default: msg = 'Please turn on location to complete the order.'; className = 'idle';
+        }
+        locationStatusMsgHTML = `<div class="location-status-msg ${className}">${msg}</div>`;
+    }
+
+    const isWhatsAppDisabled = locationState.status !== 'success';
+    
+    const cartHTML = `<div class="cart-wrapper">
+        <div class="cart-header">
+            <span>Your Order</span>
+            ${items.length > 0 ? locationButtonHTML : ''}
+        </div>
+        <div class="cart-items">${items.length === 0 ? `<div class="cart-empty-msg"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty.</p><span>Add items to get started!</span></div>` : items.map(item => `<div class="cart-item"><img src="${item.images[0]}" alt="${item.name}"><div class="details"><p class="name">${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}</p><p class="price">₹${item.price.toFixed(2)} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</p></div><div class="quantity-control"><button onclick="handleQuantityChange(this, '${item.id}', -1, '${item.variantLabel}')">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange(this, '${item.id}', 1, '${item.variantLabel}')">+</button></div></div>`).join('')}</div>
+        ${items.length > 0 ? `<div class="cart-footer">
+            <div class="cart-total"><span>Grand Total</span><span>₹${total.toFixed(2)}</span></div>
+            ${locationStatusMsgHTML}
+            <div class="cart-actions">
+                <a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn" ${isWhatsAppDisabled ? 'disabled' : ''}><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
+                <button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button>
+                <button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button>
+            </div>
+        </div>` : ''}
+    </div>`;
     
     desktopCartContainer.innerHTML = cartHTML;
     mobileCartModalContainer.innerHTML = cartHTML;
@@ -457,6 +487,7 @@ function handleAddToCart(buttonElement, productId) {
     renderCart();
 }
 
+// --- MODIFIED: handleQuantityChange to reset location state ---
 function handleQuantityChange(buttonElement, productId, change, variantLabelFromCart = null) {
     let variantLabel = variantLabelFromCart;
     if (variantLabel === null) {
@@ -468,6 +499,9 @@ function handleQuantityChange(buttonElement, productId, change, variantLabelFrom
         cart[itemIndex].quantity += change;
         if (cart[itemIndex].quantity <= 0) cart.splice(itemIndex, 1);
     }
+    if (cart.length === 0) {
+        locationState = { status: 'idle', data: null };
+    }
     updateProductCard(productId);
     renderCart();
 }
@@ -477,7 +511,7 @@ function handleCategoryChange(newCategory) { activeFilter = newCategory; renderP
 function handleCategoryLinkClick(event, category) { event.preventDefault(); handleCategoryChange(category); }
 function calculateCart() { const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0); const count = cart.reduce((sum, item) => sum + item.quantity, 0); return { items: cart, total, count }; }
 
-// --- START: MODIFIED FUNCTION FOR GOOGLE SHEET INTEGRATION ---
+// --- MODIFIED: updateWhatsappLink to use location state ---
 function updateWhatsappLink() {
     const { items, total } = calculateCart();
     if (items.length === 0) return;
@@ -485,34 +519,28 @@ function updateWhatsappLink() {
     document.querySelectorAll('#whatsapp-order-btn').forEach(btn => {
         btn.onclick = async (e) => {
             e.preventDefault();
+            if (btn.hasAttribute('disabled')) return;
 
-            // 1. Show loading state
             const originalBtnContent = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Placing...';
 
-            // 2. Get customer info from localStorage
             const name = localStorage.getItem('customerName') || 'N/A';
             const phone = localStorage.getItem('customerPhone') || 'N/A';
             const address = localStorage.getItem('customerAddress') || 'N/A';
             const pincode = localStorage.getItem('customerPincode') || 'N/A';
             const landmark = localStorage.getItem('customerLandmark') || '';
 
-            // 3. Get Geolocation
-            let locationURL = 'Location not provided or denied.';
-            try {
-                const position = await new Promise((resolve, reject) => {
-                    if (!navigator.geolocation) return reject(new Error('Geolocation not supported.'));
-                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
-                });
-                const { latitude, longitude } = position.coords;
-                locationURL = `https://maps.google.com/?q=${latitude},${longitude}`;
-            } catch (err) {
-                console.warn(`Geolocation failed: ${err.message}`);
-                alert('Could not get your location, but you can still proceed with the order.');
+            let locationURL = 'Location not available.';
+            if (locationState.status === 'success' && locationState.data && locationState.data.url) {
+                locationURL = locationState.data.url;
+            } else {
+                alert("Please ensure your location is captured before ordering.");
+                btn.disabled = false;
+                btn.innerHTML = originalBtnContent;
+                return;
             }
 
-            // 4. Send data to Google Sheet
             if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
                 const sheetData = {
                     timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
@@ -521,31 +549,13 @@ function updateWhatsappLink() {
                     totalAmount: total.toFixed(2),
                     location: locationURL
                 };
-
                 try {
-                    // --- FIX FOR CORS ERROR ---
-                    // We change 'application/json' to 'text/plain'. 
-                    // This bypasses the complex CORS preflight check that was failing.
                     const response = await fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST', 
-                        // mode: 'cors', // No longer strictly needed for simple requests, but okay to keep
-                        cache: 'no-cache',
-                        headers: { 'Content-Type': 'text/plain' }, // <<< CHANGED THIS LINE
+                        method: 'POST', cache: 'no-cache',
+                        headers: { 'Content-Type': 'text/plain' },
                         body: JSON.stringify(sheetData)
                     });
-                    
                     if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
-                    
-                    // Note: When using text/plain, the response might not be parsable as JSON immediately depending on how Apps Script responds, 
-                    // but for this use case, success is often enough. We'll try to parse it just in case.
-                    try {
-                        const result = await response.json();
-                        if (result.status !== 'success') throw new Error(`Script error: ${result.message}`);
-                    } catch (parseError) {
-                        // If parsing JSON fails, but the response was OK, we still count it as success.
-                        console.log("Response received, but could not parse JSON. Assuming success.");
-                    }
-                    
                     console.log('Order successfully saved to Google Sheet.');
                 } catch (error) {
                     console.error('Error saving order to Google Sheet:', error);
@@ -555,18 +565,15 @@ function updateWhatsappLink() {
                 console.warn('Google Script URL is not configured. Skipping sheet integration.');
             }
 
-            // 5. Proceed to WhatsApp with all collected data
             const orderDetails = items.map(item => `${item.quantity} x ${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}`).join('\n');
             const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total.toFixed(2)}*\n\nMy current location:\n${locationURL}\n\nThank you!`;
             window.open(`https://wa.me/917431059519?text=${encodeURIComponent(message)}`, '_blank');
             
-            // 6. Reset button state
             btn.disabled = false;
             btn.innerHTML = originalBtnContent;
         };
     });
 }
-// --- END: MODIFIED FUNCTION ---
 
 function downloadPDF() { const { items, total } = calculateCart(); if(items.length === 0) { alert("Your cart is empty."); return; } const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(22).setFont("helvetica", "bold").text("FreshBites", 105, 20, null, null, "center"); doc.setFontSize(12).setFont("helvetica", "normal").text("Your Local Order Hub", 105, 28, null, null, "center"); doc.setDrawColor(0).setLineWidth(0.5).line(14, 32, 196, 32); const name = localStorage.getItem('customerName') || 'N/A', phone = localStorage.getItem('customerPhone') || 'N/A', address = localStorage.getItem('customerAddress') || 'N/A', pincode = localStorage.getItem('customerPincode') || 'N/A', landmark = localStorage.getItem('customerLandmark') || ''; doc.setFontSize(12).text([`Name: ${name}`, `Phone: ${phone}`, `Address: ${address}`, `Pincode: ${pincode}`], 14, 40); if(landmark) doc.text(`Landmark: ${landmark}`, 14, 68); doc.text(`Date: ${new Date().toLocaleString()}`, 150, 40); const startY = landmark ? 80 : 74; doc.autoTable({ startY, head: [['Item', 'Qty', 'Price', 'Total']], body: items.map(i => [`${i.name} ${i.variantLabel ? `(${i.variantLabel})` : ''}`, i.quantity, `Rs.${i.price.toFixed(2)}`, `Rs.${(i.price * i.quantity).toFixed(2)}`]), theme: 'grid' }); const finalY = doc.lastAutoTable.finalY; doc.setFont("helvetica", "bold").text("Grand Total:", 140, finalY + 10, null, null, "right").text(`Rs.${total.toFixed(2)}`, 190, finalY + 10, null, null, "right"); doc.setFontSize(10).setFont("helvetica", "italic").text("Thank you for ordering with FreshBites!", 105, finalY + 25, null, null, "center"); doc.save(`FreshBites_Bill_${Date.now()}.pdf`); }
 function showCustomerInfoModal() { ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => { document.getElementById(id).value = localStorage.getItem(id) || ''; }); customerInfoModal.classList.add('visible'); }
