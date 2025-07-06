@@ -11,96 +11,101 @@
     <style>
         :root {
             --primary-orange: #fc8019;
+            --primary-orange-dark: #e97518;
             --dark-text: #282c3f;
             --light-text: #686b78;
             --border-color: #e2e2e5;
             --background-white: #ffffff;
-            --background-grey-light: #f0f0f5;
-            --background-grey-dark: #f1f1f6;
+            --background-grey-light: #f7f7f7;
             --footer-bg: #02060c;
             --footer-text: #a9abb2;
             --footer-heading: #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Poppins', sans-serif; color: var(--dark-text); background-color: var(--background-white); }
+        body { font-family: 'Poppins', sans-serif; color: var(--dark-text); background-color: var(--background-white); line-height: 1.6; }
         a { text-decoration: none; color: inherit; }
         button { border: none; background: none; cursor: pointer; font-family: inherit; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .section-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; color: var(--dark-text); }
+        .section-title { font-size: 28px; font-weight: 700; margin-bottom: 30px; color: var(--dark-text); text-align: center; }
 
         /* --- Header --- */
-        .main-header { box-shadow: 0 15px 40px -20px rgba(40, 44, 63, 0.15); position: sticky; top: 0; left: 0; width: 100%; background-color: var(--background-white); z-index: 1000; padding: 0 20px; }
-        .header-content { display: flex; align-items: center; justify-content: space-between; height: 80px; max-width: 1200px; margin: 0 auto; }
+        .main-header { box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 0; left: 0; width: 100%; background-color: var(--background-white); z-index: 1000; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; height: 80px; }
         .logo { font-family: 'Lobster', cursive; font-size: 2.5rem; color: var(--primary-orange); }
         .nav-links { display: flex; align-items: center; gap: 40px; }
         .nav-links a { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--light-text); transition: color 0.2s ease; }
         .nav-links a:hover { color: var(--primary-orange); }
         
         /* --- Hero Section --- */
-        .hero { padding: 40px 0; }
-        .hero-title { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-        .hero-subtitle { font-size: 18px; color: var(--light-text); margin-bottom: 30px; }
+        .hero { padding: 60px 0; background: linear-gradient(180deg, #fff8f0 0%, rgba(255,255,255,0) 100%); text-align: center; }
+        .hero-title { font-size: 42px; font-weight: 700; margin-bottom: 12px; }
+        .hero-subtitle { font-size: 18px; color: var(--light-text); margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; }
         
-        .hero-search-form { display: flex; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
-        .hero-search-form input { flex-grow: 1; padding: 16px; font-size: 16px; border: none; outline: none; }
-        .hero-search-form button { padding: 16px 24px; background-color: var(--primary-orange); color: white; font-size: 16px; font-weight: 600; }
-        .hero-search-form button:hover { background-color: #e97518; }
+        .hero-search-form { display: flex; align-items: center; max-width: 600px; margin: 0 auto; box-shadow: 0 10px 30px -10px rgba(252, 128, 25, 0.3); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; }
+        .hero-search-form input { flex-grow: 1; padding: 18px 24px; font-size: 16px; border: none; outline: none; }
+        .hero-search-form button { padding: 18px 30px; background-color: var(--primary-orange); color: white; font-size: 16px; font-weight: 600; transition: background-color 0.2s ease; }
+        .hero-search-form button:hover { background-color: var(--primary-orange-dark); }
         
-        /* --- Service Cards --- */
-        .service-cards { padding: 60px 0; display: flex; justify-content: center; gap: 20px; background: linear-gradient(to bottom, #ffffff 50%, var(--background-grey-dark) 50%); }
-        .service-card { flex: 1; max-width: 360px; background-color: var(--background-white); border-radius: 20px; overflow: hidden; text-align: right; padding: 20px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; display: block; }
-        .service-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        .service-card h2 { font-size: 20px; font-weight: 600; }
-        .service-card p { font-size: 14px; color: var(--light-text); text-transform: uppercase; margin-bottom: 10px; }
-        .service-card img { width: 120px; height: auto; margin-top: -30px; }
+        /* --- Service Cards Section--- */
+        .service-cards-section { padding: 60px 0; }
+        .service-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .service-card { background-color: var(--background-white); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; }
+        .service-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+        .service-card-image { height: 220px; width: 100%; }
+        .service-card-image img { width: 100%; height: 100%; object-fit: cover; }
+        .service-card-content { padding: 24px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .service-card-content h2 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+        .service-card-content p { font-size: 14px; color: var(--light-text); text-transform: uppercase; }
 
-        /* --- New Cities Section --- */
-        .cities-outer-wrapper { background-color: var(--background-grey-dark); padding: 40px 0; }
-        .cities-section { padding: 40px 0; border-top: 1px solid var(--border-color); }
-        .cities-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 30px; }
-        .cities-grid a { padding: 12px; text-align: center; border: 1px solid var(--border-color); border-radius: 8px; transition: box-shadow 0.2s ease; background-color: var(--background-white); }
-        .cities-grid a:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .show-more-btn { display: block; margin: 30px auto 0; padding: 12px 24px; border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600; background-color: var(--background-white); color: var(--primary-orange); }
+        /* --- Cities Section --- */
+        .cities-wrapper { background-color: var(--background-grey-light); padding: 60px 0; }
+        .cities-section { margin-bottom: 60px; }
+        .cities-section:last-child { margin-bottom: 0; }
+        .cities-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .cities-grid a { padding: 16px; text-align: center; border: 1px solid var(--border-color); border-radius: 12px; transition: box-shadow 0.2s ease, border-color 0.2s ease; background-color: var(--background-white); font-weight: 500; }
+        .cities-grid a:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: var(--primary-orange); }
+        .show-more-btn { display: block; margin: 30px auto 0; padding: 12px 24px; border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600; color: var(--primary-orange); transition: background-color 0.2s, color 0.2s; }
+        .show-more-btn:hover { background-color: var(--primary-orange); color: var(--background-white); }
         
-        /* --- New Footer --- */
+        /* --- Footer --- */
         .main-footer { background-color: var(--footer-bg); color: var(--footer-text); padding: 60px 0 30px; }
-        .footer-content { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 40px; }
-        .footer-logo { font-family: 'Lobster', cursive; font-size: 2rem; color: var(--footer-heading); margin-bottom: 10px; }
-        .footer-copyright { font-size: 14px; }
+        .footer-content { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+        .footer-logo { color: var(--footer-heading); }
+        .footer-copyright { font-size: 14px; margin-top: 10px; }
         .footer-column h4 { color: var(--footer-heading); font-size: 16px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
         .footer-column ul { list-style: none; }
         .footer-column li { margin-bottom: 15px; }
         .footer-column a:hover { color: var(--primary-orange); }
-        .footer-social-links { display: flex; gap: 20px; margin-top: 20px; }
-        .footer-social-links a { font-size: 20px; }
-
+        
         .footer-app-promo { text-align: center; border-top: 1px solid #2a2a2a; margin-top: 40px; padding-top: 40px; }
         .footer-app-promo h4 { color: var(--footer-heading); font-size: 16px; margin-bottom: 20px; }
         .footer-app-links { display: flex; justify-content: center; gap: 20px; }
         .footer-app-links img { height: 54px; cursor: pointer; }
         
         /* --- Responsive Design --- */
-        @media (max-width: 1024px) {
+        @media (max-width: 992px) {
+            .service-cards-grid { grid-template-columns: 1fr; }
             .cities-grid { grid-template-columns: repeat(3, 1fr); }
             .footer-content { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
+            .section-title { font-size: 24px; }
             .header-content { height: 60px; }
             .logo { font-size: 2rem; }
             .nav-links .nav-text { display: none; }
-            .service-cards { flex-direction: column; align-items: center; }
+            .hero-title { font-size: 32px; }
+            .hero-subtitle { font-size: 16px; }
             .cities-grid { grid-template-columns: repeat(2, 1fr); }
             .footer-content { grid-template-columns: 1fr; text-align: center; }
             .footer-column ul { padding-left: 0; }
-            .footer-social-links { justify-content: center; }
         }
     </style>
 </head>
 <body>
 
     <header class="main-header">
-        <div class="header-content">
+        <div class="container header-content">
             <a href="#" class="logo">FreshBites</a>
             <nav class="nav-links">
                 <a href="#"><i class="fas fa-search"></i> <span class="nav-text">Search</span></a>
@@ -115,7 +120,7 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h1 class="hero-title">Order food & groceries</h1>
+                <h1 class="hero-title">Order Food & Groceries</h1>
                 <p class="hero-subtitle">Anything you want, we get it. Fast.</p>
                 <form class="hero-search-form" id="heroSearchForm">
                     <input type="text" id="heroSearchInput" placeholder="Search for food, groceries, and more...">
@@ -124,49 +129,63 @@
             </div>
         </section>
 
-        <section class="service-cards">
-            <a href="https://mittikalakar.github.io/food-order-calculator/?filter=food" class="service-card">
-                <p>Up to 60% OFF</p>
-                <h2>FOOD DELIVERY</h2>
-                <img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_284/v1675667625/PC_Creative%20refresh/Food_delivery_3.png" alt="Food Delivery">
-            </a>
-            <a href="https://mittikalakar.github.io/food-order-calculator/?filter=grocery" class="service-card">
-                <p>UPTO 50% OFF</p>
-                <h2>INSTAMART</h2>
-                <img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_284/v1675667625/PC_Creative%20refresh/Instamart_3.png" alt="Instamart Grocery">
-            </a>
-            <a href="#" class="service-card">
-                <p>UP TO 50% OFF</p>
-                <h2>DINE OUT</h2>
-                <img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_284/v1675667626/PC_Creative%20refresh/Dineout_3.png" alt="Dine Out">
-            </a>
+        <section class="service-cards-section">
+            <div class="container">
+                <div class="service-cards-grid">
+                    <a href="index (23).html?filter=food" class="service-card">
+                        <div class="service-card-image">
+                            <img src="https://blog.ipleaders.in/wp-content/uploads/2019/11/foodmitho.jpg" alt="Delicious food on a table">
+                        </div>
+                        <div class="service-card-content">
+                            <h2>FOOD DELIVERY</h2>
+                            <p>UP TO 60% OFF</p>
+                        </div>
+                    </a>
+                    <a href="index (23).html?filter=grocery" class="service-card">
+                        <div class="service-card-image">
+                            <img src="https://www.supermarketperimeter.com/ext/resources/2023/02/06/AdobeStock_365031216-(1).jpeg?height=667&t=1675694888&width=1080" alt="Fresh groceries in a shopping bag">
+                        </div>
+                        <div class="service-card-content">
+                            <h2>GROCERY</h2>
+                            <p>UPTO 50% OFF</p>
+                        </div>
+                    </a>
+                    <a href="index (23).html?filter=puja" class="service-card">
+                        <div class="service-card-image">
+                            <img src="https://www.suyogah.com/cdn/shop/articles/Artboard_1_copy_1.jpg?v=1707309112" alt="Traditional puja items">
+                        </div>
+                        <div class="service-card-content">
+                            <h2>PUJA ITEMS</h2>
+                            <p>ESSENTIALS FOR YOUR PRAYERS</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </section>
 
-        <!-- NEW CITIES SECTION WRAPPER -->
-        <div class="cities-outer-wrapper">
+        <div class="cities-wrapper">
             <div class="container">
                 <section class="cities-section">
                     <h2 class="section-title">Cities with food delivery</h2>
                     <div class="cities-grid">
-                        <a href="#">Order food online in Bangalore</a>
-                        <a href="#">Order food online in Gurgaon</a>
-                        <a href="#">Order food online in Hyderabad</a>
-                        <a href="#">Order food online in Delhi</a>
-                        <a href="#">Order food online in Mumbai</a>
-                        <a href="#">Order food online in Pune</a>
+                        <a href="#">Order food in Bangalore</a>
+                        <a href="#">Order food in Gurgaon</a>
+                        <a href="#">Order food in Hyderabad</a>
+                        <a href="#">Order food in Delhi</a>
+                        <a href="#">Order food in Mumbai</a>
+                        <a href="#">Order food in Pune</a>
                     </div>
                     <button class="show-more-btn">Show More ▾</button>
                 </section>
-
                 <section class="cities-section">
                     <h2 class="section-title">Cities with grocery delivery</h2>
                     <div class="cities-grid">
-                        <a href="#">Order grocery delivery in Bangalore</a>
-                        <a href="#">Order grocery delivery in Gurgaon</a>
-                        <a href="#">Order grocery delivery in Hyderabad</a>
-                        <a href="#">Order grocery delivery in Delhi</a>
-                        <a href="#">Order grocery delivery in Mumbai</a>
-                        <a href="#">Order grocery delivery in Pune</a>
+                        <a href="#">Order grocery in Bangalore</a>
+                        <a href="#">Order grocery in Gurgaon</a>
+                        <a href="#">Order grocery in Hyderabad</a>
+                        <a href="#">Order grocery in Delhi</a>
+                        <a href="#">Order grocery in Mumbai</a>
+                        <a href="#">Order grocery in Pune</a>
                     </div>
                     <button class="show-more-btn">Show More ▾</button>
                 </section>
@@ -174,37 +193,28 @@
         </div>
     </main>
 
-    <!-- NEW FOOTER -->
     <footer class="main-footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <div class="footer-logo">FreshBites</div>
+                    <div class="logo footer-logo">FreshBites</div>
                     <div class="footer-copyright">© 2025 FreshBites Limited</div>
                 </div>
                 <div class="footer-column">
                     <h4>Company</h4>
                     <ul>
                         <li><a href="#">About Us</a></li>
-                        <li><a href="#">Swiggy Corporate</a></li>
                         <li><a href="#">Careers</a></li>
                         <li><a href="#">Team</a></li>
                         <li><a href="#">FreshBites One</a></li>
-                        <li><a href="#">FreshBites Instamart</a></li>
-                        <li><a href="#">FreshBites Dineout</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h4>Contact us</h4>
+                    <h4>Contact us & Legal</h4>
                     <ul>
                         <li><a href="#">Help & Support</a></li>
                         <li><a href="#">Partner With Us</a></li>
-                        <li><a href="#">Ride With Us</a></li>
-                    </ul>
-                     <h4>Legal</h4>
-                    <ul>
                         <li><a href="#">Terms & Conditions</a></li>
-                        <li><a href="#">Cookie Policy</a></li>
                         <li><a href="#">Privacy Policy</a></li>
                     </ul>
                 </div>
@@ -216,12 +226,11 @@
                         <li><a href="#">Hyderabad</a></li>
                         <li><a href="#">Delhi</a></li>
                         <li><a href="#">Mumbai</a></li>
-                        <li><a href="#">Pune</a></li>
-                    </ul>
+                     </ul>
                 </div>
             </div>
              <div class="footer-app-promo">
-                <h4>For better experience, download the FreshBites app now</h4>
+                <h4>For better experience, download the FreshBites app</h4>
                 <div class="footer-app-links">
                     <a href="#"><img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_108/iOS_ajgrty" alt="Download on the App Store"></a>
                     <a href="#"><img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_108/play_ip0jfp" alt="Get it on Google Play"></a>
@@ -239,8 +248,7 @@
             e.preventDefault();
             const searchTerm = searchInput.value.trim();
             if (searchTerm) {
-                // Redirect to the index page with the search term as a query parameter
-                window.location.href = `https://mittikalakar.github.io/food-order-calculator/?search=${encodeURIComponent(searchTerm)}`;
+                window.location.href = `index (23).html?search=${encodeURIComponent(searchTerm)}`;
             }
         });
     });
