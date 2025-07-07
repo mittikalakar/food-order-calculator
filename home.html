@@ -17,7 +17,7 @@
             --border-color: #e2e2e5;
             --background-white: #ffffff;
             --background-grey-light: #f7f7f7;
-            /* UPDATED: Footer color to match mobile screenshot */
+            /* Footer color to match mobile screenshot */
             --footer-bg: #f1f1f6;
             --footer-text: #686b78;
             --footer-heading: #282c3f;
@@ -46,7 +46,7 @@
         .nav-links a { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--light-text); transition: color 0.2s ease; }
         .nav-links a:hover { color: var(--primary-orange); }
         
-        /* --- Hero Section --- */
+        /* --- Hero Section with Animation --- */
         .hero { padding: 60px 0; background: linear-gradient(180deg, #fff8f0 0%, rgba(255,255,255,0) 100%); text-align: center; position: relative; overflow: hidden; }
         #hero-animation-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         .hero-shape { position: absolute; background-color: rgba(252, 128, 25, 0.1); border-radius: 50%; animation: float 25s infinite linear; bottom: -150px; }
@@ -57,11 +57,9 @@
         
         .search-wrapper { position: relative; max-width: 600px; margin: 0 auto; }
         .hero-search-form { display: flex; align-items: center; box-shadow: 0 10px 30px -10px rgba(252, 128, 25, 0.3); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; }
-        .hero-search-form input { flex-grow: 1; padding: 18px 24px; font-size: 16px; border: none; outline: none; }
-        .hero-search-form button { padding: 18px 30px; background-color: var(--primary-orange); color: white; font-size: 16px; font-weight: 600; transition: background-color 0.2s ease; }
+        .hero-search-form input { flex-grow: 1; padding: 18px 24px; font-size: 16px; border: none; outline: none; min-width: 0; /* FIX for flex shrink */ }
+        .hero-search-form button { padding: 18px 30px; background-color: var(--primary-orange); color: white; font-size: 16px; font-weight: 600; transition: background-color 0.2s ease; flex-shrink: 0; /* Prevents button from shrinking */ }
         .hero-search-form button:hover { background-color: var(--primary-orange-dark); }
-        .hero-search-form button .search-text { display: inline; }
-        .hero-search-form button .search-icon { display: none; }
         
         #search-suggestions { position: absolute; top: 105%; left: 0; right: 0; background: var(--background-white); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 1px solid var(--border-color); z-index: 100; overflow: hidden; display: none; }
         #search-suggestions a { display: block; padding: 12px 20px; color: var(--dark-text); font-weight: 500; transition: background-color 0.2s ease; text-align: left; }
@@ -90,9 +88,9 @@
         .show-more-btn:hover { background-color: var(--primary-orange); color: var(--background-white); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(252, 128, 25, 0.2); }
         
         /* --- Footer --- */
-        .main-footer { background-color: var(--footer-bg); color: var(--footer-text); padding: 60px 0 30px; }
+        .main-footer { background-color: var(--footer-bg); color: var(--footer-text); padding: 60px 0; /* Add padding for bottom nav space on mobile later */ }
         .footer-content { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
-        .footer-column .logo { color: var(--footer-heading) !important; }
+        .footer-column .logo { color: var(--footer-heading); }
         .footer-copyright { font-size: 14px; margin-top: 10px; }
         .footer-column h4 { color: var(--footer-heading); font-size: 16px; font-weight: 600; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
         .footer-column ul { list-style: none; }
@@ -101,9 +99,9 @@
         .footer-app-promo { text-align: center; border-top: 1px solid #e0e0e0; margin-top: 40px; padding-top: 40px; }
         .footer-app-promo h4 { color: var(--footer-heading); font-size: 16px; font-weight: 600; margin-bottom: 20px; }
         .footer-app-links { display: flex; justify-content: center; gap: 20px; }
-        .footer-app-links img { height: 54px; cursor: pointer; border-radius: 8px; /* FIX: Clips white corners on images */ }
+        .footer-app-links img { height: 54px; cursor: pointer; border-radius: 8px; /* FIX: Clips white corners */ }
         
-        /* --- NEW: Mobile Bottom Navigation --- */
+        /* Mobile Bottom Nav (initially hidden) */
         .mobile-bottom-nav { display: none; }
 
         /* --- Responsive Design --- */
@@ -112,59 +110,49 @@
             .cities-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
             .footer-content { grid-template-columns: repeat(2, 1fr); gap: 30px; }
         }
+
         @media (max-width: 768px) {
-            body { padding-bottom: 70px; /* Space for the bottom nav */ }
+            /* Add space at bottom for the nav bar */
+            body { padding-bottom: 70px; }
+            .main-footer { padding-bottom: 30px; }
             .section-title { font-size: 24px; }
             .header-content { height: 60px; }
             .logo { font-size: 2rem; }
-            .nav-links { display: none; } /* Hide desktop nav */
+            /* Hide desktop nav, show mobile nav */
+            .nav-links { display: none; }
+            .mobile-bottom-nav {
+                display: flex; position: fixed; bottom: 0; left: 0;
+                width: 100%; height: 65px; background-color: var(--background-white);
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1001;
+                justify-content: space-around; align-items: flex-start; padding-top: 8px;
+            }
+            .mobile-bottom-nav a {
+                display: flex; flex-direction: column; align-items: center;
+                color: var(--light-text); font-size: 12px; font-weight: 500;
+                transition: color 0.2s;
+            }
+            .mobile-bottom-nav a i { font-size: 20px; margin-bottom: 4px; }
+            .mobile-bottom-nav a.active { color: var(--primary-orange); }
+
             .hero-title { font-size: 36px; }
-            .hero-subtitle { font-size: 16px; }
+            .hero-subtitle { font-size: 16px; padding: 0 10px; }
+            .hero-search-form { margin: 0 10px; } /* Give some side margin */
+            .hero-search-form input { padding: 16px; font-size: 15px; }
+            .hero-search-form button { padding: 16px; width: 60px; } /* Fix button size */
+            .hero-search-form button .search-text { display: none; } /* Hide text */
+            .hero-search-form button .search-icon { display: inline-block; font-size: 20px; }
+            .search-wrapper { padding: 0 10px; } /* Ensure wrapper doesnt overflow */
+
             .footer-content { grid-template-columns: 1fr; text-align: center; }
             .footer-column ul { padding-left: 0; }
             
-            /* Show Mobile Nav */
-            .mobile-bottom-nav {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 65px;
-                background-color: var(--background-white);
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-                z-index: 1001;
-                justify-content: space-around;
-                align-items: center;
-            }
-            .mobile-bottom-nav a {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: var(--light-text);
-                font-size: 12px;
-                font-weight: 500;
-                transition: color 0.2s;
-            }
-            .mobile-bottom-nav a i {
-                font-size: 20px;
-                margin-bottom: 4px;
-            }
-            .mobile-bottom-nav a.active {
-                color: var(--primary-orange);
-            }
+            /* FIX: Stack App store buttons on mobile */
+            .footer-app-links { flex-direction: column; align-items: center; }
         }
+        
         @media (max-width: 480px) {
             .cities-grid { grid-template-columns: 1fr; }
-            .hero-search-form button {
-                padding: 0;
-                width: 60px; /* Fixed width for icon button */
-            }
-            .hero-search-form button .search-text { display: none; /* Hide text */ }
-            .hero-search-form button .search-icon { display: inline; font-size: 20px; /* Show icon */ }
         }
-
     </style>
 </head>
 <body>
@@ -193,7 +181,7 @@
                         <input type="text" id="heroSearchInput" placeholder="Search for food, groceries..." autocomplete="off">
                         <button type="submit">
                             <span class="search-text">SEARCH</span>
-                            <i class="fas fa-search search-icon"></i>
+                            <i class="fas fa-search search-icon" style="display:none;"></i>
                         </button>
                     </form>
                     <div id="search-suggestions"></div>
@@ -206,6 +194,7 @@
                 <div class="service-cards-grid">
                     <a href="index (23).html?filter=food" class="service-card">
                         <div class="service-card-image">
+                            <!-- IMAGE RESTORED -->
                             <img src="https://i.ibb.co/6y4n0Z0/food-delivery-illustration.png" alt="Food Delivery Illustration">
                         </div>
                         <div class="service-card-content">
@@ -215,6 +204,7 @@
                     </a>
                     <a href="index (23).html?filter=grocery" class="service-card">
                         <div class="service-card-image">
+                           <!-- IMAGE RESTORED -->
                            <img src="https://i.ibb.co/c8KxY5c/grocery-illustration.png" alt="Grocery Shopping Illustration">
                         </div>
                         <div class="service-card-content">
@@ -224,6 +214,7 @@
                     </a>
                     <a href="index (23).html?filter=puja" class="service-card">
                         <div class="service-card-image">
+                           <!-- IMAGE RESTORED -->
                            <img src="https://i.ibb.co/yQJzH0z/puja-illustration.png" alt="Puja Items Illustration">
                         </div>
                         <div class="service-card-content">
@@ -311,12 +302,12 @@
         </div>
     </footer>
 
-    <!-- NEW: Mobile Bottom Navigation Bar -->
+    <!-- Mobile Bottom Navigation Bar -->
     <nav class="mobile-bottom-nav">
         <a href="#" class="active"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="#"><i class="fas fa-search"></i><span>Search</span></a>
         <a href="#"><i class="fas fa-percent"></i><span>Offers</span></a>
-        <a href="#"><i class="fas fa-shopping-cart"></i><span>Cart</span></a>
+        <a href="index (23).html" id="mobile-cart-link"><i class="fas fa-shopping-cart"></i><span>Cart</span></a>
     </nav>
 
     <script>
@@ -329,35 +320,23 @@
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const searchTerm = searchInput.value.trim();
-            if (searchTerm) {
-                window.location.href = `index (23).html?search=${encodeURIComponent(searchTerm)}`;
-            }
+            if (searchTerm) window.location.href = `index (23).html?search=${encodeURIComponent(searchTerm)}`;
         });
 
         searchInput.addEventListener('input', () => {
             const query = searchInput.value.trim().toLowerCase();
-            if (query.length < 2) {
-                suggestionsContainer.style.display = 'none';
-                return;
-            }
+            if (query.length < 2) { suggestionsContainer.style.display = 'none'; return; }
             const filteredProducts = PRODUCT_NAMES.filter(name => name.toLowerCase().includes(query)).slice(0, 5);
             if (filteredProducts.length > 0) {
                 suggestionsContainer.innerHTML = filteredProducts.map(name => `<a href="index (23).html?search=${encodeURIComponent(name)}">${name}</a>`).join('');
                 suggestionsContainer.style.display = 'block';
-            } else {
-                suggestionsContainer.style.display = 'none';
-            }
+            } else { suggestionsContainer.style.display = 'none'; }
         });
 
-        document.addEventListener('click', (e) => {
-            if (!searchForm.contains(e.target)) {
-                suggestionsContainer.style.display = 'none';
-            }
-        });
+        document.addEventListener('click', (e) => { if (!searchForm.contains(e.target)) suggestionsContainer.style.display = 'none'; });
 
         const animationContainer = document.getElementById('hero-animation-container');
-        const shapesCount = 15;
-        for (let i = 0; i < shapesCount; i++) {
+        for (let i = 0; i < 15; i++) {
             const shape = document.createElement('div');
             shape.classList.add('hero-shape');
             const size = Math.random() * 80 + 20;
@@ -368,6 +347,23 @@
             shape.style.animationDelay = `${Math.random() * 5}s`;
             animationContainer.appendChild(shape);
         }
+
+        // JS to handle responsive search button text/icon
+        function handleResize() {
+            const searchBtn = document.querySelector('.hero-search-form button');
+            const searchBtnText = searchBtn.querySelector('.search-text');
+            const searchBtnIcon = searchBtn.querySelector('.search-icon');
+            if (window.innerWidth <= 480) {
+                searchBtnText.style.display = 'none';
+                searchBtnIcon.style.display = 'inline-block';
+            } else {
+                searchBtnText.style.display = 'inline-block';
+                searchBtnIcon.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Call on initial load
     });
     </script>
 </body>
