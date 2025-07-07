@@ -17,7 +17,6 @@
             --border-color: #e2e2e5;
             --background-white: #ffffff;
             --background-grey-light: #f7f7f7;
-            /* Footer color to match mobile screenshot */
             --footer-bg: #f1f1f6;
             --footer-text: #686b78;
             --footer-heading: #282c3f;
@@ -36,30 +35,36 @@
         a { text-decoration: none; color: inherit; }
         button { border: none; background: none; cursor: pointer; font-family: inherit; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .section-title { font-size: 28px; font-weight: 700; margin-bottom: 30px; color: var(--dark-text); text-align: center; }
-
+        
         /* --- Header --- */
-        .main-header { box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 0; left: 0; width: 100%; background-color: var(--background-white); z-index: 1000; }
+        .main-header { box-shadow: 0 4px १५px rgba(0,0,0,0.05); position: sticky; top: 0; left: 0; width: 100%; background-color: var(--background-white); z-index: 1000; }
         .header-content { display: flex; align-items: center; justify-content: space-between; height: 80px; }
-        .logo { font-family: 'Lobster', cursive; font-size: 2.5rem; color: var(--primary-orange); }
+        .logo { font-family: 'Lobster', cursive; color: var(--primary-orange); font-size: clamp(2.2rem, 7vw, 2.5rem); }
         .nav-links { display: flex; align-items: center; gap: 40px; }
         .nav-links a { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--light-text); transition: color 0.2s ease; }
         .nav-links a:hover { color: var(--primary-orange); }
         
         /* --- Hero Section with Animation --- */
-        .hero { padding: 60px 0; background: linear-gradient(180deg, #fff8f0 0%, rgba(255,255,255,0) 100%); text-align: center; position: relative; overflow: hidden; }
+        .hero { padding: 50px 0; background: linear-gradient(180deg, #fff8f0 0%, rgba(255,255,255,0) 100%); text-align: center; position: relative; overflow: hidden; }
         #hero-animation-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         .hero-shape { position: absolute; background-color: rgba(252, 128, 25, 0.1); border-radius: 50%; animation: float 25s infinite linear; bottom: -150px; }
         @keyframes float { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-100vh) rotate(720deg); } }
 
-        .hero-title { font-family: var(--font-heading); font-size: 48px; font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
+        .hero-title { font-family: var(--font-heading); font-size: clamp(32px, 8vw, 48px); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
         .hero-subtitle { font-size: 18px; color: var(--light-text); margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; }
         
-        .search-wrapper { position: relative; max-width: 600px; margin: 0 auto; }
-        .hero-search-form { display: flex; align-items: center; box-shadow: 0 10px 30px -10px rgba(252, 128, 25, 0.3); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; }
-        .hero-search-form input { flex-grow: 1; padding: 18px 24px; font-size: 16px; border: none; outline: none; min-width: 0; /* FIX for flex shrink */ }
-        .hero-search-form button { padding: 18px 30px; background-color: var(--primary-orange); color: white; font-size: 16px; font-weight: 600; transition: background-color 0.2s ease; flex-shrink: 0; /* Prevents button from shrinking */ }
+        /* -- Improved Search Bar -- */
+        .search-wrapper { position: relative; max-width: 700px; margin: 0 auto; }
+        .hero-search-form { display: flex; align-items: center; box-shadow: 0 8px 25px -8px rgba(0,0,0,0.1); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; position: relative; }
+        .hero-search-form::before {
+            font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f002"; /* fa-search */
+            position: absolute; left: 20px; top: 50%;
+            transform: translateY(-50%); color: var(--light-text); font-size: 16px;
+        }
+        .hero-search-form input { flex-grow: 1; padding: 18px 24px 18px 50px; font-size: 16px; border: none; outline: none; min-width: 0; }
+        .hero-search-form button { padding: 18px 30px; background-color: var(--primary-orange); color: white; font-size: 16px; font-weight: 600; transition: background-color 0.2s ease; flex-shrink: 0; }
         .hero-search-form button:hover { background-color: var(--primary-orange-dark); }
+        .hero-search-form button .search-icon { display: none; } /* Hidden by default */
         
         #search-suggestions { position: absolute; top: 105%; left: 0; right: 0; background: var(--background-white); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 1px solid var(--border-color); z-index: 100; overflow: hidden; display: none; }
         #search-suggestions a { display: block; padding: 12px 20px; color: var(--dark-text); font-weight: 500; transition: background-color 0.2s ease; text-align: left; }
@@ -67,7 +72,7 @@
         #search-suggestions a:not(:last-child) { border-bottom: 1px solid #f0f0f0; }
 
         /* --- Service Cards Section--- */
-        .service-cards-section { padding: 60px 0; }
+        .service-cards-section { padding: 50px 0; }
         .service-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .service-card { background-color: var(--background-white); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.07); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; }
         .service-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
@@ -77,19 +82,19 @@
         .service-card-content h2 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
         .service-card-content p { font-size: 14px; color: var(--light-text); text-transform: uppercase; }
 
-        /* --- Cities Section --- */
-        .cities-wrapper { background-color: var(--background-grey-light); padding: 60px 0; }
-        .cities-section { margin-bottom: 60px; }
-        .cities-section:last-child { margin-bottom: 0; }
-        .cities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .cities-grid a { padding: 16px; text-align: center; border: 1px solid var(--border-color); border-radius: 12px; transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease; background-color: var(--background-white); font-weight: 500; }
+        /* -- Restructured Cities Section -- */
+        .cities-wrapper { background-color: var(--background-grey-light); padding: 50px 0; }
+        .combined-cities-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .city-column .section-title { font-size: 24px; font-weight: 700; color: var(--dark-text); text-align: center; margin-bottom: 25px; }
+        .cities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .cities-grid a { padding: 16px; text-align: center; border: 1px solid var(--border-color); border-radius: 12px; transition: all 0.2s ease; background-color: var(--background-white); font-weight: 500; }
         .cities-grid a:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: var(--primary-orange); transform: translateY(-2px); }
         .show-more-btn { display: block; margin: 30px auto 0; padding: 12px 24px; border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600; color: var(--primary-orange); transition: all 0.2s; }
         .show-more-btn:hover { background-color: var(--primary-orange); color: var(--background-white); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(252, 128, 25, 0.2); }
         
-        /* --- Footer --- */
-        .main-footer { background-color: var(--footer-bg); color: var(--footer-text); padding: 60px 0; /* Add padding for bottom nav space on mobile later */ }
-        .footer-content { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+        /* -- Restructured Footer -- */
+        .main-footer { background-color: var(--footer-bg); color: var(--footer-text); padding: 50px 0; }
+        .footer-content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
         .footer-column .logo { color: var(--footer-heading); }
         .footer-copyright { font-size: 14px; margin-top: 10px; }
         .footer-column h4 { color: var(--footer-heading); font-size: 16px; font-weight: 600; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -99,59 +104,47 @@
         .footer-app-promo { text-align: center; border-top: 1px solid #e0e0e0; margin-top: 40px; padding-top: 40px; }
         .footer-app-promo h4 { color: var(--footer-heading); font-size: 16px; font-weight: 600; margin-bottom: 20px; }
         .footer-app-links { display: flex; justify-content: center; gap: 20px; }
-        .footer-app-links img { height: 54px; cursor: pointer; border-radius: 8px; /* FIX: Clips white corners */ }
+        .footer-app-links img { height: 54px; cursor: pointer; border-radius: 8px; }
         
-        /* Mobile Bottom Nav (initially hidden) */
         .mobile-bottom-nav { display: none; }
 
         /* --- Responsive Design --- */
         @media (max-width: 992px) {
-            .service-cards-grid { grid-template-columns: 1fr; gap: 40px;}
-            .cities-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-            .footer-content { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+            .service-cards-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
         }
 
         @media (max-width: 768px) {
-            /* Add space at bottom for the nav bar */
             body { padding-bottom: 70px; }
             .main-footer { padding-bottom: 30px; }
-            .section-title { font-size: 24px; }
             .header-content { height: 60px; }
-            .logo { font-size: 2rem; }
-            /* Hide desktop nav, show mobile nav */
             .nav-links { display: none; }
+
             .mobile-bottom-nav {
-                display: flex; position: fixed; bottom: 0; left: 0;
-                width: 100%; height: 65px; background-color: var(--background-white);
+                display: flex; position: fixed; bottom: 0; left: 0; width: 100%;
+                height: 65px; background-color: var(--background-white);
                 box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1001;
                 justify-content: space-around; align-items: flex-start; padding-top: 8px;
             }
             .mobile-bottom-nav a {
                 display: flex; flex-direction: column; align-items: center;
-                color: var(--light-text); font-size: 12px; font-weight: 500;
-                transition: color 0.2s;
+                color: var(--light-text); font-size: 12px; font-weight: 500; transition: color 0.2s;
             }
             .mobile-bottom-nav a i { font-size: 20px; margin-bottom: 4px; }
             .mobile-bottom-nav a.active { color: var(--primary-orange); }
 
-            .hero-title { font-size: 36px; }
-            .hero-subtitle { font-size: 16px; padding: 0 10px; }
-            .hero-search-form { margin: 0 10px; } /* Give some side margin */
-            .hero-search-form input { padding: 16px; font-size: 15px; }
-            .hero-search-form button { padding: 16px; width: 60px; } /* Fix button size */
-            .hero-search-form button .search-text { display: none; } /* Hide text */
+            .hero-subtitle { padding: 0 10px; }
+            .search-wrapper { padding: 0 10px; }
+            .hero-search-form::before { left: 16px; }
+            .hero-search-form input { padding: 16px 16px 16px 45px; font-size: 15px; }
+            .hero-search-form button { padding: 0; width: 60px; }
+            .hero-search-form button .search-text { display: none; }
             .hero-search-form button .search-icon { display: inline-block; font-size: 20px; }
-            .search-wrapper { padding: 0 10px; } /* Ensure wrapper doesnt overflow */
 
+            .service-cards-grid { grid-template-columns: 1fr; gap: 30px; }
+            .combined-cities-section { grid-template-columns: 1fr; gap: 40px; }
             .footer-content { grid-template-columns: 1fr; text-align: center; }
             .footer-column ul { padding-left: 0; }
-            
-            /* FIX: Stack App store buttons on mobile */
             .footer-app-links { flex-direction: column; align-items: center; }
-        }
-        
-        @media (max-width: 480px) {
-            .cities-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -159,7 +152,7 @@
 
     <header class="main-header">
         <div class="container header-content">
-            <a href="#" class="logo">FreshBites</a>
+            <a href="https://mittikalakar.github.io/food-order-calculator/" class="logo">FreshBites</a>
             <nav class="nav-links">
                 <a href="#"><i class="fas fa-search"></i> <span class="nav-text">Search</span></a>
                 <a href="#"><i class="fas fa-percent"></i> <span class="nav-text">Offers</span></a>
@@ -181,7 +174,7 @@
                         <input type="text" id="heroSearchInput" placeholder="Search for food, groceries..." autocomplete="off">
                         <button type="submit">
                             <span class="search-text">SEARCH</span>
-                            <i class="fas fa-search search-icon" style="display:none;"></i>
+                            <i class="fas fa-search search-icon"></i>
                         </button>
                     </form>
                     <div id="search-suggestions"></div>
@@ -194,7 +187,6 @@
                 <div class="service-cards-grid">
                     <a href="https://mittikalakar.github.io/food-order-calculator/?filter=food" class="service-card">
                         <div class="service-card-image">
-                            <!-- IMAGE RESTORED -->
                             <img src="https://blog.ipleaders.in/wp-content/uploads/2019/11/foodmitho.jpg" alt="Food Delivery Illustration">
                         </div>
                         <div class="service-card-content">
@@ -204,7 +196,6 @@
                     </a>
                     <a href="https://mittikalakar.github.io/food-order-calculator/?filter=grocery" class="service-card">
                         <div class="service-card-image">
-                           <!-- IMAGE RESTORED -->
                            <img src="https://t3.ftcdn.net/jpg/05/06/18/48/360_F_506184891_GDL7vlfqeBRSALShhxF6wx43lG7r54Mo.jpg" alt="Grocery Shopping Illustration">
                         </div>
                         <div class="service-card-content">
@@ -214,7 +205,6 @@
                     </a>
                     <a href="https://mittikalakar.github.io/food-order-calculator/?filter=puja" class="service-card">
                         <div class="service-card-image">
-                           <!-- IMAGE RESTORED -->
                            <img src="https://www.suyogah.com/cdn/shop/articles/Artboard_1_copy_1.jpg?v=1707309112" alt="Puja Items Illustration">
                         </div>
                         <div class="service-card-content">
@@ -228,30 +218,32 @@
 
         <div class="cities-wrapper">
             <div class="container">
-                <section class="cities-section">
-                    <h2 class="section-title">Cities with food delivery</h2>
-                    <div class="cities-grid">
-                        <a href="#">Order food in Bangalore</a>
-                        <a href="#">Order food in Gurgaon</a>
-                        <a href="#">Order food in Hyderabad</a>
-                        <a href="#">Order food in Delhi</a>
-                        <a href="#">Order food in Mumbai</a>
-                        <a href="#">Order food in Pune</a>
+                <div class="combined-cities-section">
+                    <div class="city-column">
+                        <h2 class="section-title">Cities with food delivery</h2>
+                        <div class="cities-grid">
+                            <a href="#">Order food in Bangalore</a>
+                            <a href="#">Order food in Gurgaon</a>
+                            <a href="#">Order food in Hyderabad</a>
+                            <a href="#">Order food in Delhi</a>
+                            <a href="#">Order food in Mumbai</a>
+                            <a href="#">Order food in Pune</a>
+                        </div>
+                        <button class="show-more-btn">Show More ▾</button>
                     </div>
-                    <button class="show-more-btn">Show More ▾</button>
-                </section>
-                <section class="cities-section">
-                    <h2 class="section-title">Cities with grocery delivery</h2>
-                    <div class="cities-grid">
-                        <a href="#">Order grocery in Bangalore</a>
-                        <a href="#">Order grocery in Gurgaon</a>
-                        <a href="#">Order grocery in Hyderabad</a>
-                        <a href="#">Order grocery in Delhi</a>
-                        <a href="#">Order grocery in Mumbai</a>
-                        <a href="#">Order grocery in Pune</a>
+                    <div class="city-column">
+                        <h2 class="section-title">Cities with grocery delivery</h2>
+                        <div class="cities-grid">
+                            <a href="#">Order grocery in Bangalore</a>
+                            <a href="#">Order grocery in Gurgaon</a>
+                            <a href="#">Order grocery in Hyderabad</a>
+                            <a href="#">Order grocery in Delhi</a>
+                            <a href="#">Order grocery in Mumbai</a>
+                            <a href="#">Order grocery in Pune</a>
+                        </div>
+                        <button class="show-more-btn">Show More ▾</button>
                     </div>
-                    <button class="show-more-btn">Show More ▾</button>
-                </section>
+                </div>
             </div>
         </div>
     </main>
@@ -260,7 +252,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <div class="logo footer-logo">FreshBites</div>
+                    <a href="https://mittikalakar.github.io/food-order-calculator/" class="logo footer-logo">FreshBites</a>
                     <div class="footer-copyright">© 2025 FreshBites Limited</div>
                 </div>
                 <div class="footer-column">
@@ -293,7 +285,7 @@
                 </div>
             </div>
              <div class="footer-app-promo">
-                <h4>For better experience, download the FreshBites app</h4>
+                <h4>For a better experience, download the FreshBites app</h4>
                 <div class="footer-app-links">
                     <a href="#"><img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_108/iOS_ajgrty" alt="Download on the App Store"></a>
                     <a href="#"><img src="https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_108/play_ip0jfp" alt="Get it on Google Play"></a>
@@ -325,16 +317,22 @@
 
         searchInput.addEventListener('input', () => {
             const query = searchInput.value.trim().toLowerCase();
-            if (query.length < 2) { suggestionsContainer.style.display = 'none'; return; }
+            if (query.length < 2) { 
+                suggestionsContainer.style.display = 'none'; 
+                return; 
+            }
             const filteredProducts = PRODUCT_NAMES.filter(name => name.toLowerCase().includes(query)).slice(0, 5);
             if (filteredProducts.length > 0) {
                 suggestionsContainer.innerHTML = filteredProducts.map(name => `<a href="https://mittikalakar.github.io/food-order-calculator/?search=${encodeURIComponent(name)}">${name}</a>`).join('');
                 suggestionsContainer.style.display = 'block';
-            } else { suggestionsContainer.style.display = 'none'; }
+            } else { 
+                suggestionsContainer.style.display = 'none'; 
+            }
         });
 
         document.addEventListener('click', (e) => { if (!searchForm.contains(e.target)) suggestionsContainer.style.display = 'none'; });
 
+        // Floating animation shapes
         const animationContainer = document.getElementById('hero-animation-container');
         for (let i = 0; i < 15; i++) {
             const shape = document.createElement('div');
@@ -347,23 +345,6 @@
             shape.style.animationDelay = `${Math.random() * 5}s`;
             animationContainer.appendChild(shape);
         }
-
-        // JS to handle responsive search button text/icon
-        function handleResize() {
-            const searchBtn = document.querySelector('.hero-search-form button');
-            const searchBtnText = searchBtn.querySelector('.search-text');
-            const searchBtnIcon = searchBtn.querySelector('.search-icon');
-            if (window.innerWidth <= 480) {
-                searchBtnText.style.display = 'none';
-                searchBtnIcon.style.display = 'inline-block';
-            } else {
-                searchBtnText.style.display = 'inline-block';
-                searchBtnIcon.style.display = 'none';
-            }
-        }
-
-        window.addEventListener('resize', handleResize);
-        handleResize(); // Call on initial load
     });
     </script>
 </body>
