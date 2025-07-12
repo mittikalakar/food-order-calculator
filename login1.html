@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FreshBites - Staff Login</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lobster&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #ff8a76 0%, #ff6f61 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        background: #fff;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+      }
+      .login-container h2 {
+        font-family: "Lobster", cursive;
+        color: #ff6f61;
+        font-size: 2.8rem;
+        margin-bottom: 24px;
+      }
+      label {
+        display: block;
+        text-align: left;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+      }
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+      input:focus {
+        border-color: #ff6f61;
+        box-shadow: 0 0 8px rgba(255, 111, 97, 0.4);
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 14px;
+        background-color: #ff6f61;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #e6564a;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .error-message {
+        color: #d9534f;
+        background-color: #f2dede;
+        border: 1px solid #ebccd1;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Staff Portal</h2>
+      <form id="loginForm">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          required
+          placeholder="Enter your registered email"
+        />
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          required
+          placeholder="Enter your password"
+        />
+        <button type="submit" id="loginButton">Login</button>
+      </form>
+      <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script>
+      // --- START: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE",
+        authDomain: "freshbites-platform.firebaseapp.com",
+        projectId: "freshbites-platform",
+        storageBucket: "freshbites-platform.firebasestorage.app",
+        messagingSenderId: "89904601475",
+        appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
+        measurementId: "G-WZ2HTSPD49",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      // --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
+
+      const loginForm = document.getElementById("loginForm");
+      const loginButton = document.getElementById("loginButton");
+      const errorMessageDiv = document.getElementById("errorMessage");
+
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = loginForm.email.value;
+        const password = loginForm.password.value;
+
+        loginButton.disabled = true;
+        loginButton.textContent = "Logging in...";
+        errorMessageDiv.style.display = "none";
+
+        auth
+          .signInWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            // User signed in
+            const user = userCredential.user;
+            // Get the user's ID token to check for custom claims
+            return user.getIdTokenResult();
+          })
+          .then((idTokenResult) => {
+            // idTokenResult.claims contains the custom claims.
+            const claims = idTokenResult.claims;
+            if (claims.role === "vendor") {
+              window.location.href = "vendor_dashboard.html";
+            } else if (claims.role === "rider") {
+              window.location.href = "rider_dashboard.html";
+            } else {
+              // If no role, sign out and show error.
+              auth.signOut();
+              showError("No role assigned to this user. Please contact admin.");
+            }
+          })
+          .catch((error) => {
+            showError(error.message);
+          })
+          .finally(() => {
+            loginButton.disabled = false;
+            loginButton.textContent = "Login";
+          });
+      });
+
+      function showError(message) {
+        errorMessageDiv.textContent = message;
+        errorMessageDiv.style.display = "block";
+      }
+
+      // To set a custom role (you must do this via a backend environment like Node.js Admin SDK)
+      // This is a one-time setup action for each user.
+      // Example: functions.auth().setCustomUserClaims(uid, {role: 'vendor'});
+      console.log(
+        "To set roles, you need to use the Firebase Admin SDK in a secure backend environment. You cannot set them from the client-side."
+      );
+    </script>
+  </body>
+</html>
