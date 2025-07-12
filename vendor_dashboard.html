@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vendor Dashboard - FreshBites</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #ff6f61;
+        --bg-light: #f9f9f9;
+        --border: #e0e0e0;
+        --text-dark: #333;
+        --text-light: #777;
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        margin: 0;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow);
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      .header .user-info {
+        font-weight: 500;
+      }
+      #logoutButton {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .main-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow);
+      }
+      .card h2 {
+        margin-top: 0;
+        border-bottom: 2px solid var(--bg-light);
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+      }
+      .product-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .product-table th,
+      .product-table td {
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .product-table th {
+        font-weight: 600;
+      }
+      .status-toggle {
+        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 20px;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .status-toggle.in-stock {
+        background-color: #28a745;
+      }
+      .status-toggle.out-of-stock {
+        background-color: #dc3545;
+      }
+      .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        margin: 0 5px;
+      }
+      .fa-edit {
+        color: #007bff;
+      }
+      .fa-trash-alt {
+        color: #dc3545;
+      }
+      #shopStatusToggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        font-size: 1.2rem;
+        cursor: pointer;
+        user-select: none;
+      }
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: var(--primary);
+      }
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+      #newOrderContainer {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+      .order-item {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      .order-item h4 {
+        margin: 0 0 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div>
+          <h1>Vendor Dashboard</h1>
+          <span class="user-info" id="userInfo"></span>
+        </div>
+        <button id="logoutButton">Logout</button>
+      </header>
+
+      <main class="main-grid">
+        <div class="card">
+          <h2>My Products</h2>
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="product-list">
+              <!-- Products will be loaded here -->
+            </tbody>
+          </table>
+          <!-- Add Product Form would go here -->
+        </div>
+
+        <aside>
+          <div class="card">
+            <h2>Shop Status</h2>
+            <label id="shopStatusToggle">
+              <span id="shopStatusText">Shop is Closed</span>
+              <div class="toggle-switch">
+                <input type="checkbox" id="shopStatusCheckbox" />
+                <span class="slider"></span>
+              </div>
+            </label>
+          </div>
+          <div class="card" style="margin-top: 20px">
+            <h2>New Orders</h2>
+            <div id="newOrderContainer">
+              <!-- New orders will be polled and displayed here -->
+              <p>No new orders right now.</p>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script>
+      // --- START: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE",
+        authDomain: "freshbites-platform.firebaseapp.com",
+        projectId: "freshbites-platform",
+        storageBucket: "freshbites-platform.firebasestorage.app",
+        messagingSenderId: "89904601475",
+        appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
+        measurementId: "G-WZ2HTSPD49",
+      };
+
+      // Initialize Firebase (compat style)
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      // --- START: PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ---
+      const GOOGLE_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbwyanE9JvvgrHZRX6Y6BgaWrHKm_lEx1dpcOOe21BkFO7ch9un7PTaokS7M6KWR5lyA/exec";
+      // --- END: PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ---
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      const userInfo = document.getElementById("userInfo");
+      const productList = document.getElementById("product-list");
+      const logoutButton = document.getElementById("logoutButton");
+      const shopStatusCheckbox = document.getElementById("shopStatusCheckbox");
+      const shopStatusText = document.getElementById("shopStatusText");
+
+      let currentVendor = null;
+
+      // Auth state observer
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          user.getIdTokenResult().then((idTokenResult) => {
+            if (idTokenResult.claims.role !== "vendor") {
+              // Not a vendor, redirect to login
+              auth.signOut();
+              window.location.href = "login.html";
+            } else {
+              currentVendor = { uid: user.uid, email: user.email };
+              userInfo.textContent = `Welcome, ${user.email}`;
+              loadVendorData();
+            }
+          });
+        } else {
+          // No user logged in
+          window.location.href = "login.html";
+        }
+      });
+
+      logoutButton.addEventListener("click", () => {
+        auth.signOut();
+      });
+
+      async function loadVendorData() {
+        if (!currentVendor) return;
+        // Fetch products and shop status
+        const response = await fetch(
+          `${GOOGLE_SCRIPT_URL}?action=getVendorData&vendorId=${currentVendor.uid}`
+        );
+        const data = await response.json();
+
+        // Render Products
+        renderProducts(data.products);
+
+        // Set Shop Status
+        const isOpen = data.shopStatus === "Open";
+        shopStatusCheckbox.checked = isOpen;
+        shopStatusText.textContent = `Shop is ${isOpen ? "Open" : "Closed"}`;
+      }
+
+      function renderProducts(products) {
+        productList.innerHTML = "";
+        if (!products || products.length === 0) {
+          productList.innerHTML =
+            '<tr><td colspan="4">You have not added any products yet.</td></tr>';
+          return;
+        }
+        products.forEach((p) => {
+          const row = document.createElement("tr");
+          const price = p.Variants ? JSON.parse(p.Variants)[0].price : p.Price;
+          const stockStatus = p.InStock ? "in-stock" : "out-of-stock";
+          row.innerHTML = `
+                    <td>${p.Name}</td>
+                    <td>₹${price}</td>
+                    <td><span class="status-toggle ${stockStatus}" onclick="toggleStock('${
+            p.ProductID
+          }')">${stockStatus.replace("-", " ")}</span></td>
+                    <td>
+                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                `;
+          productList.appendChild(row);
+        });
+      }
+
+      shopStatusCheckbox.addEventListener("change", async function () {
+        const newStatus = this.checked ? "Open" : "Closed";
+        shopStatusText.textContent = `Shop is ${newStatus}`;
+
+        // Send update to Google Sheet
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({
+            action: "updateShopStatus",
+            vendorId: currentVendor.uid,
+            status: newStatus,
+          }),
+        });
+      });
+
+      async function toggleStock(productId) {
+        // Optimistic update
+        // Find the product in the UI and toggle its class and text
+        // Then send the update to the backend
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({
+            action: "toggleProductStock",
+            vendorId: currentVendor.uid, // For security
+            productId: productId,
+          }),
+        });
+        loadVendorData(); // Reload data to confirm
+      }
+
+      // Polling for new orders
+      setInterval(async () => {
+        if (!currentVendor) return;
+        // This function would poll the 'Orders' sheet for new orders assigned to this vendor
+        console.log("Polling for new orders...");
+      }, 30000); // Poll every 30 seconds
+    </script>
+  </body>
+</html>
