@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rider Dashboard - FreshBites</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #28a745;
+        --bg-light: #f9f9f9;
+        --border: #e0e0e0;
+        --text-dark: #333;
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg-light);
+        margin: 0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow);
+      }
+      .card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px var(--shadow);
+        margin-top: 20px;
+      }
+      .card h2 {
+        margin-top: 0;
+      }
+      .order-list-item {
+        border: 1px solid var(--border);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .order-details p {
+        margin: 0 0 5px 0;
+      }
+      .order-details p strong {
+        color: #555;
+      }
+      .claim-btn {
+        background-color: var(--primary);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+      }
+      #logoutButton {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <h1>Available Deliveries</h1>
+        <button id="logoutButton">Logout</button>
+      </header>
+
+      <main id="tasks-container">
+        <div class="card">
+          <h2>Ready for Pickup</h2>
+          <div id="available-orders">
+            <p>Searching for available orders...</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <script>
+      // --- START: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE",
+        authDomain: "freshbites-platform.firebaseapp.com",
+        projectId: "freshbites-platform",
+        storageBucket: "freshbites-platform.firebasestorage.app",
+        messagingSenderId: "89904601475",
+        appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
+        measurementId: "G-WZ2HTSPD49",
+      };
+
+      // Initialize Firebase (compat style)
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      // --- START: PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ---
+      const GOOGLE_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbwyanE9JvvgrHZRX6Y6BgaWrHKm_lEx1dpcOOe21BkFO7ch9un7PTaokS7M6KWR5lyA/exec";
+      // --- END: PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ---
+
+      const logoutButton = document.getElementById("logoutButton");
+      let currentRider = null;
+
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          user.getIdTokenResult().then((idTokenResult) => {
+            if (idTokenResult.claims.role !== "rider") {
+              auth.signOut();
+              window.location.href = "login1.html";
+            } else {
+              currentRider = { uid: user.uid, email: user.email };
+              pollForOrders();
+            }
+          });
+        } else {
+          window.location.href = "login1.html";
+        }
+      });
+
+      logoutButton.addEventListener("click", () => auth.signOut());
+
+      async function pollForOrders() {
+        const response = await fetch(
+          `${GOOGLE_SCRIPT_URL}?action=getAvailableOrders`
+        );
+        const orders = await response.json();
+        renderOrders(orders);
+      }
+
+      function renderOrders(orders) {
+        const container = document.getElementById("available-orders");
+        container.innerHTML = "";
+
+        if (!orders || orders.length === 0) {
+          container.innerHTML =
+            "<p>No orders currently available for pickup.</p>";
+          return;
+        }
+
+        orders.forEach((order) => {
+          const item = document.createElement("div");
+          item.className = "order-list-item";
+          item.innerHTML = `
+                    <div class="order-details">
+                        <p><strong>Order ID:</strong> ${order.OrderID}</p>
+                        <p><strong>Pickup From:</strong> ${order.ShopName}</p>
+                        <p><strong>Deliver To:</strong> ${order.CustomerAddress}</p>
+                    </div>
+                    <button class="claim-btn" onclick="claimOrder('${order.OrderID}')">Claim Order</button>
+                `;
+          container.appendChild(item);
+        });
+      }
+
+      async function claimOrder(orderId) {
+        // Logic to assign rider to order in Google Sheet
+        console.log(`Claiming order ${orderId} for rider ${currentRider.uid}`);
+        // After claiming, you would re-render or move this to an "My Deliveries" section
+      }
+
+      // Poll for new orders periodically
+      setInterval(pollForOrders, 45000); // Poll every 45 seconds
+    </script>
+  </body>
+</html>
