@@ -387,6 +387,45 @@
         // This function would poll the 'Orders' sheet for new orders assigned to this vendor
         console.log("Polling for new orders...");
       }, 30000); // Poll every 30 seconds
+
+      // --- START: Add Product Logic ---
+const addProductForm = document.getElementById('addProductForm');
+
+addProductForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const newProduct = {
+        action: 'addProduct',
+        vendorId: currentVendor.uid, // We already have this
+        name: document.getElementById('productName').value,
+        price: document.getElementById('productPrice').value,
+        category: document.getElementById('productCategory').value,
+        image: document.getElementById('productImage').value
+    };
+
+    // Disable button to prevent double-clicks
+    const submitButton = addProductForm.querySelector('button');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Adding...';
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(newProduct)
+        });
+        const result = await response.text();
+        alert(result); // Show success/error message from the script
+        addProductForm.reset(); // Clear the form
+        loadVendorData(); // Reload the product list
+    } catch (error) {
+        alert('An error occurred: ' + error.message);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add Product';
+    }
+});
+// --- END: Add Product Logic ---
     </script>
   </body>
 </html>
