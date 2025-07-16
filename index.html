@@ -315,44 +315,10 @@
   <audio id="bgAudio" loop><source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" /></audio>
 
 <script>
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNP0Db-9V5aI8E9D5bJ08wRyN-b1v58IkMWCZOC7APlfJM9IBD9MAObDIZeWUy5Oia2g/exec';
-
-const ALL_PRODUCTS = [
-  { id: 'biriyani', name: 'Chicken Biriyani', variants: [ { label: 'Full Plate', price: 110 }, { label: 'Half Plate', price: 70 } ], inStock: true, images: ['https://www.sidechef.com/recipe/6df5d24c-24a1-417a-b317-f83d949447fc.jpg?d=1408x1120', 'https://glebekitchen.com/wp-content/uploads/2019/12/chickenbiryanibowltop.jpg'], category: 'Main Course' },
-  { id: 'roll', name: 'Roll', variants: [ { label: 'Egg Roll', price: 40 }, { label: 'Chicken Roll', price: 55 } ], inStock: true, images: ['https://reetikamitra.com/wp-content/uploads/2020/07/Kolkata-Kathi-Rolls-scaled.jpg', 'https://orders.popskitchen.in/storage/2024/09/image-299.png'], category: 'Snacks' },
-  { id: 'moglai', name: 'Moglai Paratha', price: 60, inStock: true, images: ['https://kandistores.com/app/sadmin/images/kalibariimagesmoglai.jpg'], category: 'Main Course'},
-  { id: 'chicken_pakora', name: 'Chicken Pakora', variants: [ { label: '100 gm', price: 35 }, { label: '200 gm', price: 70 } ], inStock: true, images: ['https://i0.wp.com/southindianrecipes.in/wp-content/uploads/2021/09/Chicken-Pakora-Masala-Recipe.jpg?fit=800%2C800&ssl=1'], category: 'Snacks'},
-  { id: 'momo', name: 'Momo', variants: [ { label: 'Chicken Momo', price: 50 }, { label: 'Veg Momo', price: 35 } ], inStock: true, images: ['https://5.imimg.com/data5/SELLER/Default/2023/12/371872039/SR/CI/OR/40254112/chicken-wow-momo.jpg', 'https://junifoods.com/wp-content/uploads/2023/03/Chicken-Momo-Restaurant-Style-Kukhura-ko-Momo-%E0%A4%95%E0%A5%81%E0%A4%96%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%95%E0%A5%8B-%E0%A4%AE%E0%A4%AE-2-300x300.jpg'], category: 'Snacks' },
-  { id: 'chowmein', name: 'Chowmein', variants: [ { label: 'Egg Chowmein(Full)', price: 45 }, { label: 'Egg Chowmein(Half)', price: 25 }, { label: 'Egg Chicken Chowmein(Full)', price: 60 }, { label: 'Egg Chicken Chowmein(Half)', price: 40 } ], inStock: true, images: ['https://cdn.sanity.io/images/2r0kdewr/production/4ba5d16bc37976b03c4404e678bff07890b6e228-1000x668.jpg'], category: 'Snacks'},
-  { id: 'singara', name: 'Singara (Samosa)', price: 10, inStock: true, images: ['https://www.vegrecipesofindia.com/wp-content/uploads/2017/12/singara-recipe-1a.jpg'], category: 'Snacks' },
-  { id: 'lays_magic', name: "Lay's India's Magic Masala", price: 10, inStock: true, images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6779%2F1722405185865.png&w=3840&q=75'], category: 'Packaged Snacks'},
-  { id: 'lays_classic', name: "Lay's Classic Salted", price: 10, inStock: true, images: ['https://aapkabazar.co/_next/image?url=https%3A%2F%2Fimage.aapkabazar.co%2Fproduct%2F6780%2F1687262271812.png&w=3840&q=75'], category: 'Packaged Snacks'},
-  { id: 'bingo_mad_angles', name: 'Bingo! Mad Angles (Masala)', price: 10, inStock: true, images: ['https://m.media-amazon.com/images/I/81o3GOapL2L.jpg'], category: 'Packaged Snacks' },
-  { id: 'haldirams_bhujia', name: "Haldiram's Bhujia Sev", price: 45, inStock: false, images: ['https://m.media-amazon.com/images/I/9166IHTX1WL.jpg'], category: 'Packaged Snacks' },
-  { id: 'goodday_cashew', name: 'Britannia Good Day (Cashew)', price: 10, inStock: true, images: ['https://m.media-amazon.com/images/I/61CzyMAMoHL._UF894,1000_QL80_.jpg'], category: 'Packaged Snacks'},
-  { id: 'thums_up', name: 'Thums Up', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,h_600/vuwcqytnvajr4nz3zyj7'], category: 'Cold Drinks' },
-  { id: 'sprite', name: 'Sprite Soft Drink', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/251006_13-sprite-soft-drink-lime-flavoured.jpg'], category: 'Cold Drinks' },
-  { id: 'coca_cola', name: 'Coca-Cola', variants: [ { label: '250 ml', price: 20 }, { label: '750 ml', price: 40 } ], inStock: true, images: ['https://m.media-amazon.com/images/I/81kx2IPueEL._UF1000,1000_QL80_.jpg'], category: 'Cold Drinks'},
-  { id: 'daab', name: 'Daab (Tender Coconut)', price: 55, inStock: true, images: ['https://sabziadda.com/wp-content/uploads/2014/07/Tender-Coconut.jpg'], category: 'Cold Drinks'  },
-  { id: 'rasgulla', name: 'Rasgulla (1 pc)', price: 10, inStock: true, images: ['https://panjisweets.com/cdn/shop/products/120209_PanjiSweets_Food_Rasgulla_600x600_crop_center.jpg?v=1606001447'], category: 'Sweets & Desserts'},
-  { id: 'mishti_doi', name: 'Mishti Doi (100g Cup)', price: 35, inStock: true, images: ['https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Mishti_Doi.jpg/640px-Mishti_Doi.jpg'], category: 'Sweets & Desserts'},
-  { id: 'dairy_milk', name: 'Cadbury Dairy Milk', price: 20, inStock: true, images: ['https://rukminim2.flixcart.com/image/850/1000/xif0q/chocolate/k/l/g/-original-imahyuhmfhq79whg.jpeg?q=90&crop=false'], category: 'Sweets & Desserts'},
-  { id: 'sugar', name: 'Sugar (Chini)', price: 45, inStock: true, images: ['https://www.jiomart.com/images/product/original/rvpssvmtrz/premium-quality-double-refined-white-sugar-sulphurless-chini-crystal-white-sugar-500-gm-product-images-orvpssvmtrz-p593449061-1-202208261729.jpg?im=Resize=(420,420)', 'https://eng.ruralvoice.in/uploads/images/2022/10/image_750x_634d6e0326ce0.jpg'], category: 'Grocery'},
-  { id: 'fortune_mustard_oil', name: 'Fortune Mustard Oil (Kachi Ghani)', variants: [ { label: '500 ml', price: 95 }, { label: '1 Ltr', price: 180 } ], inStock: true, images: ['https://m.media-amazon.com/images/I/71wVU7pgwAL._UF894,1000_QL80_.jpg'], category: 'Grocery' },
-  { id: 'aashirvaad_atta', name: 'Aashirvaad Shudh Chakki Atta', variants: [ { label: '1 kg', price: 58 }, { label: '5 kg', price: 275 } ], inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/126906_10-aashirvaad-atta-whole-wheat.jpg'], category: 'Grocery' },
-  { id: 'tata_salt', name: 'Tata Salt (Iodized)', price: 28, inStock: true, images: ['https://m.media-amazon.com/images/I/614mm2hYHyL._UF894,1000_QL80_.jpg'], category: 'Grocery' },
-  { id: 'red_label_tea', name: 'Brooke Bond Red Label Tea (250g)', price: 140, inStock: true, images: ['https://m.media-amazon.com/images/I/61VymAnsxyL.jpg'], category: 'Grocery' },
-  { id: 'amul_ghee', name: 'Amul Pure Ghee', variants: [ { label: '200 ml', price: 140 }, { label: '500 ml', price: 335 } ], inStock: true, images: ['https://cdn.grofers.com/app/images/products/sliding_image/15520a.jpg?ts=1698063512'], category: 'Grocery' },
-  { id: 'amul_taaza_milk', name: 'Amul Taaza Toned Milk (500ml)', price: 34, inStock: true, images: ['https://www.bbassets.com/media/uploads/p/xl/40090894_6-amul-taaza.jpg'], category: 'Grocery' },
-  { id: 'paneer', name: 'Fresh Paneer (200g)', price: 90, inStock: true, images: ['https://www.oifood.in/files/products/1991dc0cf269d5ec62f45406ce7f7cf0.jpg'], category: 'Grocery' },
-  { id: 'eggs', name: 'Eggs (6 pcs)', price: 42, inStock: true, images: ['https://derafarms.com/cdn/shop/files/deraproducts_12.png?v=1719207103'], category: 'Grocery' },
-  { id: 'onions', name: 'Onion (Pyaj) 1kg', price: 40, inStock: true, images: ['https://www.bigbasket.com/media/uploads/p/l/10000148_30-fresho-onion.jpg'], category: 'Grocery' },
-  { id: 'potatoes', name: 'Potato (Aloo) 1kg', price: 30, inStock: true, images: ['https://www.bigbasket.com/media/uploads/p/l/10000159_27-fresho-potato.jpg'], category: 'Grocery' },
-  { id: 'tomatoes', name: 'Tomato (1kg)', price: 50, inStock: true, images: ['https://cdn.img.gen.in/farm-n-fresh-family/24536/portfolio.jpg?height=200&biz=5587&meta=true'], category: 'Grocery' },
-  { id: 'belpatra', name: 'Belpatra (বেলপত্র)', price: 2, inStock: true, images: ['https://m.media-amazon.com/images/I/51R2qP9jKLL._UF1000,1000_QL80_.jpg'], category: 'Puja Items' },
-  { id: 'agarbatti', name: 'Mangaldeep Agarbatti', price: 20, inStock: true, images: ['https://www.bbassets.com/media/uploads/p/l/264972_9-mangaldeep-sandal-agarbatti.jpg'], category: 'Puja Items' },
-  { id: 'camphor', name: 'Camphor (Kapur)', price: 30, inStock: true, images: ['https://giri.in/cdn/shop/files/42500240_Camphor_cubes_3_700x700.webp?v=1747916971'], category: 'Puja Items' },
-];
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyanE9JvvgrHZRX6Y6BgaWrHKm_lEx1dpcOOe21BkFO7ch9un7PTaokS7M6KWR5lyA/exec';
+  
+let ALL_PRODUCTS = []; // This will hold our live products from Google Sheets  
+  
 const CATEGORIES = { 'All': 'fa-solid fa-store', 'Main Course': 'fa-solid fa-bowl-food', 'Snacks': 'fa-solid fa-cookie-bite', 'Sweets & Desserts': 'fa-solid fa-ice-cream', 'Cold Drinks': 'fa-solid fa-martini-glass', 'Packaged Snacks': 'fa-solid fa-bag-shopping', 'Grocery': 'fa-solid fa-carrot', 'Puja Items': 'fa-solid fa-om' };
 //--- MODIFIED: Defined filter groups for URL parameter ---
 const FILTER_GROUPS = {
@@ -465,6 +431,31 @@ function showCustomerInfoModal() { ['customerName', 'customerPhone', 'customerAd
 function hideCustomerInfoModal() { customerInfoModal.classList.remove('visible'); }
 function initProductCarousel(cardElement) { const track = cardElement.querySelector('.carousel-track'); if (!track) return; const slides = Array.from(track.children); const dotsNav = cardElement.querySelector('.carousel-dots'); const dots = dotsNav ? Array.from(dotsNav.children) : []; let currentIndex = 0, autoPlayInterval, isDragging = false, startPos = 0, currentTranslate = 0, prevTranslate = 0; const goToSlide = (index) => { if (index < 0 || index >= slides.length) return; const slideWidth = slides[0].getBoundingClientRect().width; track.style.transition = 'transform 0.4s ease-out'; track.style.transform = `translateX(-${slideWidth * index}px)`; currentIndex = index; if(dotsNav) dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentIndex)); }; const startAutoPlay = () => { stopAutoPlay(); autoPlayInterval = setInterval(() => goToSlide((currentIndex + 1) % slides.length), 4000); }; const stopAutoPlay = () => clearInterval(autoPlayInterval); const getPositionX = e => e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; const dragStart = e => { isDragging = true; startPos = getPositionX(e); prevTranslate = -currentIndex * slides[0].getBoundingClientRect().width; track.style.transition = 'none'; stopAutoPlay(); }; const drag = e => { if (isDragging) { currentTranslate = prevTranslate + getPositionX(e) - startPos; track.style.transform = `translateX(${currentTranslate}px)`; } }; const dragEnd = () => { if (!isDragging) return; isDragging = false; const movedBy = currentTranslate - prevTranslate; if (movedBy < -100 && currentIndex < slides.length - 1) currentIndex++; if (movedBy > 100 && currentIndex > 0) currentIndex--; goToSlide(currentIndex); startAutoPlay(); }; cardElement.querySelector('.product-image-container').addEventListener('mousedown', dragStart); cardElement.querySelector('.product-image-container').addEventListener('touchstart', dragStart, { passive: true }); window.addEventListener('mousemove', drag); window.addEventListener('touchmove', drag, { passive: true }); window.addEventListener('mouseup', dragEnd); window.addEventListener('touchend', dragEnd); cardElement.addEventListener('mouseenter', stopAutoPlay); cardElement.addEventListener('mouseleave', startAutoPlay); if(dotsNav) dots.forEach(dot => dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index)))); startAutoPlay(); }
 
+// --- START: New Dynamic Product Loading ---
+
+async function fetchAllProducts() {
+    const productGrid = document.getElementById('product-grid');
+    productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary);">Loading delicious items...</p>';
+
+    try {
+        // Fetch all products from our Google Sheet API
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getAllProducts`);
+        const productsFromSheet = await response.json();
+        
+        // Save the live data to our global variable
+        ALL_PRODUCTS = productsFromSheet;
+
+        // Now that we have the data, render everything
+        rerenderAll(); 
+
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: #d9534f;">Could not load products. Please try again later.</p>';
+    }
+}
+
+// --- END: New Dynamic Product Loading ---
+  
 document.addEventListener('DOMContentLoaded', () => {
     //--- MODIFIED: URL parameter handling ---
     const urlParams = new URLSearchParams(window.location.search);
@@ -490,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCart(); 
     }
     
-    rerenderAll(); // Initial render with filters from URL
+    fetchAllProducts();
 
     document.addEventListener('change', (e) => { 
         if (e.target.classList.contains('variant-selector')) { 
