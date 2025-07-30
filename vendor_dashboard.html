@@ -251,181 +251,153 @@
     </div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-    <script>
-      // --- START: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
-      const firebaseConfig = {
-        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE",
+<script>
+    // --- START: PASTE YOUR COMPLETE FIREBASE CONFIG OBJECT HERE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE", // Replace with your actual key
         authDomain: "freshbites-platform.firebaseapp.com",
         projectId: "freshbites-platform",
-        storageBucket: "freshbites-platform.firebasestorage.app",
+        storageBucket: "freshbites-platform.appspot.com",
         messagingSenderId: "89904601475",
         appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
-        measurementId: "G-WZ2HTSPD49",
-      };
-
-      // Initialize Firebase (compat style)
-      firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
-      // --- START: PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ---
-      const GOOGLE_SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbyTkBqqFmfM_2CogeR6-kiD_1dTm4d5LWRAFRG4AidQwM6fYt1Y1tgKaD24_m8AR-fc/exec";
-      // --- END: PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ---
-
-      const userInfo = document.getElementById("userInfo");
-      const productList = document.getElementById("product-list");
-      const logoutButton = document.getElementById("logoutButton");
-      const shopStatusCheckbox = document.getElementById("shopStatusCheckbox");
-      const shopStatusText = document.getElementById("shopStatusText");
-
-      let currentVendor = null;
-
-      // Auth state observer
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          user.getIdTokenResult().then((idTokenResult) => {
-            if (idTokenResult.claims.role !== "vendor") {
-              // Not a vendor, redirect to login
-              auth.signOut();
-              window.location.href = "login1.html";
-            } else {
-              currentVendor = { uid: user.uid, email: user.email };
-              userInfo.textContent = `Welcome, ${user.email}`;
-              loadVendorData();
-            }
-          });
-        } else {
-          // No user logged in
-          window.location.href = "login1.html";
-        }
-      });
-
-      logoutButton.addEventListener("click", () => {
-        auth.signOut();
-      });
-
-      async function loadVendorData() {
-        if (!currentVendor) return;
-        // Fetch products and shop status
-        const response = await fetch(
-          `${GOOGLE_SCRIPT_URL}?action=getVendorData&vendorId=${currentVendor.uid}`
-        );
-        const data = await response.json();
-
-        // Render Products
-        renderProducts(data.products);
-
-        // Set Shop Status
-        const isOpen = data.shopStatus === "Open";
-        shopStatusCheckbox.checked = isOpen;
-        shopStatusText.textContent = `Shop is ${isOpen ? "Open" : "Closed"}`;
-      }
-
-      function renderProducts(products) {
-        productList.innerHTML = "";
-        if (!products || products.length === 0) {
-          productList.innerHTML =
-            '<tr><td colspan="4">You have not added any products yet.</td></tr>';
-          return;
-        }
-        products.forEach((p) => {
-          const row = document.createElement("tr");
-          const price = p.Variants ? JSON.parse(p.Variants)[0].price : p.Price;
-          const stockStatus = p.InStock ? "in-stock" : "out-of-stock";
-          row.innerHTML = `
-                    <td>${p.Name}</td>
-                    <td>₹${price}</td>
-                    <td><span class="status-toggle ${stockStatus}" onclick="toggleStock('${
-            p.ProductID
-          }')">${stockStatus.replace("-", " ")}</span></td>
-                    <td>
-                        <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn" title="Delete"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                `;
-          productList.appendChild(row);
-        });
-      }
-
-      shopStatusCheckbox.addEventListener("change", async function () {
-        const newStatus = this.checked ? "Open" : "Closed";
-        shopStatusText.textContent = `Shop is ${newStatus}`;
-
-        // Send update to Google Sheet
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({
-            action: "updateShopStatus",
-            vendorId: currentVendor.uid,
-            status: newStatus,
-          }),
-        });
-      });
-
-      async function toggleStock(productId) {
-        // Optimistic update
-        // Find the product in the UI and toggle its class and text
-        // Then send the update to the backend
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({
-            action: "toggleProductStock",
-            vendorId: currentVendor.uid, // For security
-            productId: productId,
-          }),
-        });
-        loadVendorData(); // Reload data to confirm
-      }
-
-      // Polling for new orders
-      setInterval(async () => {
-        if (!currentVendor) return;
-        // This function would poll the 'Orders' sheet for new orders assigned to this vendor
-        console.log("Polling for new orders...");
-      }, 30000); // Poll every 30 seconds
-
-      // --- START: Add Product Logic ---
-const addProductForm = document.getElementById('addProductForm');
-
-addProductForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const newProduct = {
-        action: 'addProduct',
-        vendorId: currentVendor.uid, // We already have this
-        name: document.getElementById('productName').value,
-        price: document.getElementById('productPrice').value,
-        category: document.getElementById('productCategory').value,
-        image: document.getElementById('productImage').value
+        databaseURL: "https://freshbites-platform-default-rtdb.firebaseio.com" // Replace with your actual Database URL
     };
+    // --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
 
-    // Disable button to prevent double-clicks
-    const submitButton = addProductForm.querySelector('button');
-    submitButton.disabled = true;
-    submitButton.textContent = 'Adding...';
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-    try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(newProduct)
+    // --- DOM Elements ---
+    const userInfo = document.getElementById('userInfo');
+    const productList = document.getElementById('product-list');
+    const logoutButton = document.getElementById('logoutButton');
+    const addProductForm = document.getElementById('addProductForm');
+
+    let currentVendor = null;
+
+    // --- Auth state observer ---
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            user.getIdTokenResult().then(idTokenResult => {
+                if (idTokenResult.claims.role !== 'vendor') {
+                    auth.signOut();
+                    window.location.href = 'login.html';
+                } else {
+                    currentVendor = { uid: user.uid, email: user.email };
+                    userInfo.textContent = `Welcome, ${user.email}`;
+                    loadVendorData();
+                }
+            });
+        } else {
+            window.location.href = 'login.html';
+        }
+    });
+
+    logoutButton.addEventListener('click', () => {
+        auth.signOut();
+    });
+
+    // --- NEW: Fetch vendor data from Firebase ---
+    function loadVendorData() {
+        if (!currentVendor) return;
+        productList.innerHTML = '<tr><td colspan="4">Loading products...</td></tr>';
+        
+        const productsRef = db.ref('products');
+        // Query to get only products matching the current vendor's ID
+        productsRef.orderByChild('VendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
+            const data = snapshot.val();
+            renderProducts(data);
+        }, (error) => {
+            console.error("Firebase Read Failed:", error);
+            productList.innerHTML = '<tr><td colspan="4">Could not load products.</td></tr>';
         });
-        const result = await response.text();
-        alert(result); // Show success/error message from the script
-        addProductForm.reset(); // Clear the form
-        loadVendorData(); // Reload the product list
-    } catch (error) {
-        alert('An error occurred: ' + error.message);
-    } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = 'Add Product';
     }
-});
-// --- END: Add Product Logic ---
-    </script>
+
+    // --- NEW: Render products from Firebase data ---
+    function renderProducts(productsData) {
+        productList.innerHTML = '';
+        if (!productsData) {
+            productList.innerHTML = '<tr><td colspan="4">You have not added any products yet.</td></tr>';
+            return;
+        }
+        // Convert the Firebase object into an array
+        const productsArray = Object.keys(productsData).map(key => {
+            const product = productsData[key];
+            product.id = key; // The unique key from Firebase is the ID
+            return product;
+        });
+
+        productsArray.forEach(p => {
+            const row = document.createElement('tr');
+            const stockStatus = p.InStock ? 'in-stock' : 'out-of-stock';
+            row.innerHTML = `
+                <td>${p.Name}</td>
+                <td>₹${p.Price}</td>
+                <td><span class="status-toggle ${stockStatus}" onclick="toggleStock('${p.id}', ${p.InStock})">${stockStatus.replace("-", " ")}</span></td>
+                <td>
+                    <button class="action-btn" title="Delete" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            `;
+            productList.appendChild(row);
+        });
+    }
+
+    // --- NEW: Add product to Firebase ---
+    addProductForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const submitButton = addProductForm.querySelector('button');
+
+        const newProduct = {
+            VendorID: currentVendor.uid,
+            // We need a way to get the ShopName. For now, let's hardcode it.
+            // A better way is to have a '/vendors/{uid}' collection with vendor details.
+            ShopName: "My Shop", // Placeholder
+            Name: document.getElementById('productName').value,
+            Price: parseFloat(document.getElementById('productPrice').value),
+            Category: document.getElementById('productCategory').value,
+            Images: document.getElementById('productImage').value, // Firebase can store one URL string
+            InStock: true
+        };
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Adding...';
+
+        // 'push' creates a new unique ID for the product
+        db.ref('products').push(newProduct)
+            .then(() => {
+                alert('Product added successfully!');
+                addProductForm.reset();
+                // loadVendorData() will be called automatically because of the 'on' listener
+            })
+            .catch((error) => {
+                alert('Error adding product: ' + error.message);
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Add Product';
+            });
+    });
+
+    // --- NEW: Toggle stock status in Firebase ---
+    function toggleStock(productId, currentStatus) {
+        const productRef = db.ref('products/' + productId);
+        // Update the 'InStock' property to the opposite of its current state
+        productRef.update({ InStock: !currentStatus });
+    }
+    
+    // --- NEW: Delete product from Firebase ---
+    function deleteProduct(productId) {
+        if (confirm('Are you sure you want to delete this product?')) {
+            const productRef = db.ref('products/' + productId);
+            productRef.remove(); // This deletes the product
+        }
+    }
+</script>
   </body>
 </html>
