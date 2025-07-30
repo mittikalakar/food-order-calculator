@@ -366,32 +366,45 @@
 
     // --- NEW: Fetch data from Firebase ---
     function fetchAllProducts() {
-        productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary);">Loading delicious items...</p>';
-        const productsRef = db.ref('products');
+    productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary);">Loading delicious items...</p>';
+    
+    // 1. Get all data at once (vendors and products)
+    db.ref().on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (!data || !data.products || !data.vendors) {
+            productGrid.innerHTML = '<p>No products available right now.</p>';
+            ALL_PRODUCTS = [];
+            rerenderAll();
+            return;
+        }
 
-        productsRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                ALL_PRODUCTS = Object.keys(data).map(key => {
-                    const product = data[key];
-                    product.id = key; // Use the Firebase key as the product ID
-                    // Important: Convert single image URL string to an array for compatibility
-                    if (typeof product.Images === 'string') {
-                        product.Images = [product.Images];
-                    }
-                    return product;
-                });
-                rerenderAll();
-            } else {
-                productGrid.innerHTML = '<p>No products available right now.</p>';
-                ALL_PRODUCTS = [];
-                rerenderAll();
+        // 2. Find out which vendors are open
+        const openVendors = {};
+        Object.keys(data.vendors).forEach(vendorId => {
+            const vendor = data.vendors[vendorId];
+            if (vendor.ShopStatus === 'Open') {
+                openVendors[vendorId] = vendor;
             }
-        }, (error) => {
-            console.error("Firebase Read Failed: ", error);
-            productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: #d9534f;">Could not load products. Please try again later.</p>';
         });
-    }
+
+        // 3. Filter products to show only those from open vendors
+        ALL_PRODUCTS = Object.keys(data.products).map(key => {
+            const product = data.products[key];
+            product.id = key;
+            return product;
+        }).filter(product => {
+            // Keep the product only if its VendorID is in our list of open vendors
+            // and the product itself is in stock
+            return openVendors[product.VendorID] && product.InStock === true;
+        });
+
+        rerenderAll(); // We have the final, filtered list, now build the page
+
+    }, (error) => {
+        console.error("Firebase Read Failed: ", error);
+        productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: #d9534f;">Could not load products. Please try again later.</p>';
+    });
+}
 
     // --- ALL YOUR ORIGINAL FUNCTIONS (Copied from your file) ---
 
