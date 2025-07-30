@@ -290,7 +290,7 @@
             user.getIdTokenResult().then(idTokenResult => {
                 if (idTokenResult.claims.role !== 'vendor') {
                     auth.signOut();
-                    window.location.href = 'login.html';
+                    window.location.href = 'login1.html';
                 } else {
                     currentVendor = { uid: user.uid, email: user.email };
                     userInfo.textContent = `Welcome, ${user.email}`;
@@ -298,7 +298,7 @@
                 }
             });
         } else {
-            window.location.href = 'login.html';
+            window.location.href = 'login1.html';
         }
     });
 
