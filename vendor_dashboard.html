@@ -164,15 +164,6 @@
         max-height: 500px;
         overflow-y: auto;
       }
-      .order-item {
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
-      }
-      .order-item h4 {
-        margin: 0 0 10px 0;
-      }
     </style>
   </head>
   <body>
@@ -188,30 +179,28 @@
       <main class="main-grid">
         <div class="card">
           <h2>My Products</h2>
-          <!-- START: Add New Product Form -->
-<form id="addProductForm" style="margin-bottom: 30px; padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
-    <h3 style="margin-top:0;">Add a New Product</h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div>
-            <label for="productName">Product Name</label>
-            <input type="text" id="productName" required style="width: 100%; padding: 8px;">
-        </div>
-        <div>
-            <label for="productPrice">Price (₹)</label>
-            <input type="number" id="productPrice" required style="width: 100%; padding: 8px;">
-        </div>
-        <div>
-            <label for="productCategory">Category</label>
-            <input type="text" id="productCategory" placeholder="e.g., Main Course, Snacks" required style="width: 100%; padding: 8px;">
-        </div>
-        <div>
-            <label for="productImage">Image URL</label>
-            <input type="url" id="productImage" placeholder="https://example.com/image.jpg" required style="width: 100%; padding: 8px;">
-        </div>
-    </div>
-    <button type="submit" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; margin-top: 20px; cursor: pointer; border: none;">Add Product</button>
-</form>
-<!-- END: Add New Product Form -->
+          <form id="addProductForm" style="margin-bottom: 30px; padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
+              <h3 style="margin-top:0;">Add a New Product</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                  <div>
+                      <label for="productName">Product Name</label>
+                      <input type="text" id="productName" required style="width: 100%; padding: 8px;">
+                  </div>
+                  <div>
+                      <label for="productPrice">Price (₹)</label>
+                      <input type="number" id="productPrice" required style="width: 100%; padding: 8px;">
+                  </div>
+                  <div>
+                      <label for="productCategory">Category</label>
+                      <input type="text" id="productCategory" placeholder="e.g., Main Course, Snacks" required style="width: 100%; padding: 8px;">
+                  </div>
+                  <div>
+                      <label for="productImage">Image URL</label>
+                      <input type="url" id="productImage" placeholder="https://example.com/image.jpg" required style="width: 100%; padding: 8px;">
+                  </div>
+              </div>
+              <button type="submit" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; margin-top: 20px; cursor: pointer; border: none;">Add Product</button>
+          </form>
           <table class="product-table">
             <thead>
               <tr>
@@ -225,12 +214,18 @@
               <!-- Products will be loaded here -->
             </tbody>
           </table>
-          <!-- Add Product Form would go here -->
         </div>
 
         <aside>
           <div class="card">
-            <h2>Shop Status</h2>
+            <h2>Shop Details</h2>
+            <div style="margin-bottom: 25px;">
+                <label for="shopNameInput" style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Shop Name</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="shopNameInput" placeholder="Enter your shop name" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px;">
+                    <button id="saveShopNameBtn" style="background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">Save</button>
+                </div>
+            </div>
             <label id="shopStatusToggle">
               <span id="shopStatusText">Shop is Closed</span>
               <div class="toggle-switch">
@@ -242,7 +237,6 @@
           <div class="card" style="margin-top: 20px">
             <h2>New Orders</h2>
             <div id="newOrderContainer">
-              <!-- New orders will be polled and displayed here -->
               <p>No new orders right now.</p>
             </div>
           </div>
@@ -251,176 +245,179 @@
     </div>
 
     <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-<script>
-    // --- START: PASTE YOUR COMPLETE FIREBASE CONFIG OBJECT HERE ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE", // Replace with your actual key
-        authDomain: "freshbites-platform.firebaseapp.com",
-        projectId: "freshbites-platform",
-        storageBucket: "freshbites-platform.appspot.com",
-        messagingSenderId: "89904601475",
-        appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
-        databaseURL: "https://freshbites-platform-default-rtdb.firebaseio.com" // Replace with your actual Database URL
-    };
-    // --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    // --- DOM Elements ---
-    const userInfo = document.getElementById('userInfo');
-    const productList = document.getElementById('product-list');
-    const logoutButton = document.getElementById('logoutButton');
-    const addProductForm = document.getElementById('addProductForm');
-    const shopStatusCheckbox = document.getElementById('shopStatusCheckbox');
-    const shopStatusText = document.getElementById('shopStatusText');
-
-    let currentVendor = null;
-    let vendorDetails = {}; // To store ShopName and Status
-
-    // --- Auth state observer ---
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            user.getIdTokenResult().then(idTokenResult => {
-                if (idTokenResult.claims.role !== 'vendor') {
-                    auth.signOut();
-                    window.location.href = 'login1.html';
-                } else {
-                    currentVendor = { uid: user.uid, email: user.email };
-                    userInfo.textContent = `Welcome, ${user.email}`;
-                    loadVendorData();
-                }
-            });
-        } else {
-            window.location.href = 'login1.html';
-        }
-    });
-
-    logoutButton.addEventListener('click', () => auth.signOut());
-
-    // --- UPDATED: Fetch vendor data AND shop status from Firebase ---
-    function loadVendorData() {
-        if (!currentVendor) return;
-        productList.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
-        
-        // 1. Fetch Vendor Details (Shop Name, Status)
-        const vendorRef = db.ref('vendors/' + currentVendor.uid);
-        vendorRef.on('value', (snapshot) => {
-            vendorDetails = snapshot.val() || { ShopName: 'Unknown Shop', ShopStatus: 'Closed' };
-            const isOpen = vendorDetails.ShopStatus === 'Open';
-            shopStatusCheckbox.checked = isOpen;
-            shopStatusText.textContent = `Shop is ${isOpen ? 'Open' : 'Closed'}`;
-        });
-
-        // 2. Fetch Products
-        const productsRef = db.ref('products');
-        productsRef.orderByChild('VendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
-            renderProducts(snapshot.val());
-        });
-    }
-
-    // --- UPDATED: Render products with Edit button ---
-    function renderProducts(productsData) {
-        productList.innerHTML = '';
-        if (!productsData) {
-            productList.innerHTML = '<tr><td colspan="4">You have not added any products yet.</td></tr>';
-            return;
-        }
-        const productsArray = Object.keys(productsData).map(key => ({ id: key, ...productsData[key] }));
-
-        productsArray.forEach(p => {
-            const row = document.createElement('tr');
-            const stockStatus = p.InStock ? 'in-stock' : 'out-of-stock';
-            row.innerHTML = `
-                <td>${p.Name}</td>
-                <td>₹${p.Price}</td>
-                <td><span class="status-toggle ${stockStatus}" onclick="toggleStock('${p.id}', ${p.InStock})">${stockStatus.replace("-", " ")}</span></td>
-                <td>
-                    <button class="action-btn" title="Edit" onclick="editProduct('${p.id}', '${p.Name}', ${p.Price})"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn" title="Delete" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash-alt"></i></button>
-                </td>
-            `;
-            productList.appendChild(row);
-        });
-    }
-
-    // --- UPDATED: Add product with correct ShopName ---
-    addProductForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const submitButton = addProductForm.querySelector('button');
-
-        const newProduct = {
-            VendorID: currentVendor.uid,
-            ShopName: vendorDetails.ShopName, // Use the real shop name
-            Name: document.getElementById('productName').value,
-            Price: parseFloat(document.getElementById('productPrice').value),
-            Category: document.getElementById('productCategory').value,
-            Images: document.getElementById('productImage').value,
-            InStock: true
+    <script>
+        // --- START: PASTE YOUR COMPLETE FIREBASE CONFIG OBJECT HERE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE", // Replace with your actual key
+            authDomain: "freshbites-platform.firebaseapp.com",
+            projectId: "freshbites-platform",
+            storageBucket: "freshbites-platform.appspot.com",
+            messagingSenderId: "89904601475",
+            appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
+            databaseURL: "https://freshbites-platform-default-rtdb.firebaseio.com" // Replace with your actual Database URL
         };
+        // --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
 
-        submitButton.disabled = true;
-        submitButton.textContent = 'Adding...';
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
 
-        db.ref('products').push(newProduct)
-            .then(() => {
-                alert('Product added successfully!');
-                addProductForm.reset();
-            })
-            .catch((error) => alert('Error: ' + error.message))
-            .finally(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Add Product';
-            });
-    });
+        // --- DOM Elements ---
+        const userInfo = document.getElementById('userInfo');
+        const productList = document.getElementById('product-list');
+        const logoutButton = document.getElementById('logoutButton');
+        const addProductForm = document.getElementById('addProductForm');
+        const shopStatusCheckbox = document.getElementById('shopStatusCheckbox');
+        const shopStatusText = document.getElementById('shopStatusText');
+        const shopNameInput = document.getElementById('shopNameInput');
+        const saveShopNameBtn = document.getElementById('saveShopNameBtn');
 
-    // --- NEW: Edit Product Price ---
-    function editProduct(productId, currentName, currentPrice) {
-        const newPrice = prompt(`Enter new price for ${currentName}:`, currentPrice);
-        if (newPrice && !isNaN(newPrice) && newPrice > 0) {
-            const productRef = db.ref('products/' + productId);
-            productRef.update({ Price: parseFloat(newPrice) });
-        }
-    }
-    
-    // --- CORRECTED: Shop Status Toggle Logic ---
-shopStatusCheckbox.addEventListener('change', function() {
-    if (!currentVendor) return; // Make sure we have a vendor logged in
+        let currentVendor = null;
+        let vendorDetails = {};
 
-    const newStatus = this.checked ? 'Open' : 'Closed';
-    
-    // This is the correct path: 'vendors' -> the specific vendor's UID
-    const vendorStatusRef = db.ref('vendors/' + currentVendor.uid);
-
-    // Update only the ShopStatus property
-    vendorStatusRef.update({ ShopStatus: newStatus })
-        .then(() => {
-            alert(`Shop is now ${newStatus}.`);
-            // The 'on' listener in loadVendorData will update the text automatically
-        })
-        .catch((error) => {
-            alert('Error updating status: ' + error.message);
-            // If it fails, revert the checkbox to its previous state
-            this.checked = !this.checked;
+        // --- Auth state observer ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                user.getIdTokenResult().then(idTokenResult => {
+                    if (idTokenResult.claims.role !== 'vendor') {
+                        auth.signOut();
+                        window.location.href = 'login.html';
+                    } else {
+                        currentVendor = { uid: user.uid, email: user.email };
+                        userInfo.textContent = `Welcome, ${user.email}`;
+                        loadVendorData();
+                    }
+                });
+            } else {
+                window.location.href = 'login.html';
+            }
         });
-});
 
-    // --- Toggle/Delete functions remain the same ---
-    function toggleStock(productId, currentStatus) {
-        db.ref('products/' + productId).update({ InStock: !currentStatus });
-    }
-    
-    function deleteProduct(productId) {
-        if (confirm('Are you sure you want to delete this product?')) {
-            db.ref('products/' + productId).remove();
+        logoutButton.addEventListener('click', () => auth.signOut());
+
+        // --- Fetch vendor data AND shop status from Firebase ---
+        function loadVendorData() {
+            if (!currentVendor) return;
+            productList.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+            
+            const vendorRef = db.ref('vendors/' + currentVendor.uid);
+            vendorRef.on('value', (snapshot) => {
+                vendorDetails = snapshot.val() || { ShopName: '', ShopStatus: 'Closed' };
+                shopNameInput.value = vendorDetails.ShopName;
+                const isOpen = vendorDetails.ShopStatus === 'Open';
+                shopStatusCheckbox.checked = isOpen;
+                shopStatusText.textContent = `Shop is ${isOpen ? 'Open' : 'Closed'}`;
+            });
+
+            const productsRef = db.ref('products');
+            productsRef.orderByChild('VendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
+                renderProducts(snapshot.val());
+            });
         }
-    }
-</script>
+
+        // --- Render products with Edit and Delete buttons ---
+        function renderProducts(productsData) {
+            productList.innerHTML = '';
+            if (!productsData) {
+                productList.innerHTML = '<tr><td colspan="4">You have not added any products yet.</td></tr>';
+                return;
+            }
+            const productsArray = Object.keys(productsData).map(key => ({ id: key, ...productsData[key] }));
+
+            productsArray.forEach(p => {
+                const row = document.createElement('tr');
+                const stockStatus = p.InStock ? 'in-stock' : 'out-of-stock';
+                row.innerHTML = `
+                    <td>${p.Name}</td>
+                    <td>₹${p.Price}</td>
+                    <td><span class="status-toggle ${stockStatus}" onclick="toggleStock('${p.id}', ${p.InStock})">${stockStatus.replace("-", " ")}</span></td>
+                    <td>
+                        <button class="action-btn" title="Edit" onclick="editProduct('${p.id}', '${p.Name}', ${p.Price})"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn" title="Delete" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                `;
+                productList.appendChild(row);
+            });
+        }
+
+        // --- Add product with correct ShopName ---
+        addProductForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!vendorDetails.ShopName) {
+                alert('Please set and save your shop name before adding products.');
+                return;
+            }
+            const submitButton = addProductForm.querySelector('button');
+            const newProduct = {
+                VendorID: currentVendor.uid,
+                ShopName: vendorDetails.ShopName,
+                Name: document.getElementById('productName').value,
+                Price: parseFloat(document.getElementById('productPrice').value),
+                Category: document.getElementById('productCategory').value,
+                Images: document.getElementById('productImage').value,
+                InStock: true
+            };
+            submitButton.disabled = true;
+            submitButton.textContent = 'Adding...';
+            db.ref('products').push(newProduct)
+                .then(() => {
+                    alert('Product added successfully!');
+                    addProductForm.reset();
+                })
+                .catch((error) => alert('Error: ' + error.message))
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Add Product';
+                });
+        });
+
+        // --- Save Shop Name Logic ---
+        saveShopNameBtn.addEventListener('click', () => {
+            if (!currentVendor) return;
+            const newShopName = shopNameInput.value.trim();
+            if (!newShopName) {
+                alert('Please enter a shop name.');
+                return;
+            }
+            const vendorRef = db.ref('vendors/' + currentVendor.uid);
+            vendorRef.update({ ShopName: newShopName })
+                .then(() => {
+                    alert('Shop name saved successfully!');
+                })
+                .catch((error) => {
+                    alert('Error saving shop name: ' + error.message);
+                });
+        });
+
+        // --- Shop Status Toggle Logic ---
+        shopStatusCheckbox.addEventListener('change', function() {
+            if (!currentVendor) return;
+            const newStatus = this.checked ? 'Open' : 'Closed';
+            const vendorRef = db.ref('vendors/' + currentVendor.uid);
+            vendorRef.update({ ShopStatus: newStatus });
+        });
+        
+        // --- Edit, Toggle, and Delete Functions ---
+        function editProduct(productId, currentName, currentPrice) {
+            const newPrice = prompt(`Enter new price for ${currentName}:`, currentPrice);
+            if (newPrice && !isNaN(newPrice) && newPrice > 0) {
+                db.ref('products/' + productId).update({ Price: parseFloat(newPrice) });
+            }
+        }
+
+        function toggleStock(productId, currentStatus) {
+            db.ref('products/' + productId).update({ InStock: !currentStatus });
+        }
+        
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                db.ref('products/' + productId).remove();
+            }
+        }
+    </script>
   </body>
 </html>
