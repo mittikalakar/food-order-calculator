@@ -389,17 +389,27 @@
         }
     }
     
-    // --- NEW: Shop Status Toggle Logic ---
-    shopStatusCheckbox.addEventListener('change', function() {
-        const newStatus = this.checked ? 'Open' : 'Closed';
-        const vendorRef = db.ref('vendors/' + currentVendor.uid);
-        vendorRef.update({ ShopStatus: newStatus })
-            .then(() => {
-                alert(`Shop is now ${newStatus}.`);
-                // The 'on' listener will update the text automatically
-            })
-            .catch((error) => alert('Error updating status: ' + error.message));
-    });
+    // --- CORRECTED: Shop Status Toggle Logic ---
+shopStatusCheckbox.addEventListener('change', function() {
+    if (!currentVendor) return; // Make sure we have a vendor logged in
+
+    const newStatus = this.checked ? 'Open' : 'Closed';
+    
+    // This is the correct path: 'vendors' -> the specific vendor's UID
+    const vendorStatusRef = db.ref('vendors/' + currentVendor.uid);
+
+    // Update only the ShopStatus property
+    vendorStatusRef.update({ ShopStatus: newStatus })
+        .then(() => {
+            alert(`Shop is now ${newStatus}.`);
+            // The 'on' listener in loadVendorData will update the text automatically
+        })
+        .catch((error) => {
+            alert('Error updating status: ' + error.message);
+            // If it fails, revert the checkbox to its previous state
+            this.checked = !this.checked;
+        });
+});
 
     // --- Toggle/Delete functions remain the same ---
     function toggleStock(productId, currentStatus) {
