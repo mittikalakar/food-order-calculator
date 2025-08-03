@@ -18,9 +18,10 @@
       window.location.href = 'login.html';
     }
   </script>
+
   <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <style>
     :root {
@@ -87,17 +88,7 @@
     }
     .cart-area { position: sticky; top: 20px; height: calc(100vh - 40px); display: flex; flex-direction: column; }
     .cart-wrapper { background-color: var(--surface-color); border-radius: 12px; box-shadow: 0 4px 15px var(--shadow-color); display: flex; flex-direction: column; height: 100%; }
-    
-    .cart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-    
+    .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-color); font-size: 1.2rem; font-weight: 600; }
     .cart-items { flex-grow: 1; overflow-y: auto; padding: 10px 20px; }
     .cart-empty-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 50px 20px; height: 100%; color: var(--text-secondary); }
     .cart-empty-msg i { font-size: 3.5rem; margin-bottom: 25px; color: var(--border-color); }
@@ -113,165 +104,38 @@
     .action-btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
     .whatsapp-btn { background-color: #25D366; color: #fff; }
     .secondary-btn { background-color: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); }
-    
-    .location-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2px solid var(--primary);
-      background-color: transparent;
-      color: var(--primary);
-      font-size: 1.2rem;
-      cursor: pointer;
-      display: grid;
-      place-content: center;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .location-btn:hover {
-      background-color: var(--primary);
-      color: #fff;
-      transform: scale(1.05);
-    }
-    .location-btn.loading i {
-      animation: fa-spin 1.5s infinite linear;
-    }
-    .location-btn.success {
-      background-color: #25D366;
-      border-color: #25D366;
-      color: #fff;
-      cursor: default;
-    }
-    .location-btn.error {
-      border-color: #d9534f;
-      color: #d9534f;
-    }
-    .location-btn.idle::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background-color: var(--primary);
-      animation: pulse 2s infinite;
-      z-index: -1;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.9); opacity: 0.7; }
-      70% { transform: scale(1.3); opacity: 0; }
-      100% { transform: scale(0.9); opacity: 0; }
-    }
-    .location-status-msg, .pincode-status-msg {
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-    .location-status-msg.idle {
-      background-color: color-mix(in srgb, var(--primary) 20%, transparent);
-      color: var(--text-primary);
-      border: 1px solid var(--primary);
-    }
-    .location-status-msg.success, .pincode-status-msg.success {
-      background-color: color-mix(in srgb, #25D366 20%, transparent);
-      color: var(--text-primary);
-      border: 1px solid #25D366;
-    }
-    .location-status-msg.error, .pincode-status-msg.error {
-      background-color: color-mix(in srgb, #d9534f 20%, transparent);
-      color: #d9534f;
-      border: 1px solid #d9534f;
-    }
-    .action-btn[disabled] {
-      background-color: #ccc;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    .whatsapp-btn[disabled] {
-      background-color: #90E0A9;
-      color: #fff;
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-    
+    .location-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--primary); background-color: transparent; color: var(--primary); font-size: 1.2rem; cursor: pointer; display: grid; place-content: center; transition: all 0.3s ease; position: relative; overflow: hidden; }
+    .location-btn.loading i { animation: fa-spin 1.5s infinite linear; }
+    .location-btn.success { background-color: #25D366; border-color: #25D366; color: #fff; cursor: default; }
+    .location-btn.error { border-color: #d9534f; color: #d9534f; }
+    .location-status-msg, .pincode-status-msg { padding: 10px; margin-bottom: 15px; border-radius: 8px; text-align: center; font-weight: 500; font-size: 0.9rem; }
+    .location-status-msg.idle { background-color: color-mix(in srgb, var(--primary) 20%, transparent); border: 1px solid var(--primary); }
+    .location-status-msg.success, .pincode-status-msg.success { background-color: color-mix(in srgb, #25D366 20%, transparent); border: 1px solid #25D366; }
+    .location-status-msg.error, .pincode-status-msg.error { background-color: color-mix(in srgb, #d9534f 20%, transparent); border: 1px solid #d9534f; }
+    .whatsapp-btn[disabled] { background-color: #90E0A9; color: #fff; opacity: 0.7; cursor: not-allowed; }
     .hidden { display: none !important; }
-    #no-results { text-align: center; padding: 40px; color: var(--text-secondary); }
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
     .modal.visible { opacity: 1; visibility: visible; display: flex; }
     .modal-content { background: var(--surface-color); padding: 25px 30px; border-radius: 12px; max-width: 400px; width: 90%; box-shadow: 0 4px 20px var(--shadow-color); }
-    #category-modal .modal-content { transform: translateY(40px); opacity: 0; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out; }
-    #category-modal.visible .modal-content { transform: translateY(0); opacity: 1; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .modal-header h3 { font-size: 1.3rem; color: var(--text-primary); }
-    #close-category-modal-btn { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 0 5px; }
-    #category-modal-list { list-style: none; }
-    #category-modal-list a { display: block; padding: 15px; border-radius: 8px; text-decoration: none; color: var(--text-primary); font-weight: 500; display: flex; align-items: center; gap: 15px; transition: background-color 0.2s; }
-    #category-modal-list a:hover { background-color: var(--surface-color); }
-    #category-modal-list a.active { background-color: var(--primary); color: #fff; }
-    #customer-info-modal h2 { margin-bottom: 20px; font-family: var(--font-heading); color: var(--primary); }
     #customer-info-modal label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-secondary); text-align: left; }
-    #customer-info-modal input { width: 100%; padding: 10px 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1rem; color: var(--text-primary); background-color: var(--surface-color); }
+    #customer-info-modal input { width: 100%; padding: 10px 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1rem; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 10px; }
     .modal-actions button { padding: 10px 18px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; }
     .modal-actions button[type="submit"] { background-color: var(--primary); color: #fff; }
     .modal-actions button[type="button"] { background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-primary); }
-    .app-footer { grid-column: 1 / -1; text-align: center; padding: 40px 20px; margin-top: 40px; background-color: var(--surface-color); border-top: 1px solid var(--border-color); color: var(--text-secondary); transition: background-color 0.3s, border-color 0.3s; }
-    .app-footer .tagline { margin-top: 8px; font-size: 0.9rem; }
-    .social-links { display: flex; justify-content: center; gap: 25px; margin-top: 20px; }
-    .social-links a { font-size: 1.4rem; color: var(--text-secondary); text-decoration: none; transition: color 0.2s, transform 0.2s; }
-    .social-links a:hover { color: var(--primary); transform: translateY(-3px); }
-    #mobile-cart-btn, #mobile-cart-modal, .mobile-filter-bar { display: none; }
-    
     @media (max-width: 1024px) {
       .app-layout { grid-template-columns: 1fr; padding: 10px; padding-bottom: 100px; }
       .sidebar, .cart-area, .search-bar { display: none; }
-      .app-header { grid-column: auto; padding: 10px; }
-      .logo { font-size: 1.5rem; }
       .mobile-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
-      #category-filter-btn { flex-shrink: 0; width: 50px; height: 50px; padding: 0; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 50%; cursor: pointer; font-size: 1.1rem; color: var(--text-secondary); display: grid; place-content: center; transition: all 0.2s ease; }
+      #category-filter-btn { flex-shrink: 0; width: 50px; height: 50px; padding: 0; border: 1px solid var(--border-color); background-color: var(--surface-color); border-radius: 50%; cursor: pointer; font-size: 1.1rem; color: var(--text-secondary); display: grid; place-content: center; }
       #product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
       .product-card .info { padding: 12px; }
-      .product-card .name { font-size: 0.9rem; margin-bottom: 8px; min-height: 2.7em; }
-      .product-card .price { font-size: 1.2rem; }
-      
-      .add-to-cart-btn {
-        height: 32px;
-        padding: 0 14px;
-        font-size: 0.85rem;
-        display: grid;
-        place-content: center;
-      }
-      .quantity-control {
-        gap: 2px;
-        border-radius: 8px;
-        height: 32px;
-        align-items: stretch;
-      }
-      .quantity-control button {
-        width: 28px;
-        height: 100%;
-        font-size: 1rem;
-      }
-      .quantity-control span {
-        font-size: 0.9rem;
-        min-width: 18px;
-        text-align: center;
-        padding: 0 1px;
-        display: grid;
-        place-content: center;
-      }
-
-      .variant-selector { padding: 8px 30px 8px 10px; font-size: 0.9rem; margin-bottom: 10px; background-position: right 8px center, 0 0; background-size: 16px 16px, 100%; border-radius: 8px; }
-      #mobile-cart-btn { display: flex; justify-content: space-between; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px; background-color: var(--primary); color: #fff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); cursor: pointer; z-index: 1000; transform: translateY(200%); animation: slide-in 0.5s forwards ease-out; }
+      #mobile-cart-btn { display: flex; justify-content: space-between; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px; background-color: var(--primary); color: #fff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); cursor: pointer; z-index: 1000; animation: slide-in 0.5s forwards; }
       @keyframes slide-in { to { transform: translateY(0); } }
       #mobile-cart-modal { display: flex; align-items: flex-end; }
       #mobile-cart-modal.visible .cart-wrapper { transform: translateY(0); }
-      #mobile-cart-modal .cart-wrapper { width: 100%; height: 85vh; border-bottom-left-radius: 0; border-bottom-right-radius: 0; transform: translateY(100%); transition: transform 0.4s ease-out; touch-action: pan-y; }
-      #mobile-cart-modal .cart-wrapper.swiping { transition: none; }
-      .app-footer { margin-top: 20px; }
+      #mobile-cart-modal .cart-wrapper { width: 100%; height: 85vh; transform: translateY(100%); transition: transform 0.4s ease-out; }
     }
   </style>
 </head>
@@ -293,7 +157,7 @@
       <div id="no-results" class="hidden"><h3>No products found matching your search.</h3></div>
     </main>
     <aside class="cart-area" id="desktop-cart"></aside>
-    <footer class="app-footer"><p>© 2024 FreshBites. All Rights Reserved.</p><p class="tagline">Your local one-stop shop for fresh food and daily needs.</p><div class="social-links"><a href="#" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a><a href="#" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://wa.me/917431059519" aria-label="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a></div></footer>
+    <footer class="app-footer"><p>© 2024 FreshBites. All Rights Reserved.</p><p class="tagline">Your local one-stop shop for fresh food and daily needs.</p><div class="social-links"><a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://wa.me/917431059519" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></footer>
   </div>
 
   <div id="mobile-cart-btn" class="hidden"></div>
@@ -306,264 +170,155 @@
       <h2 id="modalTitle">Edit Your Info</h2>
       <form id="customerInfoForm">
         <label for="customerName">Name:</label><input type="text" id="customerName" name="customerName" required />
-        <label for="customerPhone">Phone Number:</label><input type="tel" id="customerPhone" name="customerPhone" pattern="[0-9]{10}" placeholder="10-digit number" required />
+        <label for="customerPhone">Phone:</label><input type="tel" id="customerPhone" name="customerPhone" pattern="[0-9]{10}" required />
         <label for="customerAddress">Address:</label><input type="text" id="customerAddress" name="customerAddress" required />
-        <label for="customerPincode">Pincode:</label><input type="text" id="customerPincode" name="customerPincode" pattern="[0-9]{6}" placeholder="6-digit pincode" required />
+        <label for="customerPincode">Pincode:</label><input type="text" id="customerPincode" name="customerPincode" pattern="[0-9]{6}" required />
         <label for="customerLandmark">Landmark:</label><input type="text" id="customerLandmark" name="customerLandmark" />
         <div class="modal-actions"><button type="submit">Save</button><button type="button" id="cancelCustomerInfoBtn">Cancel</button></div>
       </form>
     </div>
   </div>
-
   <audio id="bgAudio" loop><source src="https://www.dropbox.com/scl/fi/jgrk70tlbeub3m6hsgbud/Mor-Beena-Othe-Kon-Sure-PenduJatt.Com.Se.mp3?rlkey=7yil168sk6u7k9zcw97libva7&st=fpss14w6&dl=1" type="audio/mpeg" /></audio>
 
 <script>
-// --- START: PASTE YOUR COMPLETE FIREBASE CONFIG OBJECT HERE ---
-const firebaseConfig = {
-    apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE", // Replace with your actual key
-    authDomain: "freshbites-platform.firebaseapp.com",
-    projectId: "freshbites-platform",
-    storageBucket: "freshbites-platform.appspot.com",
-    messagingSenderId: "89904601475",
-    appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
-    databaseURL: "https://freshbites-platform-default-rtdb.firebaseio.com" // Replace with your actual Database URL
-};
-// --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
+    // --- START: PASTE YOUR COMPLETE FIREBASE CONFIG OBJECT HERE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE", // Replace with your actual key
+        authDomain: "freshbites-platform.firebaseapp.com",
+        projectId: "freshbites-platform",
+        storageBucket: "freshbites-platform.appspot.com",
+        messagingSenderId: "89904601475",
+        appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
+        databaseURL: "https://freshbites-platform-default-rtdb.firebaseio.com" // Replace with your actual Database URL
+    };
+    // --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-let ALL_PRODUCTS = []; // This will hold our live products
+    // --- Global variables ---
+    let ALL_PRODUCTS = [];
+    let cart = [];
+    let activeFilter = 'All';
+    let uiState = { selectedVariants: {} };
+    const CATEGORIES = { 'All': 'fa-solid fa-store', 'Main Course': 'fa-solid fa-bowl-food', 'Snacks': 'fa-solid fa-cookie-bite', 'Sweets & Desserts': 'fa-solid fa-ice-cream', 'Cold Drinks': 'fa-solid fa-martini-glass', 'Packaged Snacks': 'fa-solid fa-bag-shopping', 'Grocery': 'fa-solid fa-carrot', 'Puja Items': 'fa-solid fa-om' };
+    const FILTER_GROUPS = { food: ['Main Course', 'Snacks', 'Sweets & Desserts', 'Cold Drinks'], grocery: ['Grocery', 'Packaged Snacks'], puja: ['Puja Items'] };
+    const VALID_PINCODES = ['743391', '743372'];
+    let locationState = { status: 'idle', data: null };
+    let pincodeState = { isValid: false, message: '' };
 
-function fetchAllProducts() {
-    productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary);">Loading delicious items...</p>';
-    db.ref().on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (!data || !data.products || !data.vendors) {
-            productGrid.innerHTML = '<p style="text-align: center;">No products available right now.</p>';
-            ALL_PRODUCTS = [];
+    // --- DOM Elements (Defined inside DOMContentLoaded) ---
+    let productGrid, categoryNav, desktopCartContainer, mobileCartModalContainer, mobileCartBtn, productSearchDesktop, productSearchMobile, noResultsDiv, categoryFilterBtn, categoryModal, categoryModalList, customerInfoModal, darkModeToggle, audio, audioBtn, cardObserver;
+
+    // --- Core Function: Fetch and process data from Firebase ---
+    function fetchAllProducts() {
+        productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary);">Loading delicious items...</p>';
+        db.ref().on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data || !data.products || !data.vendors) {
+                productGrid.innerHTML = '<p style="text-align: center;">No products available right now.</p>';
+                ALL_PRODUCTS = [];
+                rerenderAll();
+                return;
+            }
+            const openVendors = {};
+            Object.keys(data.vendors).forEach(vendorId => {
+                const vendor = data.vendors[vendorId];
+                if (vendor.ShopStatus === 'Open') {
+                    openVendors[vendorId] = vendor;
+                }
+            });
+            ALL_PRODUCTS = Object.keys(data.products).map(key => {
+                const product = data.products[key];
+                product.id = key;
+                // Compatibility Layer
+                product.name = product.Name;
+                product.price = product.Price;
+                product.category = product.Category;
+                product.inStock = product.InStock;
+                product.images = typeof product.Images === 'string' ? [product.Images] : (product.Images || []);
+                return product;
+            }).filter(product => openVendors[product.VendorID] && product.inStock === true);
             rerenderAll();
-            return;
-        }
-        const openVendors = {};
-        Object.keys(data.vendors).forEach(vendorId => {
-            const vendor = data.vendors[vendorId];
-            if (vendor.ShopStatus === 'Open') {
-                openVendors[vendorId] = vendor;
-            }
+        }, (error) => {
+            console.error("Firebase Read Failed: ", error);
+            productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: #d9534f;">Could not load products. Please try again later.</p>';
         });
-        ALL_PRODUCTS = Object.keys(data.products).map(key => {
-            const product = data.products[key];
-            product.id = key;
-            // --- Compatibility Fixes ---
-            product.name = product.Name;
-            product.price = product.Price;
-            product.category = product.Category;
-            product.inStock = product.InStock;
-            if (typeof product.Images === 'string') {
-                product.images = [product.Images];
-            } else {
-                product.images = product.Images || [];
-            }
-            return product;
-        }).filter(product => openVendors[product.VendorID] && product.inStock === true);
-        
-        rerenderAll();
-    }, (error) => {
-        console.error("Firebase Read Failed: ", error);
-        productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: #d9534f;">Could not load products. Please try again later.</p>';
-    });
-}
-
-const CATEGORIES = { 'All': 'fa-solid fa-store', 'Main Course': 'fa-solid fa-bowl-food', 'Snacks': 'fa-solid fa-cookie-bite', 'Sweets & Desserts': 'fa-solid fa-ice-cream', 'Cold Drinks': 'fa-solid fa-martini-glass', 'Packaged Snacks': 'fa-solid fa-bag-shopping', 'Grocery': 'fa-solid fa-carrot', 'Puja Items': 'fa-solid fa-om' };
-//--- MODIFIED: Defined filter groups for URL parameter ---
-const FILTER_GROUPS = {
-    food: ['Main Course', 'Snacks', 'Sweets & Desserts', 'Cold Drinks'],
-    grocery: ['Grocery', 'Packaged Snacks'],
-    puja: ['Puja Items'] // Added a new group specifically for Puja items
-};
-let cart = []; let activeFilter = 'All'; let uiState = { selectedVariants: {} };
-
-const VALID_PINCODES = ['743391', '743372'];
-let locationState = { status: 'idle', data: null };
-let pincodeState = { isValid: false, message: '' };
-
-const productGrid = document.getElementById('product-grid'); const categoryNav = document.getElementById('category-nav'); const desktopCartContainer = document.getElementById('desktop-cart'); const mobileCartModalContainer = document.getElementById('mobile-cart-modal'); const mobileCartBtn = document.getElementById('mobile-cart-btn'); const productSearchDesktop = document.getElementById('productSearch'); const productSearchMobile = document.getElementById('productSearch-mobile'); const noResultsDiv = document.getElementById('no-results'); const categoryFilterBtn = document.getElementById('category-filter-btn'); const categoryModal = document.getElementById('category-modal'); const categoryModalList = document.getElementById('category-modal-list'); const customerInfoModal = document.getElementById('customer-info-modal'); const darkModeToggle = document.getElementById('darkModeToggle'); const audio = document.getElementById('bgAudio'); const audioBtn = document.getElementById('audioToggleBtn');
-const cardObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
-
-function validatePincode() {
-    const customerPincode = localStorage.getItem('customerPincode');
-    if (customerPincode && VALID_PINCODES.includes(customerPincode)) {
-        pincodeState = { isValid: true, message: 'Your area is serviceable!' };
-    } else if (customerPincode) {
-        pincodeState = { isValid: false, message: `Sorry, we currently do not deliver to pincode ${customerPincode}.` };
-    } else {
-        pincodeState = { isValid: false, message: 'Please add your pincode in "Edit My Info" to check serviceability.' };
     }
-}
-function requestLocation() {
-    if (!navigator.geolocation) {
-        locationState = { status: 'error', data: 'Geolocation is not supported by your browser.' };
-        renderCart();
-        return;
-    }
-    locationState.status = 'loading';
-    renderCart();
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const { latitude, longitude } = position.coords;
-            locationState = {
-                status: 'success',
-                data: { latitude, longitude, url: `https://maps.google.com/?q=${latitude},${longitude}` }
-            };
-            renderCart();
-        },
-        (error) => {
-            let message = 'An unknown error occurred.';
-            switch(error.code) {
-                case error.PERMISSION_DENIED: message = "You denied the request for Geolocation."; break;
-                case error.POSITION_UNAVAILABLE: message = "Location information is unavailable."; break;
-                case error.TIMEOUT: message = "The request to get user location timed out."; break;
-            }
-            locationState = { status: 'error', data: message };
-            renderCart();
-        },
-        { timeout: 10000 }
-    );
-}
-
-//--- MODIFIED: renderProducts now also handles group filters (food/grocery) ---
-function renderProducts(filter = 'All', searchTerm = '') {
-    productGrid.innerHTML = '';
-    let hasResults = false;
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
     
-    // Check if the filter is a group like 'food' or 'grocery'
-    const isGroupFilter = FILTER_GROUPS.hasOwnProperty(filter);
-    
-    ALL_PRODUCTS.forEach(product => {
-        const categoryMatch = isGroupFilter 
-            ? FILTER_GROUPS[filter].includes(product.category) 
-            : (filter === 'All' || product.category === filter);
-
-        const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm);
-
-        if (categoryMatch && searchMatch) {
-            hasResults = true;
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.dataset.productId = product.id;
-            const hasVariants = product.variants && product.variants.length > 0;
-            const selectedVariantIndex = uiState.selectedVariants[product.id] || 0;
-            let displayedPrice = product.price || 0;
-            if (hasVariants) { displayedPrice = product.variants[selectedVariantIndex].price; }
-            const variantSelectorHTML = hasVariants ? `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">${product.variants.map((v, i) => `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`).join('')}</select>` : '';
-            const buttonHTML = getButtonHTML(product, selectedVariantIndex);
-            const outOfStockOverlay = !product.inStock ? `<div class="out-of-stock-overlay"><span class="badge">Out Of<br>Stock</span></div>` : '';
-            const categoryIconClass = CATEGORIES[product.category] || 'fa-solid fa-tag';
-            card.innerHTML = `<div class="product-image-container"><a href="#" class="category-icon-badge" title="${product.category}" onclick="handleCategoryLinkClick(event, '${product.category}')"><i class="${categoryIconClass}"></i></a><div class="carousel-track">${product.images.map(imgUrl => `<div class="carousel-slide"><img src="${imgUrl}" alt="${product.name}" loading="lazy"></div>`).join('')}</div>${product.images.length > 1 ? `<div class="carousel-dots">${product.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('')}</div>` : ''}${outOfStockOverlay}</div><div class="info"><p class="name">${product.name}</p>${variantSelectorHTML}<div class="footer"><span class="price">₹${displayedPrice.toFixed(2)}</span><div class="action-wrapper">${buttonHTML}</div></div></div>`;
-            productGrid.appendChild(card);
-            cardObserver.observe(card);
-            if (product.images.length > 1) initProductCarousel(card);
-        }
-    });
-    noResultsDiv.classList.toggle('hidden', hasResults);
-}
-
-// ... (rest of the functions like getButtonHTML, renderCategories, renderCart, etc. remain the same)
-function getButtonHTML(product, selectedVariantIndex = 0) { if (!product.inStock) return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`; const cardElement = document.querySelector(`[data-product-id="${product.id}"]`) || document.createElement('div'); const { variantLabel } = getSelectedVariantInfo({ closest: () => cardElement }, product); const itemInCart = cart.find(item => item.id === product.id && item.variantLabel === variantLabel); if (itemInCart) { return `<div class="quantity-control"><button onclick="handleQuantityChange(this, '${product.id}', -1)">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange(this, '${product.id}', 1)">+</button></div>`; } else { return `<button class="add-to-cart-btn" onclick="handleAddToCart(this, '${product.id}')">Add</button>`; } }
-function renderCategories() { const desktopList = document.createElement('ul'); categoryModalList.innerHTML = ''; Object.entries(CATEGORIES).forEach(([name, iconClass]) => { const isActive = name === activeFilter; const linkHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`; const li = document.createElement('li'); li.innerHTML = linkHTML; desktopList.appendChild(li); categoryModalList.appendChild(li.cloneNode(true)); }); categoryNav.innerHTML = ''; categoryNav.appendChild(desktopList); }
-function renderCart() { const desktopCartItems = desktopCartContainer.querySelector('.cart-items'); const mobileCartItems = mobileCartModalContainer.querySelector('.cart-items'); const desktopScroll = desktopCartItems ? desktopCartItems.scrollTop : 0; const mobileScroll = mobileCartItems ? mobileCartItems.scrollTop : 0; const { items, total, count } = calculateCart(); validatePincode(); let locationButtonHTML = ''; if (pincodeState.isValid) { switch(locationState.status) { case 'loading': locationButtonHTML = `<button class="location-btn loading" title="Fetching location..."><i class="fa-solid fa-spinner"></i></button>`; break; case 'success': locationButtonHTML = `<button class="location-btn success" title="Location captured!"><i class="fa-solid fa-check"></i></button>`; break; case 'error': locationButtonHTML = `<button class="location-btn error" title="Location error. Tap to retry." onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`; break; default: locationButtonHTML = `<button class="location-btn idle" title="Turn on Location" onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`; } } let pincodeStatusMsgHTML = '', locationStatusMsgHTML = ''; if (items.length > 0) { if (!pincodeState.isValid) { pincodeStatusMsgHTML = `<div class="pincode-status-msg error">${pincodeState.message}</div>`; } else { let msg, className; switch(locationState.status) { case 'loading': msg = 'Fetching your location, please wait...'; className = 'loading'; break; case 'success': msg = 'Location captured! You can now proceed to order.'; className = 'success'; break; case 'error': msg = `Location Error: ${locationState.data}. Please retry.`; className = 'error'; break; default: msg = 'Please turn on location to complete the order.'; className = 'idle'; } locationStatusMsgHTML = `<div class="location-status-msg ${className}">${msg}</div>`; } } const isWhatsAppDisabled = !pincodeState.isValid || locationState.status !== 'success'; const cartHTML = `<div class="cart-wrapper"><div class="cart-header"><span>Your Order</span>${items.length > 0 ? locationButtonHTML : ''}</div><div class="cart-items">${items.length === 0 ? `<div class="cart-empty-msg"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty.</p><span>Add items to get started!</span></div>` : items.map(item => `<div class="cart-item"><img src="${item.images[0]}" alt="${item.name}"><div class="details"><p class="name">${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}</p><p class="price">₹${item.price.toFixed(2)} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</p></div><div class="quantity-control"><button onclick="handleQuantityChange(this, '${item.id}', -1, '${item.variantLabel}')">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange(this, '${item.id}', 1, '${item.variantLabel}')">+</button></div></div>`).join('')}</div>${items.length > 0 ? `<div class="cart-footer"><div class="cart-total"><span>Grand Total</span><span>₹${total.toFixed(2)}</span></div>${pincodeStatusMsgHTML}${locationStatusMsgHTML}<div class="cart-actions"><a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn" ${isWhatsAppDisabled ? 'disabled' : ''}><i class="fab fa-whatsapp"></i> Order on WhatsApp</a><button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button><button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button></div></div>` : ''}</div>`; desktopCartContainer.innerHTML = cartHTML; mobileCartModalContainer.innerHTML = cartHTML; mobileCartBtn.innerHTML = `<span class="item-count"><i class="fa-solid fa-bag-shopping"></i> ${count}</span><span>View Your Order</span><span class="total">₹${total.toFixed(2)}</span>`; mobileCartBtn.classList.toggle('hidden', items.length === 0); const newDesktopCartItems = desktopCartContainer.querySelector('.cart-items'); if (newDesktopCartItems) newDesktopCartItems.scrollTop = desktopScroll; const newMobileCartItems = mobileCartModalContainer.querySelector('.cart-items'); if (newMobileCartItems) newMobileCartItems.scrollTop = mobileScroll; if(items.length > 0) updateWhatsappLink(); }
-function updateProductCard(productId) { const card = productGrid.querySelector(`[data-product-id="${productId}"]`); if (!card) return; const product = ALL_PRODUCTS.find(p => p.id === productId); if (!product) return; const selectedVariantIndex = uiState.selectedVariants[product.id] || 0; const buttonHTML = getButtonHTML(product, selectedVariantIndex); card.querySelector('.action-wrapper').innerHTML = buttonHTML; }
-function handleAddToCart(buttonElement, productId) { const product = ALL_PRODUCTS.find(p => p.id === productId); if (!product || !product.inStock) return; const { price, variantLabel } = getSelectedVariantInfo(buttonElement, product); const existingIndex = cart.findIndex(item => item.id === productId && item.variantLabel === variantLabel); if (existingIndex > -1) { cart[existingIndex].quantity++; } else { cart.push({ ...product, price, variantLabel, quantity: 1 }); } updateProductCard(productId); renderCart(); }
-function handleQuantityChange(buttonElement, productId, change, variantLabelFromCart = null) { let variantLabel = variantLabelFromCart; if (variantLabel === null) { const product = ALL_PRODUCTS.find(p => p.id === productId); variantLabel = getSelectedVariantInfo(buttonElement, product).variantLabel; } const itemIndex = cart.findIndex(item => item.id === productId && item.variantLabel === variantLabel); if (itemIndex > -1) { cart[itemIndex].quantity += change; if (cart[itemIndex].quantity <= 0) cart.splice(itemIndex, 1); } if (cart.length === 0) { locationState = { status: 'idle', data: null }; } updateProductCard(productId); renderCart(); }
-function getSelectedVariantInfo(buttonElement, product) { let price = product.price; let variantLabel = ''; if (product.variants && product.variants.length > 0) { const card = buttonElement.closest('.product-card'); const selector = card.querySelector('.variant-selector'); const variantIndex = selector ? parseInt(selector.value, 10) : 0; price = product.variants[variantIndex].price; variantLabel = product.variants[variantIndex].label; } return { price, variantLabel }; }
-function handleCategoryChange(newCategory) { activeFilter = newCategory; renderProducts(activeFilter, productSearchDesktop.value); renderCategories(); categoryModal.classList.remove('visible'); }
-function handleCategoryLinkClick(event, category) { event.preventDefault(); handleCategoryChange(category); }
-function calculateCart() { const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0); const count = cart.reduce((sum, item) => sum + item.quantity, 0); return { items: cart, total, count }; }
-function updateWhatsappLink() { const { items, total } = calculateCart(); if (items.length === 0) return; document.querySelectorAll('#whatsapp-order-btn').forEach(btn => { btn.onclick = async (e) => { e.preventDefault(); if (btn.hasAttribute('disabled')) return; const originalBtnContent = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Placing...'; const name = localStorage.getItem('customerName') || 'N/A'; const phone = localStorage.getItem('customerPhone') || 'N/A'; const address = localStorage.getItem('customerAddress') || 'N/A'; const pincode = localStorage.getItem('customerPincode') || 'N/A'; const landmark = localStorage.getItem('customerLandmark') || ''; let locationURL = 'Location not available.'; if (locationState.status === 'success' && locationState.data && locationState.data.url) { locationURL = locationState.data.url; } else { alert("Please ensure your location is captured before ordering."); btn.disabled = false; btn.innerHTML = originalBtnContent; return; } if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') { const sheetData = { timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }), name, phone, address, pincode, landmark, items: items.map(item => `${item.quantity} x ${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''} @ ₹${item.price.toFixed(2)}`).join('\n'), totalAmount: total.toFixed(2), location: locationURL }; try { const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', cache: 'no-cache', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(sheetData) }); if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`); console.log('Order successfully saved to Google Sheet.'); } catch (error) { console.error('Error saving order to Google Sheet:', error); alert('There was an error saving your order details automatically. Please continue on WhatsApp to complete your order.'); } } else { console.warn('Google Script URL is not configured. Skipping sheet integration.'); } const orderDetails = items.map(item => `${item.quantity} x ${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}`).join('\n'); const message = `Hello, my name is ${name}.\nPhone: ${phone}\nAddress: ${address}\nPincode: ${pincode}\nLandmark: ${landmark}\n\nI'd like to place an order:\n\n${orderDetails}\n\n*Total: ₹${total.toFixed(2)}*\n\nMy current location:\n${locationURL}\n\nThank you!`; window.open(`https://wa.me/917431059519?text=${encodeURIComponent(message)}`, '_blank'); btn.disabled = false; btn.innerHTML = originalBtnContent; }; }); }
-function downloadPDF() { const { items, total } = calculateCart(); if(items.length === 0) { alert("Your cart is empty."); return; } const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(22).setFont("helvetica", "bold").text("FreshBites", 105, 20, null, null, "center"); doc.setFontSize(12).setFont("helvetica", "normal").text("Your Local Order Hub", 105, 28, null, null, "center"); doc.setDrawColor(0).setLineWidth(0.5).line(14, 32, 196, 32); const name = localStorage.getItem('customerName') || 'N/A', phone = localStorage.getItem('customerPhone') || 'N/A', address = localStorage.getItem('customerAddress') || 'N/A', pincode = localStorage.getItem('customerPincode') || 'N/A', landmark = localStorage.getItem('customerLandmark') || ''; doc.setFontSize(12).text([`Name: ${name}`, `Phone: ${phone}`, `Address: ${address}`, `Pincode: ${pincode}`], 14, 40); if(landmark) doc.text(`Landmark: ${landmark}`, 14, 68); doc.text(`Date: ${new Date().toLocaleString()}`, 150, 40); const startY = landmark ? 80 : 74; doc.autoTable({ startY, head: [['Item', 'Qty', 'Price', 'Total']], body: items.map(i => [`${i.name} ${i.variantLabel ? `(${i.variantLabel})` : ''}`, i.quantity, `Rs.${i.price.toFixed(2)}`, `Rs.${(i.price * i.quantity).toFixed(2)}`]), theme: 'grid' }); const finalY = doc.lastAutoTable.finalY; doc.setFont("helvetica", "bold").text("Grand Total:", 140, finalY + 10, null, null, "right").text(`Rs.${total.toFixed(2)}`, 190, finalY + 10, null, null, "right"); doc.setFontSize(10).setFont("helvetica", "italic").text("Thank you for ordering with FreshBites!", 105, finalY + 25, null, null, "center"); doc.save(`FreshBites_Bill_${Date.now()}.pdf`); }
-function showCustomerInfoModal() { ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => { document.getElementById(id).value = localStorage.getItem(id) || ''; }); customerInfoModal.classList.add('visible'); }
-function hideCustomerInfoModal() { customerInfoModal.classList.remove('visible'); }
-function initProductCarousel(cardElement) { const track = cardElement.querySelector('.carousel-track'); if (!track) return; const slides = Array.from(track.children); const dotsNav = cardElement.querySelector('.carousel-dots'); const dots = dotsNav ? Array.from(dotsNav.children) : []; let currentIndex = 0, autoPlayInterval, isDragging = false, startPos = 0, currentTranslate = 0, prevTranslate = 0; const goToSlide = (index) => { if (index < 0 || index >= slides.length) return; const slideWidth = slides[0].getBoundingClientRect().width; track.style.transition = 'transform 0.4s ease-out'; track.style.transform = `translateX(-${slideWidth * index}px)`; currentIndex = index; if(dotsNav) dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentIndex)); }; const startAutoPlay = () => { stopAutoPlay(); autoPlayInterval = setInterval(() => goToSlide((currentIndex + 1) % slides.length), 4000); }; const stopAutoPlay = () => clearInterval(autoPlayInterval); const getPositionX = e => e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; const dragStart = e => { isDragging = true; startPos = getPositionX(e); prevTranslate = -currentIndex * slides[0].getBoundingClientRect().width; track.style.transition = 'none'; stopAutoPlay(); }; const drag = e => { if (isDragging) { currentTranslate = prevTranslate + getPositionX(e) - startPos; track.style.transform = `translateX(${currentTranslate}px)`; } }; const dragEnd = () => { if (!isDragging) return; isDragging = false; const movedBy = currentTranslate - prevTranslate; if (movedBy < -100 && currentIndex < slides.length - 1) currentIndex++; if (movedBy > 100 && currentIndex > 0) currentIndex--; goToSlide(currentIndex); startAutoPlay(); }; cardElement.querySelector('.product-image-container').addEventListener('mousedown', dragStart); cardElement.querySelector('.product-image-container').addEventListener('touchstart', dragStart, { passive: true }); window.addEventListener('mousemove', drag); window.addEventListener('touchmove', drag, { passive: true }); window.addEventListener('mouseup', dragEnd); window.addEventListener('touchend', dragEnd); cardElement.addEventListener('mouseenter', stopAutoPlay); cardElement.addEventListener('mouseleave', startAutoPlay); if(dotsNav) dots.forEach(dot => dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index)))); startAutoPlay(); }
-
-document.addEventListener('DOMContentLoaded', () => {
-    //--- MODIFIED: URL parameter handling ---
-    const urlParams = new URLSearchParams(window.location.search);
-    const filterFromURL = urlParams.get('filter'); // 'food' or 'grocery'
-    const categoryFromURL = urlParams.get('category'); // e.g., 'Snacks'
-    const searchFromURL = urlParams.get('search'); // e.g., 'biryani'
-
-    if (filterFromURL && FILTER_GROUPS[filterFromURL]) {
-        activeFilter = filterFromURL;
-    } else if (categoryFromURL && Object.keys(CATEGORIES).includes(categoryFromURL)) {
-        activeFilter = categoryFromURL;
-    }
-
-    if (searchFromURL) {
-        productSearchDesktop.value = searchFromURL;
-        productSearchMobile.value = searchFromURL;
-    }
-
+    // --- All original functions from index(24).html ---
     function rerenderAll() { 
         const searchTerm = window.innerWidth <= 1024 ? productSearchMobile.value : productSearchDesktop.value;
         renderProducts(activeFilter, searchTerm); 
         renderCategories(); 
         renderCart(); 
     }
+    function renderProducts(filter = 'All', searchTerm = '') { productGrid.innerHTML = ''; let hasResults = false; const lowerCaseSearchTerm = searchTerm.toLowerCase(); const isGroupFilter = FILTER_GROUPS.hasOwnProperty(filter); ALL_PRODUCTS.forEach(product => { const categoryMatch = isGroupFilter ? FILTER_GROUPS[filter].includes(product.category) : (filter === 'All' || product.category === filter); const searchMatch = product.name.toLowerCase().includes(lowerCaseSearchTerm); if (categoryMatch && searchMatch) { hasResults = true; const card = document.createElement('div'); card.className = 'product-card'; card.dataset.productId = product.id; const hasVariants = product.variants && product.variants.length > 0; const selectedVariantIndex = uiState.selectedVariants[product.id] || 0; let displayedPrice = product.price || 0; if (hasVariants) { displayedPrice = product.variants[selectedVariantIndex].price; } const variantSelectorHTML = hasVariants ? `<select class="variant-selector" data-product-id="${product.id}" aria-label="Select variant for ${product.name}">${product.variants.map((v, i) => `<option value="${i}" ${i === selectedVariantIndex ? 'selected' : ''}>${v.label} - ₹${v.price}</option>`).join('')}</select>` : ''; const buttonHTML = getButtonHTML(product, selectedVariantIndex); const outOfStockOverlay = !product.inStock ? `<div class="out-of-stock-overlay"><span class="badge">Out Of<br>Stock</span></div>` : ''; const categoryIconClass = CATEGORIES[product.category] || 'fa-solid fa-tag'; card.innerHTML = `<div class="product-image-container"><a href="#" class="category-icon-badge" title="${product.category}" onclick="handleCategoryLinkClick(event, '${product.category}')"><i class="${categoryIconClass}"></i></a><div class="carousel-track">${product.images.map(imgUrl => `<div class="carousel-slide"><img src="${imgUrl}" alt="${product.name}" loading="lazy"></div>`).join('')}</div>${product.images.length > 1 ? `<div class="carousel-dots">${product.images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('')}</div>` : ''}${outOfStockOverlay}</div><div class="info"><p class="name">${product.name}</p><p class="shop-name" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: -8px; margin-bottom: 8px;">by ${product.ShopName || 'FreshBites'}</p>${variantSelectorHTML}<div class="footer"><span class="price">₹${displayedPrice.toFixed(2)}</span><div class="action-wrapper">${buttonHTML}</div></div></div>`; productGrid.appendChild(card); cardObserver.observe(card); if (product.images.length > 1) initProductCarousel(card); } }); noResultsDiv.classList.toggle('hidden', !hasResults); }
+    function getButtonHTML(product, selectedVariantIndex = 0) { if (!product.inStock) return `<button class="add-to-cart-btn" disabled>Out of Stock</button>`; const cardElement = document.querySelector(`[data-product-id="${product.id}"]`) || document.createElement('div'); const { variantLabel } = getSelectedVariantInfo({ closest: () => cardElement }, product); const itemInCart = cart.find(item => item.id === product.id && item.variantLabel === variantLabel); if (itemInCart) { return `<div class="quantity-control"><button onclick="handleQuantityChange(this, '${product.id}', -1, '${itemInCart.variantLabel}')">-</button><span>${itemInCart.quantity}</span><button onclick="handleQuantityChange(this, '${product.id}', 1, '${itemInCart.variantLabel}')">+</button></div>`; } else { return `<button class="add-to-cart-btn" onclick="handleAddToCart(this, '${product.id}')">Add</button>`; } }
+    function renderCategories() { const desktopList = document.createElement('ul'); categoryModalList.innerHTML = ''; Object.entries(CATEGORIES).forEach(([name, iconClass]) => { const isActive = name === activeFilter; const li = document.createElement('li'); li.innerHTML = `<a href="#" class="${isActive ? 'active' : ''}" data-category="${name}"><i class="${iconClass}"></i><span>${name}</span></a>`; desktopList.appendChild(li); categoryModalList.appendChild(li.cloneNode(true)); }); categoryNav.innerHTML = '<h3 class="notranslate">Categories</h3>'; categoryNav.appendChild(desktopList); }
+    function renderCart() { const { items, total, count } = calculateCart(); validatePincode(); let locationButtonHTML = ''; if (items.length > 0) { switch(locationState.status) { case 'loading': locationButtonHTML = `<button class="location-btn loading"><i class="fa-solid fa-spinner fa-spin"></i></button>`; break; case 'success': locationButtonHTML = `<button class="location-btn success"><i class="fa-solid fa-check"></i></button>`; break; case 'error': locationButtonHTML = `<button class="location-btn error" onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`; break; default: locationButtonHTML = `<button class="location-btn idle" onclick="requestLocation()"><i class="fa-solid fa-location-crosshairs"></i></button>`; } } let pincodeStatusMsgHTML = '', locationStatusMsgHTML = ''; if (items.length > 0) { if (!pincodeState.isValid) { pincodeStatusMsgHTML = `<div class="pincode-status-msg error">${pincodeState.message}</div>`; } else { let msg, className; switch(locationState.status) { case 'loading': msg = 'Fetching location...'; className = 'loading'; break; case 'success': msg = 'Location captured!'; className = 'success'; break; case 'error': msg = `Location Error: ${locationState.data}`; className = 'error'; break; default: msg = 'Please turn on location to order.'; className = 'idle'; } locationStatusMsgHTML = `<div class="location-status-msg ${className}">${msg}</div>`; } } const isWhatsAppDisabled = !pincodeState.isValid || locationState.status !== 'success'; const cartHTML = `<div class="cart-wrapper"><div class="cart-header"><span>Your Order</span>${locationButtonHTML}</div><div class="cart-items">${items.length === 0 ? `<div class="cart-empty-msg"><i class="fa-solid fa-cart-shopping"></i><p>Your cart is empty.</p><span>Add items to get started!</span></div>` : items.map(item => `<div class="cart-item"><img src="${item.images[0]}" alt="${item.name}"><div class="details"><p class="name">${item.name} ${item.variantLabel ? `(${item.variantLabel})` : ''}</p><p class="price">₹${item.price.toFixed(2)} x ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}</p></div><div class="quantity-control"><button onclick="handleQuantityChange(this, '${item.id}', -1, '${item.variantLabel}')">-</button><span>${item.quantity}</span><button onclick="handleQuantityChange(this, '${item.id}', 1, '${item.variantLabel}')">+</button></div></div>`).join('')}</div>${items.length > 0 ? `<div class="cart-footer"><div class="cart-total"><span>Grand Total</span><span>₹${total.toFixed(2)}</span></div>${pincodeStatusMsgHTML}${locationStatusMsgHTML}<div class="cart-actions"><a href="#" id="whatsapp-order-btn" class="action-btn whatsapp-btn" ${isWhatsAppDisabled ? 'disabled' : ''}><i class="fab fa-whatsapp"></i> Order on WhatsApp</a><button class="action-btn secondary-btn" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> Download Bill</button><button class="action-btn secondary-btn" onclick="showCustomerInfoModal()"><i class="fa-solid fa-user-pen"></i> Edit My Info</button></div></div>` : ''}</div>`; desktopCartContainer.innerHTML = cartHTML; mobileCartModalContainer.innerHTML = cartHTML; mobileCartBtn.innerHTML = `<span class="item-count"><i class="fa-solid fa-bag-shopping"></i> ${count}</span><span>View Your Order</span><span class="total">₹${total.toFixed(2)}</span>`; mobileCartBtn.classList.toggle('hidden', items.length === 0); if (items.length > 0) setupWhatsappLink(); }
+    function handleAddToCart(buttonElement, productId) { const product = ALL_PRODUCTS.find(p => p.id === productId); if (!product || !product.inStock) return; const { price, variantLabel } = getSelectedVariantInfo(buttonElement, product); const existingIndex = cart.findIndex(item => item.id === productId && item.variantLabel === variantLabel); if (existingIndex > -1) { cart[existingIndex].quantity++; } else { cart.push({ ...product, price, variantLabel, quantity: 1 }); } rerenderAll(); }
+    function handleQuantityChange(buttonElement, productId, change, variantLabelFromCart = null) { let variantLabel = variantLabelFromCart; if (variantLabel === null) { const product = ALL_PRODUCTS.find(p => p.id === productId); variantLabel = getSelectedVariantInfo(buttonElement, product).variantLabel; } const itemIndex = cart.findIndex(item => item.id === productId && item.variantLabel === variantLabel); if (itemIndex > -1) { cart[itemIndex].quantity += change; if (cart[itemIndex].quantity <= 0) { cart.splice(itemIndex, 1); } } if (cart.length === 0) { locationState = { status: 'idle', data: null }; } rerenderAll(); }
+    function getSelectedVariantInfo(buttonElement, product) { let price = product.price; let variantLabel = ''; if (product.variants && product.variants.length > 0) { const card = buttonElement.closest('.product-card'); const selector = card.querySelector('.variant-selector'); const variantIndex = selector ? parseInt(selector.value, 10) : 0; price = product.variants[variantIndex].price; variantLabel = product.variants[variantIndex].label; } return { price, variantLabel }; }
+    function handleCategoryChange(newCategory) { activeFilter = newCategory; rerenderAll(); categoryModal.classList.remove('visible'); }
+    function handleCategoryLinkClick(event, category) { event.preventDefault(); handleCategoryChange(category); }
+    function calculateCart() { const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0); const count = cart.reduce((sum, item) => sum + item.quantity, 0); return { items: cart, total, count }; }
+    function validatePincode(){ const p = localStorage.getItem('customerPincode'); if(p&&VALID_PINCODES.includes(p)){pincodeState={isValid:!0,message:'Serviceable!'}}else if(p){pincodeState={isValid:!1,message:`Sorry, we don't deliver to ${p}.`}}else{pincodeState={isValid:!1,message:'Add pincode to check serviceability.'}} }
+    function requestLocation(){ if(!navigator.geolocation){locationState={status:'error',data:'Geolocation not supported.'};renderCart();return}locationState.status='loading';renderCart();navigator.geolocation.getCurrentPosition(p=>{const{latitude:lat,longitude:lng}=p.coords;locationState={status:'success',data:{lat,lng,url:`https://maps.google.com/?q=${lat},${lng}`}};renderCart()},e=>{let msg;switch(e.code){case e.PERMISSION_DENIED:msg="Geolocation denied.";break;case e.POSITION_UNAVAILABLE:msg="Location unavailable.";break;case e.TIMEOUT:msg="Location request timed out.";break;default:msg="Unknown location error."}locationState={status:'error',data:msg};renderCart()},{timeout:10000})}
+    function showCustomerInfoModal(){ ['customerName','customerPhone','customerAddress','customerPincode','customerLandmark'].forEach(id=>{document.getElementById(id).value=localStorage.getItem(id)||''});customerInfoModal.classList.add('visible'); }
+    function hideCustomerInfoModal(){ customerInfoModal.classList.remove('visible'); }
+    function setupWhatsappLink() { const btn = document.getElementById('whatsapp-order-btn'); if (!btn) return; btn.onclick = (e) => { e.preventDefault(); if (btn.hasAttribute('disabled')) return; const name = localStorage.getItem('customerName') || 'N/A'; const phone = localStorage.getItem('customerPhone') || 'N/A'; const address = localStorage.getItem('customerAddress') || 'N/A'; const pincode = localStorage.getItem('customerPincode') || 'N/A'; const landmark = localStorage.getItem('customerLandmark') || ''; const locationURL = locationState.status === 'success' ? locationState.data.url : 'Location not provided.'; const { total } = calculateCart(); const orderDetails = cart.map(item => `${item.quantity} x ${item.name} (${item.variantLabel ? item.variantLabel + ' ' : ''}from ${item.ShopName})`).join('\n'); const message = `*New Order*\n\n*Customer:*\nName: ${name}\nPhone: ${phone}\nAddress: ${address}, ${pincode}\nLandmark: ${landmark}\n\n*Order Details:*\n${orderDetails}\n\n*Total: ₹${total.toFixed(2)}*\n\n*Location:*\n${locationURL}\n\nThank you!`; window.open(`https://wa.me/917431059519?text=${encodeURIComponent(message)}`, '_blank'); }; }
+    function downloadPDF() { const { items, total } = calculateCart(); if(items.length === 0) { alert("Your cart is empty."); return; } const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.setFontSize(22).setFont("helvetica", "bold").text("FreshBites", 105, 20, null, null, "center"); doc.setFontSize(12).setFont("helvetica", "normal").text("Your Local Order Hub", 105, 28, null, null, "center"); doc.setDrawColor(0).setLineWidth(0.5).line(14, 32, 196, 32); const name = localStorage.getItem('customerName') || 'N/A'; const phone = localStorage.getItem('customerPhone') || 'N/A'; const address = localStorage.getItem('customerAddress') || 'N/A'; const pincode = localStorage.getItem('customerPincode') || 'N/A'; const landmark = localStorage.getItem('customerLandmark') || ''; doc.setFontSize(12).text([`Name: ${name}`, `Phone: ${phone}`, `Address: ${address}`, `Pincode: ${pincode}`], 14, 40); if(landmark) doc.text(`Landmark: ${landmark}`, 14, 68); doc.text(`Date: ${new Date().toLocaleString()}`, 150, 40); const startY = landmark ? 80 : 74; doc.autoTable({ startY, head: [['Item', 'Qty', 'Price', 'Total']], body: items.map(i => [`${i.name} ${i.variantLabel ? `(${i.variantLabel})` : ''}`, i.quantity, `Rs.${i.price.toFixed(2)}`, `Rs.${(i.price * i.quantity).toFixed(2)}`]), theme: 'grid' }); const finalY = doc.lastAutoTable.finalY; doc.setFont("helvetica", "bold").text("Grand Total:", 140, finalY + 10, null, null, "right").text(`Rs.${total.toFixed(2)}`, 190, finalY + 10, null, null, "right"); doc.setFontSize(10).setFont("helvetica", "italic").text("Thank you for ordering with FreshBites!", 105, finalY + 25, null, null, "center"); doc.save(`FreshBites_Bill_${Date.now()}.pdf`); }
+    function initProductCarousel(cardElement) { const track = cardElement.querySelector('.carousel-track'); if (!track) return; const slides = Array.from(track.children); let currentIndex = 0, isDragging = false, startPos = 0, currentTranslate = 0, prevTranslate = 0; const goToSlide = (index) => { if (index < 0 || index >= slides.length) return; track.style.transform = `translateX(-${slides[0].getBoundingClientRect().width * index}px)`; currentIndex = index; }; const dragStart = e => { isDragging = true; startPos = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX; prevTranslate = -currentIndex * slides[0].getBoundingClientRect().width; track.style.transition = 'none'; }; const drag = e => { if (isDragging) { currentTranslate = prevTranslate + (e.type.includes('mouse') ? e.pageX : e.touches[0].clientX) - startPos; track.style.transform = `translateX(${currentTranslate}px)`; } }; const dragEnd = () => { if (!isDragging) return; isDragging = false; const movedBy = currentTranslate - prevTranslate; if (movedBy < -100 && currentIndex < slides.length - 1) currentIndex++; if (movedBy > 100 && currentIndex > 0) currentIndex--; goToSlide(currentIndex); }; cardElement.querySelector('.product-image-container').addEventListener('mousedown', dragStart); cardElement.querySelector('.product-image-container').addEventListener('touchstart', dragStart, { passive: true }); window.addEventListener('mousemove', drag); window.addEventListener('touchmove', drag, { passive: true }); window.addEventListener('mouseup', dragEnd); window.addEventListener('touchend', dragEnd); }
     
-    fetchAllProducts(); // Fetch live data from Firebase and then render
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize DOM Elements
+        productGrid = document.getElementById('product-grid');
+        categoryNav = document.getElementById('category-nav');
+        desktopCartContainer = document.getElementById('desktop-cart');
+        mobileCartModalContainer = document.getElementById('mobile-cart-modal');
+        mobileCartBtn = document.getElementById('mobile-cart-btn');
+        productSearchDesktop = document.getElementById('productSearch');
+        productSearchMobile = document.getElementById('productSearch-mobile');
+        noResultsDiv = document.getElementById('no-results');
+        categoryFilterBtn = document.getElementById('category-filter-btn');
+        categoryModal = document.getElementById('category-modal');
+        categoryModalList = document.getElementById('category-modal-list');
+        customerInfoModal = document.getElementById('customer-info-modal');
+        darkModeToggle = document.getElementById('darkModeToggle');
+        audio = document.getElementById('bgAudio');
+        audioBtn = document.getElementById('audioToggleBtn');
+        cardObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
+        
+        fetchAllProducts();
 
-    document.addEventListener('change', (e) => { 
-        if (e.target.classList.contains('variant-selector')) { 
-            const card = e.target.closest('.product-card'); 
-            const productId = card.dataset.productId; 
-            const newIndex = parseInt(e.target.value, 10); 
-            uiState.selectedVariants[productId] = newIndex; 
-            const product = ALL_PRODUCTS.find(p => p.id === productId); 
-            card.querySelector('.price').textContent = `₹${product.variants[newIndex].price.toFixed(2)}`; 
-            card.querySelector('.action-wrapper').innerHTML = getButtonHTML(product, newIndex); 
-        } 
+        const urlParams = new URLSearchParams(window.location.search);
+        const filterFromURL = urlParams.get('filter');
+        if (filterFromURL) { activeFilter = filterFromURL; }
+
+        categoryNav.addEventListener('click', e => { e.preventDefault(); const link = e.target.closest('a'); if (link) { handleCategoryChange(link.dataset.category); } });
+        productSearchDesktop.addEventListener('input', () => rerenderAll());
+        productSearchMobile.addEventListener('input', () => rerenderAll());
+        darkModeToggle.addEventListener('click', () => { document.body.classList.toggle('dark'); darkModeToggle.innerHTML = document.body.classList.contains('dark') ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>'; });
+        audioBtn.addEventListener('click', () => { if(audio.paused) { audio.play().catch(e=>console.log(e)); audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>'; } else { audio.pause(); audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'; } });
+
+        categoryFilterBtn.addEventListener('click', () => categoryModal.classList.add('visible'));
+        document.getElementById('close-category-modal-btn').addEventListener('click', () => categoryModal.classList.remove('visible'));
+        categoryModal.addEventListener('click', e => { if (e.target.id === 'category-modal') categoryModal.classList.remove('visible'); const link = e.target.closest('a'); if(link) { e.preventDefault(); handleCategoryChange(link.dataset.category); } });
+        
+        function openMobileCart() { mobileCartModalContainer.classList.add('visible'); }
+        function closeMobileCart() { mobileCartModalContainer.classList.remove('visible'); }
+        mobileCartBtn.addEventListener('click', openMobileCart);
+        mobileCartModalContainer.addEventListener('click', e => { if (e.target.id === 'mobile-cart-modal') closeMobileCart(); });
+
+        const customerInfoForm = document.getElementById('customerInfoForm');
+        customerInfoForm.addEventListener('submit', (e) => { e.preventDefault(); const formData = new FormData(customerInfoForm); ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => localStorage.setItem(id, formData.get(id).trim())); alert('Your info has been saved!'); hideCustomerInfoModal(); rerenderAll(); });
+        document.getElementById('cancelCustomerInfoBtn').addEventListener('click', hideCustomerInfoModal);
+
+        const observer = new MutationObserver(() => { if (document.getElementById('whatsapp-order-btn')) { setupWhatsappLink(); } });
+        observer.observe(desktopCartContainer, { childList: true, subtree: true });
+        observer.observe(mobileCartModalContainer, { childList: true, subtree: true });
     });
-    
-    categoryNav.addEventListener('click', e => { e.preventDefault(); const link = e.target.closest('a'); if (link) { handleCategoryChange(link.dataset.category); } });
-    categoryFilterBtn.addEventListener('click', () => categoryModal.classList.add('visible'));
-    document.getElementById('close-category-modal-btn').addEventListener('click', () => categoryModal.classList.remove('visible'));
-    categoryModal.addEventListener('click', e => { if (e.target.id === 'category-modal') categoryModal.classList.remove('visible'); const link = e.target.closest('a'); if(link) { e.preventDefault(); handleCategoryChange(link.dataset.category); } });
-    
-    function handleSearch() { 
-        const searchTerm = window.innerWidth <= 1024 ? productSearchMobile.value : productSearchDesktop.value;
-        // If a group filter was active, switch to 'All' when user starts searching manually
-        if (FILTER_GROUPS.hasOwnProperty(activeFilter)) {
-            activeFilter = 'All';
-            renderCategories();
-        }
-        renderProducts(activeFilter, searchTerm);
-    }
-
-    productSearchDesktop.addEventListener('input', handleSearch); 
-    productSearchMobile.addEventListener('input', handleSearch);
-
-    function openMobileCart() { if (mobileCartModalContainer.classList.contains('visible')) return; mobileCartModalContainer.classList.add('visible'); if (location.hash !== '#cart') { history.pushState({ modalOpen: true }, '', '#cart'); } }
-    function closeMobileCart(shouldGoBack = true) { if (!mobileCartModalContainer.classList.contains('visible')) return; mobileCartModalContainer.classList.remove('visible'); if (shouldGoBack && location.hash === '#cart') { history.back(); } }
-    
-    mobileCartBtn.addEventListener('click', openMobileCart);
-    mobileCartModalContainer.addEventListener('click', e => { if (e.target.id === 'mobile-cart-modal') closeMobileCart(); });
-    window.addEventListener('popstate', () => { if (mobileCartModalContainer.classList.contains('visible')) closeMobileCart(false); });
-    
-    let touchStartY = 0; let currentY = 0; const SWIPE_THRESHOLD = 100;
-    mobileCartModalContainer.addEventListener('touchstart', e => { const cartWrapper = e.target.closest('.cart-wrapper'); if (!cartWrapper) return; const cartItemsScroller = cartWrapper.querySelector('.cart-items'); if ((cartItemsScroller && cartItemsScroller.scrollTop === 0) || !cartItemsScroller.contains(e.target)) { touchStartY = e.touches[0].clientY; currentY = 0; cartWrapper.classList.add('swiping'); } else { touchStartY = 0; } }, { passive: true });
-    mobileCartModalContainer.addEventListener('touchmove', e => { if (touchStartY === 0) return; const cartWrapper = e.target.closest('.cart-wrapper.swiping'); if (cartWrapper) { const touchY = e.touches[0].clientY; currentY = touchY - touchStartY; if (currentY > 0) { e.preventDefault(); cartWrapper.style.transform = `translateY(${currentY}px)`; } } }, { passive: false });
-    mobileCartModalContainer.addEventListener('touchend', e => { if (touchStartY === 0) return; const cartWrapper = e.target.closest('.cart-wrapper.swiping'); if (cartWrapper) { cartWrapper.classList.remove('swiping'); cartWrapper.style.transform = ''; if (currentY > SWIPE_THRESHOLD) { closeMobileCart(); } touchStartY = 0; } });
-    
-    darkModeToggle.addEventListener('click', () => { document.body.classList.toggle('dark'); darkModeToggle.innerHTML = document.body.classList.contains('dark') ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>'; });
-    audioBtn.addEventListener('click', () => { if(audio.paused) { audio.play().catch(e => console.log("Audio play blocked.")); audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>'; } else { audio.pause(); audioBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'; } });
-    
-    const customerInfoForm = document.getElementById('customerInfoForm');
-    customerInfoForm.addEventListener('submit', (e) => { e.preventDefault(); const formData = new FormData(customerInfoForm); const name = formData.get('customerName').trim(); const phone = formData.get('customerPhone').trim(); const address = formData.get('customerAddress').trim(); const pincode = formData.get('customerPincode').trim(); if(!name || !phone.match(/^\d{10}$/) || !address || !pincode.match(/^\d{6}$/)) { alert('Please enter valid details for all required fields.'); return; } ['customerName', 'customerPhone', 'customerAddress', 'customerPincode', 'customerLandmark'].forEach(id => localStorage.setItem(id, formData.get(id).trim())); alert('Your info has been saved!'); hideCustomerInfoModal(); renderCart(); });
-    document.getElementById('cancelCustomerInfoBtn').addEventListener('click', hideCustomerInfoModal);
-});
 </script>
 </body>
 </html>
