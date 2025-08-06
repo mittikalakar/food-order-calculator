@@ -313,6 +313,13 @@
                 shopStatusText.textContent = `Shop is ${isOpen ? 'Open' : 'Closed'}`;
             });
 
+            // --- ADD THIS NEW BLOCK ---
+            // 3. Listen for New Orders for this Vendor
+            const ordersRef = db.ref('orders');
+            ordersRef.orderByChild('vendorId').equalTo(currentVendor.uid).on('value', (snapshot) => {
+                renderNewOrders(snapshot.val());
+            });
+          
             const productsRef = db.ref('products');
             productsRef.orderByChild('VendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
                 renderProducts(snapshot.val());
@@ -418,6 +425,55 @@
                 db.ref('products/' + productId).remove();
             }
         }
+
+      // --- PASTE THESE THREE NEW FUNCTIONS ---
+
+function renderNewOrders(ordersData) {
+    const container = document.getElementById('newOrderContainer');
+    container.innerHTML = ''; // Clear previous orders
+
+    if (!ordersData) {
+        container.innerHTML = '<p>No new orders right now.</p>';
+        return;
+    }
+
+    const pendingOrders = Object.keys(ordersData).map(key => ({ id: key, ...ordersData[key] }))
+        .filter(order => order.status === 'Pending');
+
+    if (pendingOrders.length === 0) {
+        container.innerHTML = '<p>No new orders right now.</p>';
+        return;
+    }
+
+    pendingOrders.forEach(order => {
+        const orderDiv = document.createElement('div');
+        orderDiv.className = 'order-item';
+        const itemsHtml = order.items.map(item => `<li>${item.quantity} x ${item.Name}</li>`).join('');
+        orderDiv.innerHTML = `
+            <h4>New Order!</h4>
+            <p><strong>Customer:</strong> ${order.customerInfo.name}</p>
+            <p><strong>Address:</strong> ${order.customerInfo.address}</p>
+            <ul>${itemsHtml}</ul>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="updateOrderStatus('${order.id}', 'Accepted')" style="background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Accept</button>
+                <button onclick="updateOrderStatus('${order.id}', 'Rejected')" style="background-color: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Reject</button>
+            </div>
+        `;
+        container.appendChild(orderDiv);
+    });
+}
+
+function updateOrderStatus(orderId, newStatus) {
+    db.ref('orders/' + orderId).update({ status: newStatus })
+        .then(() => {
+            alert(`Order has been ${newStatus}!`);
+            // The 'on' listener will automatically remove it from the "New Orders" list
+        })
+        .catch(error => {
+            alert('Failed to update order status.');
+            console.error(error);
+        });
+}
     </script>
   </body>
 </html>
