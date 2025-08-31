@@ -154,6 +154,81 @@
       #mobile-cart-modal.visible .cart-wrapper { transform: translateY(0); }
       #mobile-cart-modal .cart-wrapper { width: 100%; height: 85vh; transform: translateY(100%); transition: transform 0.4s ease-out; }
     }
+
+    /* --- START: Mobile Category Modal Style Fix v2 --- */
+    
+#category-modal .modal-content {
+    transform: translateY(40px);
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out;
+}
+
+#category-modal.visible .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* IMPROVEMENT: Better header alignment and spacing */
+#category-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px; /* Add padding instead of margin */
+    margin-bottom: 10px; /* Reduce bottom margin */
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* NEW: Style the title inside the modal */
+#category-modal .modal-header h3 {
+    margin: 0; /* Remove default margin from h3 */
+    font-size: 1.5rem;
+}
+
+/* IMPROVEMENT: Style the close button */
+#close-category-modal-btn {
+    background: none;
+    border: none;
+    font-size: 2rem; /* Make it slightly larger */
+    font-weight: 300; /* Make it thinner and more modern */
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+#close-category-modal-btn:hover {
+    color: var(--primary);
+}
+
+#category-modal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#category-modal-list a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+#category-modal-list a:hover {
+    background-color: var(--bg-color);
+}
+
+#category-modal-list a.active {
+    background-color: var(--primary);
+    color: #fff;
+}
+
+/* --- END: Mobile Category Modal Style Fix v2 --- */
+    
   </style>
 </head>
 <body>
