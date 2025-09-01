@@ -228,6 +228,40 @@
 }
 
 /* --- END: Mobile Category Modal Style Fix v2 --- */
+
+/* --- NEW: Simple Footer Styles --- */
+.simple-footer {
+    grid-column: 1 / -1; /* Make sure it spans the full width */
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 40px;
+    background-color: var(--surface-color);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.simple-footer p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.simple-footer .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.simple-footer .social-links a {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    transition: color 0.2s, transform 0.2s;
+}
+
+.simple-footer .social-links a:hover {
+    color: var(--primary);
+    transform: translateY(-3px);
+}
     
   </style>
 </head>
@@ -248,7 +282,16 @@
       <div id="no-results" class="hidden"><h3>No products found matching your search.</h3></div>
     </main>
     <aside class="cart-area" id="desktop-cart"></aside>
-    <footer class="app-footer"><p>© 2024 FreshBites. All Rights Reserved.</p><p class="tagline">Your local one-stop shop for fresh food and daily needs.</p><div class="social-links"><a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://wa.me/917431059519" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></footer>
+    <!-- NEW: Simple, Clean Footer -->
+<footer class="simple-footer">
+    <p>© 2024 Mitti Kalakar. All Rights Reserved.</p>
+    <p>Your local one-stop shop for fresh food and daily needs.</p>
+    <div class="social-links">
+        <a href="#" aria-label="Facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/917431059519" aria-label="WhatsApp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    </div>
+</footer>
   </div>
   <div id="mobile-cart-btn" class="hidden"></div>
   <div id="mobile-cart-modal" class="modal"></div>
