@@ -512,6 +512,14 @@
         observer.observe(desktopCartContainer, { childList: true, subtree: true });
         observer.observe(mobileCartModalContainer, { childList: true, subtree: true });
     });
+        function updateProductCardButton(productId) {
+          const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+          if (!card) return;
+          const product = ALL_PRODUCTS.find(p => p.id === productId);
+          const selectedVariantIndex = uiState.selectedVariants[productId] || 0;
+          const buttonHTML = getButtonHTML(product, selectedVariantIndex);
+          card.querySelector('.action-wrapper').innerHTML = buttonHTML;
+}
 </script>
 </body>
 </html>
