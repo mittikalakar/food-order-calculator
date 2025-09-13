@@ -411,6 +411,11 @@
         placeOrderBtn.disabled = true;
         placeOrderBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Placing Order...';
 
+      function openMobileCart() {
+    mobileCartModalContainer.classList.add('visible');
+    setupOrderPlacement(); // Ensure button is "live"
+}
+
         // 1. Group cart items by their VendorID
         const ordersByVendor = {};
         cart.forEach(item => {
