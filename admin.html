@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - All Orders</title>
+    <style>
+        body { font-family: sans-serif; }
+        .order { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>All Incoming Orders</h1>
+    <div id="all-orders-container">Loading orders...</div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        // --- PASTE YOUR FIREBASE CONFIG HERE ---
+        const firebaseConfig = { /* ... */ };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const ordersContainer = document.getElementById('all-orders-container');
+        const ordersRef = db.ref('orders');
+
+        ordersRef.on('value', (snapshot) => {
+            const ordersData = snapshot.val();
+            ordersContainer.innerHTML = '';
+            if (ordersData) {
+                Object.values(ordersData).forEach(order => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.className = 'order';
+                    orderDiv.innerHTML = `
+                        <h3>Order for: ${order.shopName}</h3>
+                        <p>Status: ${order.status}</p>
+                        <p>Customer: ${order.customerInfo.name}</p>
+                        <p>Total: ₹${order.totalAmount.toFixed(2)}</p>
+                    `;
+                    ordersContainer.appendChild(orderDiv);
+                });
+            } else {
+                ordersContainer.innerHTML = 'No orders yet.';
+            }
+        });
+    </script>
+</body>
+</html>
