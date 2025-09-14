@@ -554,6 +554,7 @@ const observer = new MutationObserver(() => {
     document.querySelectorAll('#show-payment-modal-btn').forEach(btn => {
         btn.onclick = showPaymentChoiceModal;
     });
+  });
 observer.observe(desktopCartContainer, { childList: true, subtree: true });
 observer.observe(mobileCartModalContainer, { childList: true, subtree: true });
     });
