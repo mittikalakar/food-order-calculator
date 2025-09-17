@@ -240,236 +240,156 @@
       </main>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-    <script>
-        // --- START: PASTE YOUR COMPLETE FIREBASE CONFIG OBJECT HERE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE", // Replace with your actual key
-            authDomain: "freshbites-platform.firebaseapp.com",
-            projectId: "freshbites-platform",
-            storageBucket: "freshbites-platform.appspot.com",
-            messagingSenderId: "89904601475",
-            appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
-            databaseURL: "https://freshbites-platform-default-rtdb.firebaseio.com" // Replace with your actual Database URL
-        };
-        // --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
+<script>
+    // --- START: PASTE YOUR COMPLETE FIREBASE CONFIG OBJECT HERE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyA5_f3mtvEWeBNDzVyQtI22rXn3lpLeOjE", // Replace with your actual key
+        authDomain: "freshbites-platform.firebaseapp.com",
+        projectId: "freshbites-platform",
+        storageBucket: "freshbites-platform.appspot.com",
+        messagingSenderId: "89904601475",
+        appId: "1:89904601475:web:791328b498cbb8c15e3eb6",
+        databaseURL: "https://freshbites-platform-default-rtdb.firebaseio.com" // Replace with your actual Database URL
+    };
+    // --- END: PASTE YOUR FIREBASE CONFIG OBJECT HERE ---
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-        // --- DOM Elements ---
-        const userInfo = document.getElementById('userInfo');
-        const productList = document.getElementById('product-list');
-        const logoutButton = document.getElementById('logoutButton');
-        const addProductForm = document.getElementById('addProductForm');
-        const shopStatusCheckbox = document.getElementById('shopStatusCheckbox');
-        const shopStatusText = document.getElementById('shopStatusText');
-        const shopNameInput = document.getElementById('shopNameInput');
-        const saveShopNameBtn = document.getElementById('saveShopNameBtn');
+    // --- DOM Elements ---
+    const userInfo = document.getElementById('userInfo');
+    const productList = document.getElementById('product-list');
+    const logoutButton = document.getElementById('logoutButton');
+    const addProductForm = document.getElementById('addProductForm');
+    const shopStatusCheckbox = document.getElementById('shopStatusCheckbox');
+    const shopStatusText = document.getElementById('shopStatusText');
+    const shopNameInput = document.getElementById('shopNameInput');
+    const saveShopNameBtn = document.getElementById('saveShopNameBtn');
+    const newOrderContainer = document.getElementById('newOrderContainer');
 
-        let currentVendor = null;
-        let vendorDetails = {};
+    let currentVendor = null;
+    let vendorDetails = {};
 
-        // --- Auth state observer ---
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                user.getIdTokenResult().then(idTokenResult => {
-                    if (idTokenResult.claims.role !== 'vendor') {
-                        auth.signOut();
-                        window.location.href = 'login1.html';
-                    } else {
-                        currentVendor = { uid: user.uid, email: user.email };
-                        userInfo.textContent = `Welcome, ${user.email}`;
-                        loadVendorData();
-                    }
-                });
-            } else {
-                window.location.href = 'login1.html';
-            }
-        });
-
-        logoutButton.addEventListener('click', () => auth.signOut());
-
-        // --- Fetch vendor data AND shop status from Firebase ---
-        function loadVendorData() {
-            if (!currentVendor) return;
-            productList.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
-            
-            const vendorRef = db.ref('vendors/' + currentVendor.uid);
-            vendorRef.on('value', (snapshot) => {
-                vendorDetails = snapshot.val() || { ShopName: '', ShopStatus: 'Closed' };
-                shopNameInput.value = vendorDetails.ShopName;
-                const isOpen = vendorDetails.ShopStatus === 'Open';
-                shopStatusCheckbox.checked = isOpen;
-                shopStatusText.textContent = `Shop is ${isOpen ? 'Open' : 'Closed'}`;
+    // --- Auth state observer ---
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            user.getIdTokenResult().then(idTokenResult => {
+                if (idTokenResult.claims.role !== 'vendor') {
+                    auth.signOut();
+                    window.location.href = 'login.html';
+                } else {
+                    currentVendor = { uid: user.uid, email: user.email };
+                    userInfo.textContent = `Welcome, ${user.email}`;
+                    loadVendorData();
+                }
             });
-
-            // --- ADD THIS NEW BLOCK ---
-            // 3. Listen for New Orders for this Vendor
-            const ordersRef = db.ref('orders');
-            ordersRef.orderByChild('vendorId').equalTo(currentVendor.uid).on('value', (snapshot) => {
-                renderNewOrders(snapshot.val());
-            });
-          
-            const productsRef = db.ref('products');
-            productsRef.orderByChild('VendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
-                renderProducts(snapshot.val());
-            });
+        } else {
+            window.location.href = 'login.html';
         }
-
-        // --- Render products with Edit and Delete buttons ---
-        function renderProducts(productsData) {
-            productList.innerHTML = '';
-            if (!productsData) {
-                productList.innerHTML = '<tr><td colspan="4">You have not added any products yet.</td></tr>';
-                return;
-            }
-            const productsArray = Object.keys(productsData).map(key => ({ id: key, ...productsData[key] }));
-
-            productsArray.forEach(p => {
-                const row = document.createElement('tr');
-                const stockStatus = p.InStock ? 'in-stock' : 'out-of-stock';
-                row.innerHTML = `
-                    <td>${p.Name}</td>
-                    <td>₹${p.Price}</td>
-                    <td><span class="status-toggle ${stockStatus}" onclick="toggleStock('${p.id}', ${p.InStock})">${stockStatus.replace("-", " ")}</span></td>
-                    <td>
-                        <button class="action-btn" title="Edit" onclick="editProduct('${p.id}', '${p.Name}', ${p.Price})"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn" title="Delete" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                `;
-                productList.appendChild(row);
-            });
-        }
-
-        // --- Add product with correct ShopName ---
-        addProductForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (!vendorDetails.ShopName) {
-                alert('Please set and save your shop name before adding products.');
-                return;
-            }
-            const submitButton = addProductForm.querySelector('button');
-            const newProduct = {
-                VendorID: currentVendor.uid,
-                ShopName: vendorDetails.ShopName,
-                Name: document.getElementById('productName').value,
-                Price: parseFloat(document.getElementById('productPrice').value),
-                Category: document.getElementById('productCategory').value,
-                Images: document.getElementById('productImage').value,
-                InStock: true
-            };
-            submitButton.disabled = true;
-            submitButton.textContent = 'Adding...';
-            db.ref('products').push(newProduct)
-                .then(() => {
-                    alert('Product added successfully!');
-                    addProductForm.reset();
-                })
-                .catch((error) => alert('Error: ' + error.message))
-                .finally(() => {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Add Product';
-                });
-        });
-
-        // --- Save Shop Name Logic ---
-        saveShopNameBtn.addEventListener('click', () => {
-            if (!currentVendor) return;
-            const newShopName = shopNameInput.value.trim();
-            if (!newShopName) {
-                alert('Please enter a shop name.');
-                return;
-            }
-            const vendorRef = db.ref('vendors/' + currentVendor.uid);
-            vendorRef.update({ ShopName: newShopName })
-                .then(() => {
-                    alert('Shop name saved successfully!');
-                })
-                .catch((error) => {
-                    alert('Error saving shop name: ' + error.message);
-                });
-        });
-
-        // --- Shop Status Toggle Logic ---
-        shopStatusCheckbox.addEventListener('change', function() {
-            if (!currentVendor) return;
-            const newStatus = this.checked ? 'Open' : 'Closed';
-            const vendorRef = db.ref('vendors/' + currentVendor.uid);
-            vendorRef.update({ ShopStatus: newStatus });
-        });
-        
-        // --- Edit, Toggle, and Delete Functions ---
-        function editProduct(productId, currentName, currentPrice) {
-            const newPrice = prompt(`Enter new price for ${currentName}:`, currentPrice);
-            if (newPrice && !isNaN(newPrice) && newPrice > 0) {
-                db.ref('products/' + productId).update({ Price: parseFloat(newPrice) });
-            }
-        }
-
-        function toggleStock(productId, currentStatus) {
-            db.ref('products/' + productId).update({ InStock: !currentStatus });
-        }
-        
-        function deleteProduct(productId) {
-            if (confirm('Are you sure you want to delete this product?')) {
-                db.ref('products/' + productId).remove();
-            }
-        }
-
-      // --- PASTE THESE THREE NEW FUNCTIONS ---
-
-function renderNewOrders(ordersData) {
-    const container = document.getElementById('newOrderContainer');
-    container.innerHTML = ''; // Clear previous orders
-
-    if (!ordersData) {
-        container.innerHTML = '<p>No new orders right now.</p>';
-        return;
-    }
-
-    const pendingOrders = Object.keys(ordersData).map(key => ({ id: key, ...ordersData[key] }))
-        .filter(order => order.status === 'Pending');
-
-    if (pendingOrders.length === 0) {
-        container.innerHTML = '<p>No new orders right now.</p>';
-        return;
-    }
-
-    pendingOrders.forEach(order => {
-        const orderDiv = document.createElement('div');
-        orderDiv.className = 'order-item';
-        const itemsHtml = order.items.map(item => `<li>${item.quantity} x ${item.Name}</li>`).join('');
-        orderDiv.innerHTML = `
-            <h4>New Order!</h4>
-            <p><strong>Customer:</strong> ${order.customerInfo.name}</p>
-            <p><strong>Address:</strong> ${order.customerInfo.address}</p>
-            <ul>${itemsHtml}</ul>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="updateOrderStatus('${order.id}', 'Accepted')" style="background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Accept</button>
-                <button onclick="updateOrderStatus('${order.id}', 'Rejected')" style="background-color: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Reject</button>
-            </div>
-        `;
-        container.appendChild(orderDiv);
     });
-}
 
-function updateOrderStatus(orderId, newStatus) {
-    db.ref('orders/' + orderId).update({ status: newStatus })
-        .then(() => {
-            alert(`Order has been ${newStatus}!`);
-            // The 'on' listener will automatically remove it from the "New Orders" list
-        })
-        .catch(error => {
-            alert('Failed to update order status.');
-            console.error(error);
+    logoutButton.addEventListener('click', () => auth.signOut());
+
+    // --- Fetch all vendor data from Firebase ---
+    function loadVendorData() {
+        if (!currentVendor) return;
+        productList.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+        
+        const vendorRef = db.ref('vendors/' + currentVendor.uid);
+        vendorRef.on('value', (snapshot) => {
+            vendorDetails = snapshot.val() || { ShopName: '', ShopStatus: 'Closed' };
+            shopNameInput.value = vendorDetails.ShopName;
+            const isOpen = vendorDetails.ShopStatus === 'Open';
+            shopStatusCheckbox.checked = isOpen;
+            shopStatusText.textContent = `Shop is ${isOpen ? 'Open' : 'Closed'}`;
         });
-}
-    </script>
-  </body>
+
+        const productsRef = db.ref('products');
+        productsRef.orderByChild('VendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
+            renderProducts(snapshot.val());
+        });
+
+        // Listen for New Orders for this Vendor
+        const ordersRef = db.ref('orders');
+        ordersRef.orderByChild('VendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
+            renderNewOrders(snapshot.val());
+        });
+    }
+
+    // --- Render products with Edit and Delete buttons ---
+    function renderProducts(productsData) {
+        productList.innerHTML = '';
+        if (!productsData) {
+            productList.innerHTML = '<tr><td colspan="4">You have not added any products yet.</td></tr>';
+            return;
+        }
+        const productsArray = Object.keys(productsData).map(key => ({ id: key, ...productsData[key] }));
+        productsArray.forEach(p => {
+            const row = document.createElement('tr');
+            const stockStatus = p.InStock ? 'in-stock' : 'out-of-stock';
+            row.innerHTML = `
+                <td>${p.Name}</td>
+                <td>₹${p.Price}</td>
+                <td><span class="status-toggle ${stockStatus}" onclick="toggleStock('${p.id}', ${p.InStock})">${stockStatus.replace("-", " ")}</span></td>
+                <td>
+                    <button class="action-btn" title="Edit" onclick="editProduct('${p.id}', '${p.Name}', ${p.Price})"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn" title="Delete" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            `;
+            productList.appendChild(row);
+        });
+    }
+
+    // --- Functions to handle orders ---
+    function renderNewOrders(ordersData) {
+        newOrderContainer.innerHTML = '';
+        if (!ordersData) {
+            newOrderContainer.innerHTML = '<p>No new orders right now.</p>';
+            return;
+        }
+        const pendingOrders = Object.keys(ordersData).map(key => ({ id: key, ...ordersData[key] }))
+            .filter(order => order.status === 'Pending' || order.status === 'Pending (COD)');
+
+        if (pendingOrders.length === 0) {
+            newOrderContainer.innerHTML = '<p>No new orders right now.</p>';
+            return;
+        }
+        pendingOrders.forEach(order => {
+            const orderDiv = document.createElement('div');
+            orderDiv.className = 'order-item';
+            const itemsHtml = order.items.map(item => `<li>${item.quantity} x ${item.Name}</li>`).join('');
+            orderDiv.innerHTML = `
+                <h4>New Order! (Total: ₹${order.totalAmount.toFixed(2)})</h4>
+                <p><strong>Customer:</strong> ${order.customerInfo.name}</p>
+                <p><strong>Address:</strong> ${order.customerInfo.address}</p>
+                <ul>${itemsHtml}</ul>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button onclick="updateOrderStatus('${order.id}', 'Accepted')" style="background-color: #28a745; color: white; border:none; padding: 8px 12px; border-radius: 6px; cursor:pointer;">Accept</button>
+                    <button onclick="updateOrderStatus('${order.id}', 'Rejected')" style="background-color: #dc3545; color: white; border:none; padding: 8px 12px; border-radius: 6px; cursor:pointer;">Reject</button>
+                </div>`;
+            newOrderContainer.appendChild(orderDiv);
+        });
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+        db.ref('orders/' + orderId).update({ status: newStatus })
+            .then(() => alert(`Order has been ${newStatus}!`))
+            .catch(error => alert('Failed to update order status.'));
+    }
+
+    // --- Other dashboard functions ---
+    addProductForm.addEventListener('submit', (e) => { e.preventDefault(); if (!vendorDetails.ShopName) { alert('Please set your shop name first.'); return; } const btn = e.target.querySelector('button'); btn.disabled = true; const newProduct = { VendorID: currentVendor.uid, ShopName: vendorDetails.ShopName, Name: document.getElementById('productName').value, Price: parseFloat(document.getElementById('productPrice').value), Category: document.getElementById('productCategory').value, Images: document.getElementById('productImage').value, InStock: true }; db.ref('products').push(newProduct).then(() => { addProductForm.reset(); }).catch(err => alert(err.message)).finally(() => btn.disabled = false); });
+    saveShopNameBtn.addEventListener('click', () => { if (!currentVendor) return; const newName = shopNameInput.value.trim(); if (!newName) { alert('Please enter a name.'); return; } db.ref('vendors/' + currentVendor.uid).update({ ShopName: newName }).then(() => alert('Shop name saved!')); });
+    shopStatusCheckbox.addEventListener('change', function() { if (!currentVendor) return; const newStatus = this.checked ? 'Open' : 'Closed'; db.ref('vendors/' + currentVendor.uid).update({ ShopStatus: newStatus }); });
+    function editProduct(productId, name, price) { const newPrice = prompt(`Enter new price for ${name}:`, price); if (newPrice && !isNaN(newPrice)) { db.ref('products/' + productId).update({ Price: parseFloat(newPrice) }); } }
+    function toggleStock(productId, status) { db.ref('products/' + productId).update({ InStock: !status }); }
+    function deleteProduct(productId) { if (confirm('Delete this product?')) { db.ref('products/' + productId).remove(); } }
+</script>
+</body>
 </html>
