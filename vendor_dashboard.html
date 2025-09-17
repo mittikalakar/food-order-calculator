@@ -317,7 +317,8 @@
 
         // Listen for New Orders for this Vendor
         const ordersRef = db.ref('orders');
-        ordersRef.orderByChild('vendorID').equalTo(currentVendor.uid).on('value', (snapshot) => {
+        // --- THIS IS THE FIX ---
+        ordersRef.orderByChild('vendorId').equalTo(currentVendor.uid).on('value', (snapshot) => {
             renderNewOrders(snapshot.val());
         });
     }
