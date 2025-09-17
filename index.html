@@ -366,27 +366,39 @@
     let productGrid, categoryNav, desktopCartContainer, mobileCartModalContainer, mobileCartBtn, productSearchDesktop, productSearchMobile, noResultsDiv, categoryFilterBtn, categoryModal, categoryModalList, customerInfoModal, darkModeToggle, audio, audioBtn, cardObserver;
 
     // --- Core Function: Fetch and process data from Firebase ---
-    function fetchAllProducts() {
-        if (!productGrid) productGrid = document.getElementById('product-grid');
-        productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary);">Loading delicious items...</p>';
-        db.ref().on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (!data || !data.products || !data.vendors) {
+function fetchAllProducts() {
+    productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: var(--text-secondary);">Loading delicious items...</p>';
+
+    const productsRef = db.ref('products');
+    const vendorsRef = db.ref('vendors');
+
+    // Use Promise.all to fetch both products and vendors at the same time
+    Promise.all([productsRef.get(), vendorsRef.get()])
+        .then(([productsSnapshot, vendorsSnapshot]) => {
+            const productsData = productsSnapshot.val();
+            const vendorsData = vendorsSnapshot.val();
+
+            if (!productsData || !vendorsData) {
                 productGrid.innerHTML = '<p style="text-align: center;">No products available right now.</p>';
                 ALL_PRODUCTS = [];
                 rerenderAll();
                 return;
             }
+
+            // Find out which vendors are open
             const openVendors = {};
-            Object.keys(data.vendors).forEach(vendorId => {
-                const vendor = data.vendors[vendorId];
+            Object.keys(vendorsData).forEach(vendorId => {
+                const vendor = vendorsData[vendorId];
                 if (vendor.ShopStatus === 'Open') {
                     openVendors[vendorId] = vendor;
                 }
             });
-            ALL_PRODUCTS = Object.keys(data.products).map(key => {
-                const product = data.products[key];
+
+            // Filter products to show only those from open vendors
+            ALL_PRODUCTS = Object.keys(productsData).map(key => {
+                const product = productsData[key];
                 product.id = key;
+                // Compatibility Layer
                 product.name = product.Name;
                 product.price = product.Price;
                 product.category = product.Category;
@@ -394,12 +406,15 @@
                 product.images = typeof product.Images === 'string' ? [product.Images] : (product.Images || []);
                 return product;
             }).filter(product => openVendors[product.VendorID] && product.inStock === true);
-            rerenderAll();
-        }, (error) => {
+            
+            rerenderAll(); // Now we have the data, render the full page
+
+        })
+        .catch((error) => {
             console.error("Firebase Read Failed: ", error);
-            productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: #d9534f;">Could not load products. Please try again later.</p>';
+            productGrid.innerHTML = '<p style="text-align: center; font-size: 1.2rem; color: #d9534f;">Could not load products. Please check security rules.</p>';
         });
-    }
+}
     
     function rerenderAll() { 
         const searchTerm = window.innerWidth <= 1024 ? productSearchMobile.value : productSearchDesktop.value;
