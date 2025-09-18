@@ -355,8 +355,7 @@
             return;
         }
         const pendingOrders = Object.keys(ordersData).map(key => ({ id: key, ...ordersData[key] }))
-            .filter(order => order.status === 'Pending' || order.status === 'Pending (COD)');
-
+            .filter(order => ['Pending (COD)', 'Accepted', 'Preparing'].includes(order.status));
         if (pendingOrders.length === 0) {
             newOrderContainer.innerHTML = '<p>No new orders right now.</p>';
             return;
@@ -365,15 +364,32 @@
             const orderDiv = document.createElement('div');
             orderDiv.className = 'order-item';
             const itemsHtml = order.items.map(item => `<li>${item.quantity} x ${item.Name}</li>`).join('');
-            orderDiv.innerHTML = `
-                <h4>New Order! (Total: ₹${order.totalAmount.toFixed(2)})</h4>
-                <p><strong>Customer:</strong> ${order.customerInfo.name}</p>
-                <p><strong>Address:</strong> ${order.customerInfo.address}</p>
-                <ul>${itemsHtml}</ul>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button onclick="updateOrderStatus('${order.id}', 'Accepted')" style="background-color: #28a745; color: white; border:none; padding: 8px 12px; border-radius: 6px; cursor:pointer;">Accept</button>
-                    <button onclick="updateOrderStatus('${order.id}', 'Rejected')" style="background-color: #dc3545; color: white; border:none; padding: 8px 12px; border-radius: 6px; cursor:pointer;">Reject</button>
-                </div>`;
+            // Inside the renderNewOrders function...
+
+let actionButtons = '';
+if (order.status === 'Pending (COD)') {
+    actionButtons = `
+        <button onclick="updateOrderStatus('${order.id}', 'Accepted')" style="background-color: #28a745;">Accept</button>
+        <button onclick="updateOrderStatus('${order.id}', 'Rejected')" style="background-color: #dc3545;">Reject</button>
+    `;
+} else if (order.status === 'Accepted') {
+    actionButtons = `
+        <button onclick="updateOrderStatus('${order.id}', 'Preparing')" style="background-color: #007bff;">Mark as Preparing</button>
+    `;
+} else if (order.status === 'Preparing') {
+    actionButtons = `
+        <button onclick="updateOrderStatus('${order.id}', 'Out for Delivery')" style="background-color: #ffc107; color: black;">Out for Delivery</button>
+    `;
+}
+
+orderDiv.innerHTML = `
+    <div class="order-header">
+        <h4>Order from ${order.customerInfo.name}</h4>
+        <span class="order-status">${order.status}</span>
+    </div>
+    <ul>${itemsHtml}</ul>
+    <div class="order-actions">${actionButtons}</div>
+`;
             newOrderContainer.appendChild(orderDiv);
         });
     }
